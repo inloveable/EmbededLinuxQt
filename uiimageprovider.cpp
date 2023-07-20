@@ -5,7 +5,6 @@
 
 UIImageProvider::UIImageProvider():QQuickImageProvider{QQuickImageProvider::Pixmap}
 {
-
 }
 
 

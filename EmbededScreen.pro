@@ -4,15 +4,10 @@ QT += quick widgets network serialport  charts
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-
-
 SOURCES += \
         main.cpp \
-        serialmanager.cpp \
-        seriespointswaper.cpp \
         serviceprovider.cpp \
         serviceproviderprivate.cpp \
-        testpointmodel.cpp \
         timeprovider.cpp \
         uiimageprovider.cpp
 
