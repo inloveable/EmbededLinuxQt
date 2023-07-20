@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>MainUi.qml</file>
+        <file>MyMenu.qml</file>
+        <file>MyMenuItem.qml</file>
+        <file>SystemSettings.qml</file>
+        <file>SystemSettings/BasicSettings.qml</file>
+        <file>images/icons/navigate.svg</file>
+        <file>images/icons/basicSettings.svg</file>
+        <file>images/icons/settingsMain.svg</file>
+        <file>images/icons/timeupdate.svg</file>
+        <file>images/pietro-jeng-n6B49lTx7NM-unsplash.jpg</file>
+        <file>MyButton.qml</file>
+        <file>SystemSettings/BasicInfo.qml</file>
+        <file>SystemSettings/SelfCheck.qml</file>
+        <file>images/icons/return.svg</file>
+    </qresource>
+</RCC>
