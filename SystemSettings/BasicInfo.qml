@@ -16,7 +16,6 @@ Rectangle {
         Column {
             id: column
             anchors.fill: parent
-            spacing:10
             Row{
                 width:parent.width
                 height:column.height/column.children.length

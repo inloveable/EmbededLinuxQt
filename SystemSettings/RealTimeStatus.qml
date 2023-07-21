@@ -1,42 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
-import "../"
-Rectangle {
-    id: rectangle
-    color:"#70A9FA"
-
-    MyButton {
-        id: button
-        width: 100
-        height: 30
-
-        originColor:"#9FA9FA"
-        hoverColor:"#6E7BFA"
-
-        text: qsTr("自检")
-        anchors.left: groupBox.left
-        anchors.bottom: groupBox.top
-
-        anchors.bottomMargin: 83
-    }
-
-    ProgressBar {
-        id: progressBar
-        width: groupBox.width-button.width
-        height: 30
-        anchors.left: button.right
-        anchors.top: button.top
-        anchors.topMargin: 0
-        anchors.leftMargin: 14
-        value: 0.5
-    }
-
+Rectangle{
+    color: "#1b39be"
     GroupBox {
         id: groupBox
-        width: parent.width/3*2
-        height: parent.height/3*2
+     width:parent.width/3*2
+     height:parent.height/3*2
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        title: qsTr("系统信息")
 
-        anchors.centerIn: parent
         label:Rectangle{
             width:groupBox.width/7
             height:groupBox.height/9
@@ -51,17 +24,15 @@ Rectangle {
               text:groupBox.title
             }
         }
-        title: qsTr("自检结果")
 
         Column {
             id: column
             anchors.fill: parent
-            spacing:10
             Row{
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"温度传感器:"
+                    text:"电流: "
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
@@ -77,13 +48,14 @@ Rectangle {
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
+                    color: "#1b39be"
                 }
             }
             Row{
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"产品型号:"
+                    text:"电压: "
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
@@ -105,7 +77,7 @@ Rectangle {
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"版本编号:"
+                    text:"幅值: "
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
@@ -127,7 +99,7 @@ Rectangle {
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"生产厂家:"
+                    text:"相角: "
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
@@ -148,7 +120,28 @@ Rectangle {
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"咨询电话:"
+                    text:"温度: "
+                    horizontalAlignment: Text.AlignRight
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 15
+                    font.bold: true
+                    width:parent.width/2
+                    height:parent.height
+                }
+                Text{
+                    text:"土壤无核密度仪"
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 15
+                    font.bold: true
+                    width:parent.width/2
+                    height:parent.height
+                }
+            }
+            Row{
+                width:parent.width
+                height:column.height/column.children.length
+                Text{
+                    text:"电池: "
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15

@@ -1,5 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
+
+import CppCore 1.0
 Button {
     id: root
     text: qsTr("更新")
@@ -46,8 +48,4 @@ Button {
             font.bold: true
         }
 
-
-    onClicked:{
-       Service.getTime();
-    }
 }

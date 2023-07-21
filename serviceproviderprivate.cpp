@@ -20,18 +20,25 @@ void ServiceProviderPrivate::getTime(){
 
 
 
-    QFile file{"config.json"};
+    QFile file{"/root/config.json"};
 
     file.open(QIODevice::ReadOnly);
+    QJsonDocument doc;
+    QString website;
     if(!file.isOpen()){
-        emit sendTime(QString(tr("config file not found")),false);
+        //emit sendTime(QString(tr("config file not found")),false);
+
+        website="http://quan.suning.com/getSysTime.do";
+    }else{
+        doc =QJsonDocument::fromJson(file.readAll());
+        file.close();
+        auto obj=doc.object();
+        qDebug()<<obj;
+        website=obj["timeApi"].toString();
     }
 
-    QJsonDocument doc =QJsonDocument::fromJson(file.readAll());
-    file.close();
-    auto obj=doc.object();
-    qDebug()<<obj;
-    auto website=obj["timeApi"].toString();
+
+
     qDebug()<<"website:"<<website;
 
     QNetworkRequest request;

@@ -24,7 +24,7 @@ Item {
             collapsed: cl.collapsed
             index: 0
             title: "系统设置"
-            icon: "qrc:/images/icons/settingsMain.svg"
+            icon: "qrc:/images/icons/settings.png"
 
             onItemSelected:function(str) {
                contented.change(str)
@@ -36,7 +36,7 @@ Item {
             collapsed: cl.collapsed
             index: 1
             title: "基本信息"
-            icon: "qrc:/images/icons/timeupdate.svg"
+            icon: "qrc:/images/icons/refresh.png"
             onItemSelected:function(str) {
                contented.change(str)
             }
@@ -47,7 +47,7 @@ Item {
             collapsed: cl.collapsed
             index: 2
             title: "状态检查"
-            icon: "qrc:/images/auto@2x.png"
+            icon: "qrc:/images/icons/statusCheck.png"
             onItemSelected:function(str) {
               contented.change(str)
             }
@@ -58,7 +58,7 @@ Item {
             collapsed: cl.collapsed
             index: 3
             title: "GPS定位"
-            icon: "qrc:/images/icons/navigate.svg"
+            icon: "qrc:/images/icons/gps.png"
             onItemSelected:function(str) {
                contented.change(str)
             }
@@ -68,7 +68,7 @@ Item {
             collapsed: cl.collapsed
             index: 4
             title: "实时参数"
-            icon: "qrc:/images/realty@2x.png"
+            icon: "qrc:/images/icons/realTime.png"
             onItemSelected:function(str) {
                contented.change(str)
             }
@@ -78,7 +78,7 @@ Item {
             collapsed: cl.collapsed
             index: 5
             title: "返回"
-            icon: "qrc:/images/icons/return.svg"
+            icon: "qrc:/images/icons/return.png"
             onItemSelected:function(str) {
                 contented.active=false;
                 mainWindow.returnSignal()
@@ -128,8 +128,15 @@ Item {
                 }else if(str===qsTr("状态检查")){
                     contented.source="qrc:/SystemSettings/SelfCheck.qml";
                     contented.active=true;
-                }else{
-
+                }else if(str===qsTr("GPS定位")){
+                    contented.source="qrc:/SystemSettings/GPSPositioning.qml";
+                    contented.active=true;
+                }else if(str===qsTr("实时参数")){
+                    contented.source="qrc:/SystemSettings/RealTimeStatus.qml";
+                    contented.active=true;
+                }
+                else{
+                    console.log("error ui")
                 }
 
             }
