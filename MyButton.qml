@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
 
-
 Button {
     id: root
     text: qsTr("更新")
