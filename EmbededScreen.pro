@@ -6,8 +6,10 @@ QT += quick widgets network serialport  charts
 
 SOURCES += \
         main.cpp \
+        serialmanager.cpp \
         serviceprovider.cpp \
         serviceproviderprivate.cpp \
+        testpointmodel.cpp \
         timeprovider.cpp \
         uiimageprovider.cpp
 
