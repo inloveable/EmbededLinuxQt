@@ -47,7 +47,7 @@ Item {
             collapsed: cl.collapsed
             index: 2
             title: "状态检查"
-            icon: "qrc:/images/icons/statusCheck.png"
+            icon: "qrc:/images/icons/status.png"
             onItemSelected:function(str) {
               contented.change(str)
             }

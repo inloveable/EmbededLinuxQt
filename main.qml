@@ -24,6 +24,14 @@ Window {
                 subDialog.source="qrc:/SystemSettings.qml"
                 mainScreen.z=-1;
                 subDialog.active=true;
+            }else if(type1===qsTr("数据传输")){
+                subDialog.source="qrc:/DataTransfer.qml"
+                mainScreen.z=-1;
+                subDialog.active=true;
+            }else if(type1===qsTr("土壤建模")){
+                subDialog.source="qrc:/SoilModeling.qml"
+                mainScreen.z=-1;
+                subDialog.active=true;
             }
         }
     }
@@ -36,9 +44,9 @@ Window {
 
         anchors.centerIn:parent
 
-        running:subDialog.status===Loader.Loading
+        running:(subDialog.status===Loader.Loading)
 
-        z:running?0:1
+        z:running?0:2
     }
 
     Loader{

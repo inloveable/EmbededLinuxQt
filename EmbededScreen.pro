@@ -15,6 +15,24 @@ RESOURCES += qml.qrc
 
 DESTDIR=./build
 
+
+unix: {
+    INCLUDEPATH += /usr/local/include
+    LIBS += -L/usr/local/lib -lglog
+}
+
+win32: {
+    INCLUDEPATH += $$PWD/lib/glog/win32/include
+    LIBS += -L$$PWD/lib/glog/win32/lib -lglog
+    LIBS += -L$$PWD/lib/glog/win32/bin -lglog
+}
+message("qmake arch:"$$QMAKE_TARGET.arch)
+contains(QMAKE_TARGET.arch, arm): {
+INCLUDEPATH += $$PWD/lib/glog/arm/include
+LIBS += -L$$PWD/lib/glog/arm/lib -lglog
+LIBS += -L$$PWD/lib/glog/arm/bin -lglog
+}
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =.
 

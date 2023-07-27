@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
+#include "qdir.h"
 #include "qqml.h"
 #include "qscopedpointer.h"
 
@@ -7,8 +8,15 @@
 
 #include<QThread>
 #include"serviceprovider.hpp"
+
+#include<glog/logging.h>
+#include <iostream>
+void initGlog(int argc,char** argv);
 int main(int argc, char *argv[])
 {
+    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+
+    initGlog(argc,argv);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
@@ -18,6 +26,7 @@ int main(int argc, char *argv[])
     QScopedPointer<ServiceProvider> privider{new ServiceProvider};
 
     qmlRegisterSingletonInstance("CppCore",1,0,"Service",privider.get());
+
 
 
 
@@ -32,4 +41,28 @@ int main(int argc, char *argv[])
     engine.load(url);
 
     return app.exec();
+}
+void SinalHandle(const char* message,std::size_t len)
+{
+    std::cerr<<"glog error:";
+    std::cerr.write(message,len);
+    std::cerr<<"\n";
+}
+
+void initGlog(int argc,char** argv){
+
+    QDir dir{"/usr"};
+    dir.mkdir("log");
+    google::InitGoogleLogging(argv[0]);
+
+    google::EnableLogCleaner(3);
+    google::SetLogFilenameExtension(".txt");
+
+
+    FLAGS_alsologtostderr = 1;
+    FLAGS_minloglevel = google::GLOG_INFO;
+    FLAGS_log_dir = "./log";
+    FLAGS_colorlogtostderr = true;//是否启用不同颜色显示(如果终端支持)
+    google::InstallFailureSignalHandler();
+    google::InstallFailureWriter(&SinalHandle);
 }

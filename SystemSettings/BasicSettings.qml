@@ -30,7 +30,7 @@ Rectangle {
             height: 43
             text: qsTr("中文")
             anchors.left: text1.right
-            anchors.top: parent.top
+            anchors.top: text1.top
             anchors.topMargin: 21
             anchors.leftMargin: 23
         }
@@ -43,7 +43,7 @@ Rectangle {
             text: qsTr("系统语言")
             anchors.left: parent.left
             anchors.top: parent.top
-            font.pixelSize: 15
+            font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             anchors.leftMargin: 18
@@ -72,7 +72,7 @@ Rectangle {
             id: text3
             width: 214
             height: 39
-            text: "2023年7月18日 12：29"
+            text: Service.getTime()
             anchors.left: text2.right
             anchors.top: text2.bottom
             font.pixelSize: 17

@@ -17,7 +17,6 @@ Rectangle {
         anchors.left: groupBox.left
         anchors.bottom: groupBox.top
 
-        anchors.bottomMargin: 83
     }
 
     ProgressBar {
@@ -34,7 +33,7 @@ Rectangle {
     GroupBox {
         id: groupBox
         width: parent.width/3*2
-        height: parent.height/3*2
+        height: parent.height/4*3
 
         anchors.centerIn: parent
         label:Rectangle{

@@ -15,8 +15,21 @@
         <file>images/icons/gps.png</file>
         <file>images/icons/return.png</file>
         <file>images/icons/realTime.png</file>
-        <file>images/icons/statusCheck.png</file>
         <file>SystemSettings/GPSPositioning.qml</file>
         <file>SystemSettings/RealTimeStatus.qml</file>
+        <file>DataTransfer.qml</file>
+        <file>images/icons/Back.png</file>
+        <file>images/icons/status.png</file>
+        <file>SoilModeling.qml</file>
+        <file>SoilModeling/ModelList.qml</file>
+        <file>images/icons/tip.png</file>
+        <file>SoilModeling/AdvancedTableView.qml</file>
+        <file>SoilModeling/ViewHeader.qml</file>
+        <file>SoilModeling/MyHeaderItem.qml</file>
+        <file>SoilModeling/AddNewModel.qml</file>
+        <file>SoilModeling/InputSnippet.qml</file>
+        <file>SoilModeling/AddPointDelegate.qml</file>
+        <file>images/icons/close.png</file>
+        <file>images/icons/check.png</file>
     </qresource>
 </RCC>

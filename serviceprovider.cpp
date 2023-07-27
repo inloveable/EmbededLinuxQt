@@ -3,6 +3,7 @@
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
 #include<QMessageBox>
+#include<QFontDatabase>
 ServiceProvider::ServiceProvider(QObject *parent)
     : QObject{parent}
 {
@@ -16,6 +17,12 @@ ServiceProvider::ServiceProvider(QObject *parent)
     d->moveToThread(serviceThread);
 
     QMetaObject::invokeMethod(d,"init");
+
+    QFontDatabase data;
+    QStringList fontFamilies = data.families();
+
+    qDebug()<<"fonts:"<<fontFamilies;
+
 }
 
 ServiceProvider::~ServiceProvider(){
@@ -23,7 +30,6 @@ ServiceProvider::~ServiceProvider(){
         this->d->deleteLater();
         this->serviceThread->deleteLater();
     });
-
     serviceThread->quit();
 }
 

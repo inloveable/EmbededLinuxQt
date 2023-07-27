@@ -5,20 +5,7 @@
 
 UIImageProvider::UIImageProvider():QQuickImageProvider{QQuickImageProvider::Pixmap}
 {
-    QFile file{"/root/background.jpg"};
-    file.open(QIODevice::ReadOnly);
 
-    auto sbytes=file.readAll();
-    qDebug()<<"sbytes size:"<<sbytes.size();
-
-
-    QImage image=QImage::fromData((const uchar*)sbytes.data(),sbytes.size(),"JPG");
-    file.close();
-    qDebug()<<"file error:"<<file.error();
-
-    qDebug()<<"image is not loaded:"<<image.isNull();
-
-    images["background"]=image;
 }
 
 
