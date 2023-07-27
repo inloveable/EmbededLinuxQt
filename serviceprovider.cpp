@@ -2,6 +2,10 @@
 #include "serviceprovider.hpp"
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
+#include"serialmanager.hpp"
+#include "testpointmodel.hpp"
+
+
 #include<QMessageBox>
 #include<QFontDatabase>
 ServiceProvider::ServiceProvider(QObject *parent)
@@ -23,6 +27,14 @@ ServiceProvider::ServiceProvider(QObject *parent)
 
     qDebug()<<"fonts:"<<fontFamilies;
 
+    SerialManager::printSerials();
+
+    tModel=new TestPointModel(this);
+
+}
+
+TestPointModel* ServiceProvider::getTestPointModel(){
+    return  tModel;
 }
 
 ServiceProvider::~ServiceProvider(){

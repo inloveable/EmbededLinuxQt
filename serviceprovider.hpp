@@ -6,6 +6,8 @@
 #include "qqml.h"
 #include <QObject>
 
+
+class TestPointModel;
 class ServiceProviderPrivate;
 class ServiceProvider : public QObject
 {
@@ -21,6 +23,9 @@ public:
     Q_INVOKABLE void messageBox(QString text);
 
 
+    Q_INVOKABLE TestPointModel* getTestPointModel();
+
+
 
 signals:
 
@@ -28,6 +33,8 @@ signals:
 private:
     QThread* serviceThread;
     ServiceProviderPrivate* d;
+
+    TestPointModel* tModel=nullptr;
 
 
 };

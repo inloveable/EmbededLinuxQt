@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-
+import QtQuick.VirtualKeyboard 2.15
+import QtQuick.VirtualKeyboard.Styles 2.15
+import QtQuick.VirtualKeyboard.Settings 2.15
 Item {
 
     id:root
@@ -8,16 +10,29 @@ Item {
     width:1024
     height:100
 
+
+    function disableEdit(){
+        waterRateEdit.focus=false
+        densityEdit.focus=false
+    }
+
     property int itemIndex:0;
     property real density:0.90;
     property real waterRate:0;
-    property int  amplitude:8000
-    property int  anglePhase;
+    property double  amplitude:8000
+    property double  anglePhase;
     property real temperature:26.3
     property bool gps:false
 
 
 
+
+    Component.onCompleted: {
+
+
+
+         VirtualKeyboardSettings.locale="Numeric"
+    }
 
     signal requireTest(int index);
 
@@ -43,7 +58,7 @@ Item {
     }
 
     //--------------------private
-    property color backgroundColor:"lightgreen"
+    property color backgroundColor:"gray"
     property bool isPairing:false
     function updateProperties(){
         console.log("updating data from backend")
@@ -88,9 +103,12 @@ Item {
                     font.pointSize: 15
                     font.bold: true
                     text:density
+                     inputMethodHints: Qt.ImhDigitsOnly
 
                     onEditingFinished: {
-                        density=densityEdit.text
+
+                        model.density=densityEdit.text
+                         focus=false
                     }
                 }
             }
@@ -117,11 +135,15 @@ Item {
                     font.bold: true
                     text:waterRate
 
+                    inputMethodHints: Qt.ImhDigitsOnly
+
                     onEditingFinished: {
-                        waterRate=waterRateEdit.text
+                        model.waterRate=waterRateEdit.text
+                        //model.setData(index,waterRateEdit.text,"waterRate")
+                        focus=false
+                        console.log(focus)
                     }
                 }
-
             }
         }
         Rectangle{

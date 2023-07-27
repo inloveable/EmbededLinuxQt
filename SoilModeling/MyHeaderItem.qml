@@ -4,7 +4,7 @@ Item {
 
 
      property int currentIndex
-     property int index;
+
 
     //一旦一个delegate有了required property.
     //则访问诸如index，modelData.model则需要将其也列为required
@@ -17,11 +17,14 @@ Item {
         anchors.fill: parent
         opacity: 0.5
 
+        border.width: 1
+        border.color: "black"
+
         Text{
             id:text1
             anchors.fill: parent
 
-            horizontalAlignment: Qt.AlignLeft
+            horizontalAlignment: Qt.AlignHCenter
             verticalAlignment:Qt.AlignVCenter
 
             font.pixelSize: 20

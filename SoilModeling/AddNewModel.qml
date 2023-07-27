@@ -5,6 +5,7 @@ import QtQuick.VirtualKeyboard.Styles 2.15
 import QtQuick.VirtualKeyboard.Settings 2.15
 
 import "../"
+import CppCore 1.0
 Item {
     SwipeView{
         id:view
@@ -16,6 +17,14 @@ Item {
             id:root
 
             color:"orange"
+            gradient: Gradient
+            {
+                GradientStop { position: 0.0; color: "#f46b45" }
+
+                GradientStop { position: 1.0; color: "#eea849" }
+                orientation: Qt.Horizontal
+
+            }
             Rectangle {
                 id: rectangle
 
@@ -99,117 +108,152 @@ Item {
         Rectangle{
             id:page2
 
-            color:"yellow"
 
-            Rectangle {
-                id: rectangle5
-                y: 29
+            FocusScope{
+                anchors.fill: parent
 
-                width: parent.width*0.9
-                height: parent.height*0.7
-                color: "transparent"
+                focus:true
 
+                Rectangle {
+                    id: rectangle5
+                    y: 29
 
-                border.width: 1
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 50
-                anchors.horizontalCenter: parent.horizontalCenter
-                border.color: "white"
-                radius:5
+                    width: parent.width*0.9
+                    height: parent.height*0.7
+                    color: "transparent"
 
 
+                    border.width: 1
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 50
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    border.color: "white"
+                    radius:5
 
 
-                ListView {
-                    id: listView
 
-                    anchors.fill: parent
-                    anchors.topMargin: 0
-                    header:ViewHeader{
-                           width:parent.width
-                           height:50
 
-                           itemInfo:ListModel{
+                    ListView {
+                        id: listView
 
-                               ListElement{
-                                   label:"测点"
-                               }
-                               ListElement{
-                                   label:"湿密度"
-                               }
-                               ListElement{
-                                   label:"含水率"
-                               }
-                               ListElement{
-                                   label:"幅值"
-                               }
-                               ListElement{
-                                   label:"相角"
-                               }
-                               ListElement{
-                                   label:"温度"
-                               }
-                               ListElement{
-                                   label:"GPS"
-                               }
-                           }
-                    }
-
-                    model: ListModel {
-                        ListElement {
-                            name: "Grey"
-                            colorCode: "grey"
-                        }
-
-                        ListElement {
-                            name: "Red"
-                            colorCode: "red"
-                        }
-
-                        ListElement {
-                            name: "Blue"
-                            colorCode: "blue"
-                        }
-
-                        ListElement {
-                            name: "Green"
-                            colorCode: "green"
-                        }
-                    }
-                    delegate: AddPointDelegate{
+                        anchors.fill: parent
+                        anchors.topMargin: 0
+                        header:ViewHeader{
                                width:parent.width
                                height:50
+
+                               widthRate:[1,3,3,2,2,2,2,2]
+
+                               itemInfo:ListModel{
+
+                                   ListElement{
+                                       label:"测点"
+                                   }
+                                   ListElement{
+                                       label:"湿密度"
+                                   }
+                                   ListElement{
+                                       label:"含水率"
+                                   }
+                                   ListElement{
+                                       label:"幅值"
+                                   }
+                                   ListElement{
+                                       label:"相角"
+                                   }
+                                   ListElement{
+                                       label:"温度"
+                                   }
+                                   ListElement{
+                                       label:"GPS"
+                                   }
+                                   ListElement{
+                                       label:""
+                                   }
+                               }
+                        }
+
+                        model: Service.getTestPointModel()
+
+                        delegate: AddPointDelegate{
+                            id:addPointDele
+                                   width:parent.width
+                                   height:50
+
+                                   itemIndex: model.index
+                                   density: model.density
+                                   waterRate: model.waterRate
+                                   amplitude:model.ampitude//error spelling
+                                   anglePhase: model.phaseAngle
+                                   temperature: model.temperature
+                                   gps:model.gps
+                                   isPairing:model.isPairing
+
+                        }
+                    }
+                }
+
+                property color buttonColor:"#6441a5"
+
+                MyButton {
+                    id: button
+                    width:100
+                    height:50
+                    text: qsTr("增加项")
+                    anchors.left: rectangle5.left
+                    anchors.bottom: rectangle5.top
+                    anchors.bottomMargin: 20
+                    anchors.leftMargin: 0
+
+                    originColor: "#6441a5"
+                    hoverColor: Qt.lighter(originColor,1.2)
+                }
+
+                MyButton {
+                    id: button1
+                    text: qsTr("删除项")
+                    width:100
+                    height:50
+                    anchors.left: button.right
+                    anchors.top: button.top
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 20
+
+                    originColor: "#6441a5"
+                    hoverColor: Qt.lighter(originColor,1.2)
+                }
+                MyButton {
+                    id: button3
+                    text: qsTr("编辑完成")
+                    width:150
+                    height:50
+                    anchors.left: button1.right
+                    anchors.top: button1.top
+                    anchors.topMargin: 0
+                    anchors.leftMargin: 20
+
+                    originColor: "#6441a5"
+                    hoverColor: Qt.lighter(originColor,1.2)
+
+                    onClicked:{
+                        button3.focus=true
                     }
                 }
             }
 
-            MyButton {
-                id: button
-                width:100
-                height:50
-                text: qsTr("增加项")
-                anchors.left: rectangle5.left
-                anchors.bottom: rectangle5.top
-                anchors.bottomMargin: 20
-                anchors.leftMargin: 0
+            color:"yellow"
 
-                originColor: "#72AA61"
-                hoverColor: Qt.lighter(originColor,1.2)
-            }
+            gradient: Gradient {
+                        GradientStop { position: 0.0; color: "#8e0e00" }
 
-            MyButton {
-                id: button1
-                text: qsTr("删除项")
-                width:100
-                height:50
-                anchors.left: button.right
-                anchors.top: button.top
-                anchors.topMargin: 0
-                anchors.leftMargin: 20
+                        GradientStop { position: 1.0; color: "#1f1c18" }
+                        //start: Qt.point(0, 0)
+                        //end: Qt.point(width, height)
+                        orientation: Qt.Horizontal
 
-                originColor: "#72AA61"
-                hoverColor: Qt.lighter(originColor,1.2)
-            }
+                    }
+
+
 
 
         }

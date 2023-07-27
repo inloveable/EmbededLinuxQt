@@ -8,6 +8,7 @@
 
 #include<QThread>
 #include"serviceprovider.hpp"
+#include "testpointmodel.hpp"
 
 #include<glog/logging.h>
 #include <iostream>
@@ -26,7 +27,7 @@ int main(int argc, char *argv[])
     QScopedPointer<ServiceProvider> privider{new ServiceProvider};
 
     qmlRegisterSingletonInstance("CppCore",1,0,"Service",privider.get());
-
+    qmlRegisterType<TestPointModel>("CppCore",1,0,"TestPointModel");
 
 
 

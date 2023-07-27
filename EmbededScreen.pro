@@ -1,4 +1,4 @@
-QT += quick widgets network
+QT += quick widgets network serialport virtualkeyboard
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -6,8 +6,10 @@ QT += quick widgets network
 
 SOURCES += \
         main.cpp \
+        serialmanager.cpp \
         serviceprovider.cpp \
         serviceproviderprivate.cpp \
+        testpointmodel.cpp \
         timeprovider.cpp \
         uiimageprovider.cpp
 
@@ -50,7 +52,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 QTPLUGIN+=qlinuxfb
 
 HEADERS += \
+    PublicDefs.hpp \
+    serialmanager.hpp \
     serviceprovider.hpp \
     serviceproviderprivate.hpp \
+    testpointmodel.hpp \
     timeprovider.hpp \
     uiimageprovider.h

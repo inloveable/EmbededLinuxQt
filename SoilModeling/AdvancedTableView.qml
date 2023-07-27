@@ -4,6 +4,9 @@ Rectangle {
 
     color:"transparent"
 
+    width:parent.width
+
+
     function getCurrentIndex(){
         return listView.currentIndex();
     }
@@ -22,10 +25,13 @@ Rectangle {
         header:ViewHeader{
             id:viewHeader
             width:parent.width
+            widthRate:[3,3,4,3,3]
             height:40
             Component.onCompleted: {
-                console.log("width:"+columnWidthF(0))
+                  console.log("width header:"+viewHeader.width+" view:"+listView.width)
             }
+
+
 
             itemInfo:ListModel{
                 ListElement{
@@ -88,19 +94,25 @@ Rectangle {
             contentItem:Row{
                 //anchors.fill: parent
                 id:row
-                property int leftWidth:row.width-row.width/4
+                property int leftWidth:row.width*0.75
+                //width/4*3/4--> 3/16
 
 
+
+                //
 
                 Rectangle{
                    height:parent.height
                    width:row.leftWidth/(row.children.length-1)
                    color:"transparent"
 
+
+
                    Text{
                        anchors.fill:parent
                        text:model.num
                        verticalAlignment: Qt.AlignVCenter
+                       horizontalAlignment: Qt.AlignHCenter
                    }
 
                 }
@@ -113,6 +125,7 @@ Rectangle {
                        anchors.fill:parent
                        text:model.name
                        verticalAlignment: Qt.AlignVCenter
+                        horizontalAlignment: Qt.AlignHCenter
                    }
                 }
                 Rectangle{
@@ -124,6 +137,7 @@ Rectangle {
                        anchors.fill:parent
                        text:model.time
                        verticalAlignment: Qt.AlignVCenter
+                        horizontalAlignment: Qt.AlignHCenter
                    }
                 }
                 Rectangle{
@@ -135,6 +149,7 @@ Rectangle {
                        anchors.fill:parent
                        text:model.rate
                        verticalAlignment: Qt.AlignVCenter
+                        horizontalAlignment: Qt.AlignHCenter
                    }
                 }
                 Rectangle{
@@ -146,6 +161,7 @@ Rectangle {
                        anchors.fill:parent
                        text:model.source
                        verticalAlignment: Qt.AlignVCenter
+                        horizontalAlignment: Qt.AlignHCenter
                    }
                 }
             }
@@ -171,7 +187,7 @@ Rectangle {
 
             swipe.right: Label {
                 id: deleteLabel
-                text: qsTr("Delete")
+                text: qsTr("删除")
                 color: "white"
                 verticalAlignment: Label.AlignVCenter
                 padding: 12
