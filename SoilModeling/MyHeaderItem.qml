@@ -5,7 +5,6 @@ Item {
 
      property int currentIndex
 
-
     //一旦一个delegate有了required property.
     //则访问诸如index，modelData.model则需要将其也列为required
 
