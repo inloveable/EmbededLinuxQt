@@ -6,6 +6,10 @@ Rectangle{
 
     property alias tipText:text2.text
     property alias inputText:textInput.text
+    property alias ptextFocus:textInput.focus
+    property alias actualText:textInput
+
+    signal textFocusChanged(bool focus);
 
     signal inputFinished();
 
@@ -25,6 +29,8 @@ Rectangle{
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             font.bold: true
+
+
         }
     }
 
@@ -51,6 +57,9 @@ Rectangle{
                 inputFinished()
             }
 
+            onFocusChanged: {
+                textFocusChanged(textInput.focus)
+            }
         }
     }
 

@@ -5,6 +5,7 @@
 #include"serialmanager.hpp"
 #include "testpointmodel.hpp"
 
+#include <boost/math/statistics/linear_regression.hpp>
 
 #include<QMessageBox>
 #include<QFontDatabase>
@@ -17,6 +18,7 @@ ServiceProvider::ServiceProvider(QObject *parent)
     serviceThread->start();
 
     connect(d,&ServiceProviderPrivate::sendTime,this,&ServiceProvider::sendTime);
+    //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
 
     d->moveToThread(serviceThread);
 
@@ -53,3 +55,21 @@ void ServiceProvider::messageBox(QString text){
     QMessageBox::information(nullptr,"提示",text);
 }
 
+TestPointModel* ServiceProvider::getTestPointModel_Ex(const QString& name){
+
+    //load model from database
+
+
+
+   // auto model=
+    return nullptr;
+}
+
+
+std::pair<double,double> ServiceProvider::linearRegression(
+                                const std::vector<double>& x,
+                                const std::vector<double>& y)
+{
+    using boost::math::statistics::simple_ordinary_least_squares;
+    return simple_ordinary_least_squares(x, y);
+}

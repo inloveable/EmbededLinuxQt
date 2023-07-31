@@ -2,6 +2,7 @@
 #pragma once
 
 
+#include "qabstractseries.h"
 #include <QAbstractListModel>
 #include <memory>
 
@@ -23,7 +24,8 @@ public:
         PhaseAngleRole,
         TemperatureRole,
         GpsRole,
-        IsPairingRole
+        IsPairingRole,
+        isSelectedRole
     };
     Q_ENUM(TestPointRoles)
 
@@ -31,6 +33,9 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     // Basic functionality:
+
+    void linearRegression();
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -44,6 +49,11 @@ public:
 
     bool add(const std::shared_ptr<TestPointInfo>& info);
     void remove(int index);
+
+
+    void getFitSequenence(QtCharts::QAbstractSeries* series);
+signals:
+    void linearRegressionReady();
 private:
 
     QMap<int,std::shared_ptr<TestPointInfo>> sequence;

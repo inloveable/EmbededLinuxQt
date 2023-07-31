@@ -4,8 +4,8 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.0
 
 Window {
-    width: 1920
-    height: 900
+    width: 1024
+    height: 600
 
     visible: true
     title: "ScreenUi"

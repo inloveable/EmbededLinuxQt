@@ -49,6 +49,7 @@ Button {
             verticalAlignment: Text.AlignVCenter
             font.pointSize: 18
             font.bold: true
+            color:"white"
         }
 
 }

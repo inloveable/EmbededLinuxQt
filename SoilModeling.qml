@@ -1,11 +1,20 @@
 import QtQuick 2.15
-
+import QtQuick.Controls 2.0
 Item {
     id:mainWindow
 
 //    height:parent.height
 
     signal returnSignal();
+
+
+    BusyIndicator{
+        id:indicator
+        width:200
+        height:200
+        anchors.centerIn: parent
+        //running:(contented.state===Loader.Loading)?true:false
+    }
 
     MyMenu {
         z:1
@@ -41,16 +50,6 @@ Item {
             }
         }
 
-       MyMenuItem {
-            color: "#18A0FA"
-            collapsed: cl.collapsed
-            index: 2
-            title: "模型优化"
-            icon: "qrc:/images/icons/status.png"
-            onItemSelected:function(str) {
-              contented.change(str)
-            }
-        }
 
        MyMenuItem {
             color: "#2b4f99"
@@ -82,6 +81,11 @@ Item {
             width:parent.width
             height:parent.height
 
+
+            onLoaded: {
+                indicator.running=false
+            }
+
             function change(str){
 
                 if(clicked===true){
@@ -96,6 +100,8 @@ Item {
                 if(str===qsTr("模型管理")){
                     contented.source="qrc:/SoilModeling/ModelList.qml";
                     contented.active=true;
+
+                    indicator.running=true
 
                 }else if(str===qsTr("新建模型")){
                     contented.source="qrc:/SoilModeling/AddNewModel.qml";

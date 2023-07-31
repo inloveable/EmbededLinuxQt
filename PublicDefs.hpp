@@ -39,6 +39,10 @@ public:
     bool    isPairing;
 
 
+    //for optimization
+    bool    isSelected=true;
+
+
 private:
 
 

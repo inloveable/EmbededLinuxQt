@@ -7,6 +7,7 @@
 #include<QFile>
 
 #include<QThread>
+#include "seriespointswaper.hpp"
 #include"serviceprovider.hpp"
 #include "testpointmodel.hpp"
 
@@ -15,7 +16,17 @@
 void initGlog(int argc,char** argv);
 int main(int argc, char *argv[])
 {
-    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+
+#ifdef __linux__
+    // Linux-specific code
+
+#elif _WIN32
+    // Windows-specific code
+     //qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+#else
+    // Unsupported platform
+#endif
+
 
     initGlog(argc,argv);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -28,6 +39,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterSingletonInstance("CppCore",1,0,"Service",privider.get());
     qmlRegisterType<TestPointModel>("CppCore",1,0,"TestPointModel");
+    qmlRegisterType<SeriesPointSwaper>("CppCore",1,0,"SeriesPointSwaper");
 
 
 

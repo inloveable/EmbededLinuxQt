@@ -1,8 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.VirtualKeyboard 2.15
-import QtQuick.VirtualKeyboard.Styles 2.15
-import QtQuick.VirtualKeyboard.Settings 2.15
+
 Item {
 
     id:root
@@ -16,6 +14,10 @@ Item {
         densityEdit.focus=false
     }
 
+    signal densityInputActive(bool active)
+    signal waterRateInputActive(bool active)
+
+
     property int itemIndex:0;
     property real density:0.90;
     property real waterRate:0;
@@ -25,14 +27,13 @@ Item {
     property bool gps:false
 
 
+    property alias densityFocus:densityEdit.focus
+    property alias waterRateFocus:waterRateEdit.focus
+
+    property alias densityText:densityEdit.text
+    property alias waterRateText:waterRateEdit.text
 
 
-    Component.onCompleted: {
-
-
-
-         VirtualKeyboardSettings.locale="Numeric"
-    }
 
     signal requireTest(int index);
 
@@ -43,7 +44,6 @@ Item {
     function testComplete(){
         isPairing=false;
         updateProperties()
-
     }
 
 
@@ -59,6 +59,7 @@ Item {
 
     //--------------------private
     property color backgroundColor:"gray"
+
     property bool isPairing:false
     function updateProperties(){
         console.log("updating data from backend")
@@ -68,9 +69,11 @@ Item {
         anchors.fill: parent
 
         Rectangle{
-            color:backgroundColor
+            //color:backgroundColor
+            opacity:0.5
             height:parent.height
             width:getWidth(0)
+
 
             Text{
                 anchors.fill: parent
@@ -82,7 +85,8 @@ Item {
             }
         }
         Rectangle{
-            color:backgroundColor
+            //color:backgroundColor
+            opacity:0.5
             height:parent.height
             width:getWidth(1)
 
@@ -107,14 +111,19 @@ Item {
 
                     onEditingFinished: {
 
-                        model.density=densityEdit.text
-                         focus=false
+                         model.density=densityEdit.text
+
+                    }
+                    onFocusChanged: {
+                        console.log("density focus:"+densityEdit.focus)
+                        densityInputActive(densityEdit.focus)
                     }
                 }
             }
         }
         Rectangle{
-            color:backgroundColor
+            //color:backgroundColor
+            opacity:0.5
             height:parent.height
             width:getWidth(2)
 
@@ -140,14 +149,16 @@ Item {
                     onEditingFinished: {
                         model.waterRate=waterRateEdit.text
                         //model.setData(index,waterRateEdit.text,"waterRate")
-                        focus=false
-                        console.log(focus)
+                    }
+                    onFocusChanged: {
+                        waterRateInputActive(waterRateEdit.focus)
                     }
                 }
             }
         }
         Rectangle{
-            color:backgroundColor
+            //color:backgroundColor
+            opacity:0.5
             height:parent.height
             width:getWidth(3)
 
@@ -161,7 +172,8 @@ Item {
             }
         }
         Rectangle{
-            color:backgroundColor
+            //color:backgroundColor
+            opacity:0.5
             height:parent.height
             width:getWidth(4)
 
@@ -175,7 +187,8 @@ Item {
             }
         }
         Rectangle{
-            color:backgroundColor
+            //color:backgroundColor
+            opacity:0.5
             height:parent.height
             width:getWidth(5)
 
@@ -189,7 +202,8 @@ Item {
             }
         }
         Rectangle{
-            color:backgroundColor
+            //color:backgroundColor
+            opacity:0.5
             height:parent.height
             width:getWidth(6)
 

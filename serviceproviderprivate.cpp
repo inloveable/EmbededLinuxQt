@@ -5,8 +5,10 @@
 #include "qnetworkaccessmanager.h"
 #include "qnetworkreply.h"
 #include "qnetworkrequest.h"
+#include "testpointmodel.hpp"
 #include<QNetworkAccessManager>
 #include<QFile>
+#include <mutex>
 
 
 
@@ -71,5 +73,21 @@ void ServiceProviderPrivate::init(){
 
     //QNetworkRequest request;
 
+}
+
+TestPointModel* ServiceProviderPrivate::getPreparedModel(){
+    std::lock_guard<std::mutex> lock{modelMutex};
+    return this->prepared;
+}
+
+void ServiceProviderPrivate::generateModel(QString name){
+
+    TestPointModel* model=new TestPointModel;
+
+    //load from database;
+
+    std::lock_guard<std::mutex> lock{modelMutex};
+    this->prepared=model;
+    emit modelReady();
 }
 

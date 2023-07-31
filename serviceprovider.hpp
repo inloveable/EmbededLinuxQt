@@ -6,7 +6,7 @@
 #include "qqml.h"
 #include <QObject>
 
-
+#include<complex>
 class TestPointModel;
 class ServiceProviderPrivate;
 class ServiceProvider : public QObject
@@ -25,6 +25,9 @@ public:
 
     Q_INVOKABLE TestPointModel* getTestPointModel();
 
+    Q_INVOKABLE TestPointModel* getTestPointModel_Ex(const QString& name);
+
+
 
 
 signals:
@@ -36,6 +39,12 @@ private:
 
     TestPointModel* tModel=nullptr;
 
+    void onModelReady();
+    QMap<QString,TestPointModel*> modelMap;
+
+    static std::pair<double,double> linearRegression(
+        const std::vector<double>& x,
+        const std::vector<double>& y);
 
 };
 

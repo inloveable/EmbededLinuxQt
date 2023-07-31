@@ -31,5 +31,9 @@
         <file>SoilModeling/AddPointDelegate.qml</file>
         <file>images/icons/close.png</file>
         <file>images/icons/check.png</file>
+        <file>SoilModeling/TestTwoPoint.qml</file>
+        <file>SoilModeling/ModelOptimization.qml</file>
+        <file>SoilModeling/AdvancedChartView.qml</file>
+        <file>keyboard/content/Screen01.qml</file>
     </qresource>
 </RCC>

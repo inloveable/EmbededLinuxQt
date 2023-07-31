@@ -1,12 +1,15 @@
-QT += quick widgets network serialport virtualkeyboard
+QT += quick widgets network serialport  charts
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+include(./DataManager/DataManager.pri)
+
 SOURCES += \
         main.cpp \
         serialmanager.cpp \
+        seriespointswaper.cpp \
         serviceprovider.cpp \
         serviceproviderprivate.cpp \
         testpointmodel.cpp \
@@ -25,6 +28,7 @@ unix: {
 
 win32: {
     INCLUDEPATH += $$PWD/lib/glog/win32/include
+    INCLUDEPATH += D:/LIBARAY/boost_1_82_0
     LIBS += -L$$PWD/lib/glog/win32/lib -lglog
     LIBS += -L$$PWD/lib/glog/win32/bin -lglog
 }
@@ -54,6 +58,7 @@ QTPLUGIN+=qlinuxfb
 HEADERS += \
     PublicDefs.hpp \
     serialmanager.hpp \
+    seriespointswaper.hpp \
     serviceprovider.hpp \
     serviceproviderprivate.hpp \
     testpointmodel.hpp \

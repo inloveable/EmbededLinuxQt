@@ -125,6 +125,8 @@ QVariant TestPointModel::data(const QModelIndex &index, int role) const
         return ptr->gps;
     case IsPairingRole:
         return ptr->isPairing;
+    case isSelectedRole:
+        return ptr->isSelected;
     default:
         return QVariant();
     }
@@ -142,6 +144,7 @@ QHash<int, QByteArray> TestPointModel::roleNames() const{
     roles[TemperatureRole] = "temperature";
     roles[GpsRole] = "gps";
     roles[IsPairingRole] = "isPairing";
+    roles[isSelectedRole]="isSelected";
     return roles;
 }
 

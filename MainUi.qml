@@ -95,7 +95,6 @@ Rectangle {
                         target: rect
                         x:root.width/2-width/2
                         rotation:0
-
                     }
                 },
                 State{
