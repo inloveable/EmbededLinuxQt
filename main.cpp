@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
 
 
 
-
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

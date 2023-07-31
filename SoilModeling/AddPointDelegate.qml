@@ -1,8 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.VirtualKeyboard 2.15
-import QtQuick.VirtualKeyboard.Styles 2.15
-import QtQuick.VirtualKeyboard.Settings 2.15
+
 Item {
 
     id:root
@@ -37,13 +35,6 @@ Item {
 
 
 
-    Component.onCompleted: {
-
-
-
-         VirtualKeyboardSettings.locale="Numeric"
-    }
-
     signal requireTest(int index);
 
 
@@ -68,6 +59,7 @@ Item {
 
     //--------------------private
     property color backgroundColor:"gray"
+
     property bool isPairing:false
     function updateProperties(){
         console.log("updating data from backend")

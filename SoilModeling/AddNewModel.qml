@@ -451,7 +451,7 @@ Item {
                 }
             }
 
-            color:"yellow"
+
 
             gradient: Gradient {
                         GradientStop { position: 0.0; color: "#8e0e00" }
