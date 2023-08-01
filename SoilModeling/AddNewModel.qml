@@ -463,19 +463,6 @@ Item {
 
                     }
 
-
-
-
-
-            gradient: Gradient {
-                        GradientStop { position: 0.0; color: "#8e0e00" }
-
-                        GradientStop { position: 1.0; color: "#1f1c18" }
-                        //start: Qt.point(0, 0)
-                        //end: Qt.point(width, height)
-                        orientation: Qt.Horizontal
-
-                    }
         }
 
 
