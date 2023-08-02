@@ -1,0 +1,11 @@
+prefix=D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/lib/glog/win32
+exec_prefix=D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/lib/glog/win32/bin
+libdir=D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/lib/glog/win32/lib
+includedir=D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/lib/glog/win32/include
+
+Name: libglog
+Description: Google Log (glog) C++ logging framework
+Version: 0.7.0
+Libs: -L${libdir} -lglog
+Libs.private: -ldbghelp
+Cflags: -I${includedir}

@@ -1,0 +1,39 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>MainUi.qml</file>
+        <file>MyMenu.qml</file>
+        <file>MyMenuItem.qml</file>
+        <file>SystemSettings.qml</file>
+        <file>SystemSettings/BasicSettings.qml</file>
+        <file>images/pietro-jeng-n6B49lTx7NM-unsplash.jpg</file>
+        <file>MyButton.qml</file>
+        <file>SystemSettings/BasicInfo.qml</file>
+        <file>SystemSettings/SelfCheck.qml</file>
+        <file>images/icons/refresh.png</file>
+        <file>images/icons/settings.png</file>
+        <file>images/icons/gps.png</file>
+        <file>images/icons/return.png</file>
+        <file>images/icons/realTime.png</file>
+        <file>SystemSettings/GPSPositioning.qml</file>
+        <file>SystemSettings/RealTimeStatus.qml</file>
+        <file>DataTransfer.qml</file>
+        <file>images/icons/Back.png</file>
+        <file>images/icons/status.png</file>
+        <file>SoilModeling.qml</file>
+        <file>SoilModeling/ModelList.qml</file>
+        <file>images/icons/tip.png</file>
+        <file>SoilModeling/AdvancedTableView.qml</file>
+        <file>SoilModeling/ViewHeader.qml</file>
+        <file>SoilModeling/MyHeaderItem.qml</file>
+        <file>SoilModeling/AddNewModel.qml</file>
+        <file>SoilModeling/InputSnippet.qml</file>
+        <file>SoilModeling/AddPointDelegate.qml</file>
+        <file>images/icons/close.png</file>
+        <file>images/icons/check.png</file>
+        <file>SoilModeling/TestTwoPoint.qml</file>
+        <file>SoilModeling/ModelOptimization.qml</file>
+        <file>SoilModeling/AdvancedChartView.qml</file>
+        <file>keyboard/content/Screen01.qml</file>
+    </qresource>
+</RCC>

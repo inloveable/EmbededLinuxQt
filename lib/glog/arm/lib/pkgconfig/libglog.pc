@@ -1,0 +1,11 @@
+prefix=/home/h/privateDev/embeded/qtquicktest/lib/glog/arm
+exec_prefix=/home/h/privateDev/embeded/qtquicktest/lib/glog/arm/bin
+libdir=/home/h/privateDev/embeded/qtquicktest/lib/glog/arm/lib
+includedir=/home/h/privateDev/embeded/qtquicktest/lib/glog/arm/include
+
+Name: libglog
+Description: Google Log (glog) C++ logging framework
+Version: 0.7.0
+Libs: -L${libdir} -lglog
+Libs.private: -lpthread
+Cflags: -I${includedir}
