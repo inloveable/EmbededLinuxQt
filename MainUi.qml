@@ -184,10 +184,12 @@ Rectangle {
             color:"#287362"
             expandText:"返回"
             borderColor: "#288B62"
-
             expandXoffset:0
-
         }
     }
+
+
+
+
 
 }

@@ -3,8 +3,6 @@ import QtQuick.Controls 2.15
 
 Rectangle {
     id: rectangle1
-     width:720
-     height:300
 
      Rectangle {
          id: rectangle

@@ -32,6 +32,10 @@ Window {
                 subDialog.source="qrc:/SoilModeling.qml"
                 mainScreen.z=-1;
                 subDialog.active=true;
+            }else if(type1===qsTr("工程测试")){
+                subDialog.source="qrc:/SoilTest.qml"
+                mainScreen.z=-1;
+                subDialog.active=true;
             }
         }
     }
@@ -62,7 +66,7 @@ Window {
                   subDialog.active=false;
                   mainScreen.z=1;
               });
-           }
+        }
     }
 
 }

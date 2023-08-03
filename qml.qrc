@@ -35,5 +35,13 @@
         <file>SoilModeling/ModelOptimization.qml</file>
         <file>SoilModeling/AdvancedChartView.qml</file>
         <file>keyboard/content/Screen01.qml</file>
+        <file>SoilTest.qml</file>
+        <file>ExpbandableNavigator.qml</file>
+        <file>images/icons/soiltesticons/delete.png</file>
+        <file>images/icons/soiltesticons/moreActions.png</file>
+        <file>images/icons/soiltesticons/open.png</file>
+        <file>images/icons/soiltesticons/return.png</file>
+        <file>images/icons/soiltesticons/add.png</file>
+        <file>SoilTest/SoilTestPoint.qml</file>
     </qresource>
 </RCC>
