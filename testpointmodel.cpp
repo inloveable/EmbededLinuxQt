@@ -186,6 +186,7 @@ QHash<int, QByteArray> TestPointModel::roleNames() const{
 void TestPointModel::setChecked(QPointF point,bool val,int type){
 
     qDebug()<<"set chekced:"<<point;
+
     QPointF& clickedPoint = point;
 
     qreal distance(INT_MAX);
@@ -228,7 +229,8 @@ void TestPointModel::updateSeries(QtCharts::QXYSeries* from ,
     QList<QPointF> selected;
     QList<QPointF> notSeleted;
 
-    notSeleted.push_back(QPointF{10000,0});//dummy point to avoid crush when click on chart with qt5.15 msvc
+    notSeleted.push_back(QPointF{10000,0});//dummy point to avoid crush when click on chart with qt5.15
+    selected.push_back(QPointF{10000,0});
 
     qreal xmin=0;
     qreal xmax=0;

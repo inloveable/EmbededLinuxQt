@@ -104,11 +104,9 @@ Item {
                 onClicked:function(point) {
                     let type=state==="wetDensity"?0:1
                     listView.model.setChecked(point,true,type);
+                    line.update()
                 }
-                XYPoint{
-                    x:10000
-                    y:0
-                }
+
             }
 
             ScatterSeries {
@@ -118,13 +116,10 @@ Item {
                 axisY:yAxis
                 pointsVisible: true
                 markerSize: 20
-                onClicked:function(point) {
-
-                    //swapper.swapPoint(point.x,point.y,line.series(2),line.series(1))
-                    //line.update()
-                    //line.selectPoint(point)
+                onClicked:function(point) {           
                     let type=state==="wetDensity"?0:1
                     listView.model.setChecked(point,false,type);
+                    line.update()
                 }
 
                 markerShape: ScatterSeries.MarkerShapeCircle
@@ -133,10 +128,7 @@ Item {
                 pointLabelsVisible: true
 
 
-                XYPoint{//点击最后一个点会产生崩溃，人工构造一个无限远的点，注意在计算时移除
-                    x:10000
-                    y:0
-                }
+
             }
 
         }
