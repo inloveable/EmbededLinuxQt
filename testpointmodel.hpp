@@ -6,7 +6,7 @@
 #include <QAbstractListModel>
 #include <memory>
 
-
+#include<QPointF>
 namespace QtCharts{
 class QXYSeries;
 }
