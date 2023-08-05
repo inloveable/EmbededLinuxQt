@@ -147,7 +147,11 @@ QVariant TestPointModel::data(const QModelIndex &index, int role) const
     case IndexRole:
         return ptr->index;
     case DensityRole:
-        return ptr->density;
+    {
+        auto t=ptr->density;
+        QString result = QString::number(t, 'f', 4);
+        return result;
+    }
     case WaterRateRole:
         return ptr->waterRate;
     case AmpitudeRole:
@@ -155,7 +159,12 @@ QVariant TestPointModel::data(const QModelIndex &index, int role) const
     case PhaseAngleRole:
         return ptr->phaseAngle;
     case TemperatureRole:
-        return ptr->temperature;
+    {
+        auto t=ptr->temperature;
+        QString result = QString::number(t, 'f', 4);
+        return result;
+    }
+
     case GpsRole:
         return ptr->gps;
     case IsPairingRole:

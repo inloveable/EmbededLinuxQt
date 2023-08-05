@@ -107,7 +107,7 @@ Item {
                     font.pointSize: 15
                     font.bold: true
                     text:density
-                     inputMethodHints: Qt.ImhDigitsOnly
+                    inputMethodHints: Qt.ImhDigitsOnly
 
                     onEditingFinished: {
 
@@ -118,6 +118,7 @@ Item {
                         console.log("density focus:"+densityEdit.focus)
                         densityInputActive(densityEdit.focus)
                     }
+                    //elide:Text.ElideRight
                 }
             }
         }
@@ -199,6 +200,7 @@ Item {
                 font.pointSize: 15
                 font.bold: true
                 text:temperature
+                elide:Text.ElideRight
             }
         }
         Rectangle{

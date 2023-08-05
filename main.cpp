@@ -74,14 +74,14 @@ void initGlog(int argc,char** argv){
     dir.mkdir("log");
     google::InitGoogleLogging(argv[0]);
 
-    google::EnableLogCleaner(3);
-    google::SetLogFilenameExtension(".txt");
+    //google::EnableLogCleaner(3);
+    //google::SetLogFilenameExtension(".txt");
 
 
     FLAGS_alsologtostderr = 1;
     FLAGS_minloglevel = google::GLOG_INFO;
     FLAGS_log_dir = "./log";
     FLAGS_colorlogtostderr = true;//是否启用不同颜色显示(如果终端支持)
-    google::InstallFailureSignalHandler();
-    google::InstallFailureWriter(&SinalHandle);
+    //google::InstallFailureSignalHandler();
+    //google::InstallFailureWriter(&SinalHandle);
 }
