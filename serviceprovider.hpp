@@ -28,7 +28,10 @@ public:
     Q_INVOKABLE TestPointModel* getTestPointModel_Ex(const QString& name);
 
 
-
+    static std::tuple<double,double,double> linearRegression(
+        const std::vector<double>& x,
+        const std::vector<double>& y);
+    static qreal                            absDistance(QPointF& p,QPointF p1);
 
 signals:
 
@@ -42,9 +45,7 @@ private:
     void onModelReady();
     QMap<QString,TestPointModel*> modelMap;
 
-    static std::pair<double,double> linearRegression(
-        const std::vector<double>& x,
-        const std::vector<double>& y);
+
 
 };
 

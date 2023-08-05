@@ -10,6 +10,7 @@
 #include "seriespointswaper.hpp"
 #include"serviceprovider.hpp"
 #include "testpointmodel.hpp"
+#include"DataManager/datamanager.hpp"
 
 #include<glog/logging.h>
 #include <iostream>
@@ -35,11 +36,14 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
 
-    QScopedPointer<ServiceProvider> privider{new ServiceProvider};
 
-    qmlRegisterSingletonInstance("CppCore",1,0,"Service",privider.get());
     qmlRegisterType<TestPointModel>("CppCore",1,0,"TestPointModel");
     qmlRegisterType<SeriesPointSwaper>("CppCore",1,0,"SeriesPointSwaper");
+    QScopedPointer<ServiceProvider> privider{new ServiceProvider};
+    DataManager::getInstance();//init datamanager
+
+    qmlRegisterSingletonInstance("CppCore",1,0,"Service",privider.get());
+
 
 
 
@@ -52,8 +56,10 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     //engine.addImageProvider(QLatin1String("Uis"), new UIImageProvider);
     engine.load(url);
+    auto rec=app.exec();
 
-    return app.exec();
+    DataManager::getInstance().Destory();
+    return rec;
 }
 void SinalHandle(const char* message,std::size_t len)
 {

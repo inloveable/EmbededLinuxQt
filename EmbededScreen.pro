@@ -1,12 +1,15 @@
-QT += quick widgets network serialport  charts
+QT += quick widgets network serialport  charts sql
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-include(./DataManager/DataManager.pri)
+CONFIG+=c++17
+
+INCLUDEPATH+=./DataManager#subdirs
 
 SOURCES += \
+        DataManager/datamanager.cpp \
         main.cpp \
         serialmanager.cpp \
         seriespointswaper.cpp \
@@ -60,6 +63,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 QTPLUGIN+=qlinuxfb
 
 HEADERS += \
+    DataManager/datamanager.hpp \
     PublicDefs.hpp \
     serialmanager.hpp \
     seriespointswaper.hpp \

@@ -12,12 +12,13 @@ SeriesPointSwaper::SeriesPointSwaper(QObject *parent)
 }
 
 
-void SeriesPointSwaper::swapPoint(double x,double y,QtCharts::QXYSeries* from,QtCharts::QXYSeries* to){
+void SeriesPointSwaper::swapPoint(float x,float y,QtCharts::QXYSeries* from,QtCharts::QXYSeries* to){
 
+    qDebug()<<"x:"<<x<<" y:"<<y;
     QPointF clickedPoint = QPointF{x,y};
     QPointF closest(INT_MAX, INT_MAX);
     qreal distance(INT_MAX);
-     auto points = from->points();
+    auto points = from->points();
 
     auto toPoints=to->points();
 

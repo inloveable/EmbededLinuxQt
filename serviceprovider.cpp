@@ -58,18 +58,15 @@ void ServiceProvider::messageBox(QString text){
 TestPointModel* ServiceProvider::getTestPointModel_Ex(const QString& name){
 
     //load model from database
-
-
-
    // auto model=
     return nullptr;
 }
 
 
-std::pair<double,double> ServiceProvider::linearRegression(
+std::tuple<double,double,double> ServiceProvider::linearRegression(
                                 const std::vector<double>& x,
                                 const std::vector<double>& y)
 {
-    using boost::math::statistics::simple_ordinary_least_squares;
-    return simple_ordinary_least_squares(x, y);
+    using boost::math::statistics::simple_ordinary_least_squares_with_R_squared;
+    return simple_ordinary_least_squares_with_R_squared(x, y);
 }

@@ -2,12 +2,14 @@
 #pragma once
 
 
-#include "qabstractseries.h"
+
 #include <QAbstractListModel>
 #include <memory>
 
 
-
+namespace QtCharts{
+class QXYSeries;
+}
 class TestPointInfo;
 class TestPointModel : public QAbstractListModel
 {
@@ -34,7 +36,9 @@ public:
 
     // Basic functionality:
 
-    void linearRegression();
+
+
+
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
@@ -51,15 +55,35 @@ public:
     void remove(int index);
 
 
-    void getFitSequenence(QtCharts::QAbstractSeries* series);
+    Q_INVOKABLE void setChecked(int index,bool);
+    //helpers://type 0: density 1:waterRate
+
+    //初步构思，通过check作为统一步骤，设置uncheck来控制series
+    //或许可以缓存一下点？
+    Q_INVOKABLE void findPointAndCheck(QPointF point,bool check,int type);
+
+    //type 0: density 1:waterRate
+    Q_INVOKABLE void getFitSequence(QtCharts::QXYSeries* series,int type);
+    Q_INVOKABLE void updateSeries(QtCharts::QXYSeries* actual,
+                      QtCharts::QXYSeries* mask,int type);
+
+    Q_INVOKABLE void swapSeriesPoint(QtCharts::QXYSeries* from,QtCharts::QXYSeries* to,int pointIndex,int type);
 signals:
     void linearRegressionReady();
+    void updateAxis(qreal xmin,qreal xmax,qreal ymin,qreal ymax);
+    void requireSeiresSwap(int pointIndex,bool reverse=false);
+
 private:
 
     QMap<int,std::shared_ptr<TestPointInfo>> sequence;
 
     int getAvailableIndex();
     void resetIndex();
+
+    void fillSeries(QtCharts::QXYSeries* series,QList<QPointF>& points);
+
+    qreal waterRateR_Square=0;
+    qreal densityR_Squrare=0;
 
 
 };

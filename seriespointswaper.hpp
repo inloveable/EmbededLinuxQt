@@ -14,7 +14,7 @@ class SeriesPointSwaper : public QObject
         public:
    explicit SeriesPointSwaper(QObject *parent = nullptr);
 
-  Q_INVOKABLE     void swapPoint(double x,double y,QtCharts::QXYSeries* from,QtCharts::QXYSeries* to);
+   Q_INVOKABLE void swapPoint(float x,float y,QtCharts::QXYSeries* from,QtCharts::QXYSeries* to);
 
 signals:
 

@@ -75,36 +75,6 @@ ChartView {
         pointLabelsVisible: true
 
 
-        XYPoint {
-            x: 0
-            y: 2
-        }
-
-        XYPoint {
-            x: 1
-            y: 1.2
-        }
-
-        XYPoint {
-            x: 0.5
-            y: 0.5
-        }
-
-
-        XYPoint {
-            x: 2
-            y: 3.3
-        }
-
-        XYPoint {
-            x: 5
-            y: 2.1
-        }
-        XYPoint {
-            x: 6
-            y: 3.7
-        }
-
         XYPoint{//点击最后一个点会产生崩溃，人工构造一个无限远的点，注意在计算时移除
             x:10000
             y:0
