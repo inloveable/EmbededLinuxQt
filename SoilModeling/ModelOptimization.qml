@@ -15,7 +15,7 @@ Item {
         //to init ChartView
         let type=state==="wetDensity"?0:1
         listView.model.updateSeries(testPointSeries,selectedSeries,type)
-        console.log("size:"+testPointSeries.count)
+
     }
 
     Connections{
@@ -102,7 +102,8 @@ Item {
                 markerShape: ScatterSeries.MarkerShapeCircle
 
                 onClicked:function(point) {
-
+                    let type=state==="wetDensity"?0:1
+                    listView.model.setChecked(point,true,type);
                 }
                 XYPoint{
                     x:10000
@@ -122,6 +123,8 @@ Item {
                     //swapper.swapPoint(point.x,point.y,line.series(2),line.series(1))
                     //line.update()
                     //line.selectPoint(point)
+                    let type=state==="wetDensity"?0:1
+                    listView.model.setChecked(point,false,type);
                 }
 
                 markerShape: ScatterSeries.MarkerShapeCircle
@@ -271,6 +274,8 @@ Item {
                 }else if(item1.state==="waterRate"){
                     item1.state="wetDensity"
                 }
+                let type=item1.state==="wetDensity"?0:1
+                listView.model.updateSeries(testPointSeries,selectedSeries,type)
             }
             originColor:"#0C5917"
             hoverColor:Qt.lighter(originColor,1.5)

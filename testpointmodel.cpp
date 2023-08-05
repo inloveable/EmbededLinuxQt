@@ -17,12 +17,12 @@ TestPointModel::TestPointModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     auto index=getAvailableIndex();
-    sequence[index]=TestPointInfo::generate(index,5.2,22,8000,72,36.3,false);
+    sequence[index]=TestPointInfo::generate(index,5.2,22,8000,32,36.3,false);
 
     index=getAvailableIndex();
-    sequence[index]=TestPointInfo::generate(index,6.2,48,7000,72,35.3,true);
+    sequence[index]=TestPointInfo::generate(index,6.2,48,7000,12,35.3,true);
     index=getAvailableIndex();
-    sequence[index]=TestPointInfo::generate(index,6.2,92,9000,72,35.3,true);
+    sequence[index]=TestPointInfo::generate(index,6.2,92,9000,73,48.3,true);
 
 
 }
@@ -74,6 +74,7 @@ bool TestPointModel::add(const std::shared_ptr<TestPointInfo>& inf){
 bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int role){
 
 
+
     if (role == WaterRateRole) {
         // Set data in model here. It can also be a good idea to check whether
         // the new value actually differs from the current value
@@ -88,8 +89,6 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
             }
             sequence[index.row()]->isSelected=data.toBool();
             emit dataChanged(index, index, { Qt::EditRole, isSelectedRole });
-
-
             //switch direction
             bool isReverse=sequence[index.row()]->isSelected?true:false;
 
@@ -184,17 +183,43 @@ QHash<int, QByteArray> TestPointModel::roleNames() const{
     return roles;
 }
 
-void TestPointModel::setChecked(int index,bool val){
-    auto iter=sequence.find(index);
-    if(iter==sequence.end()){
-        LOG(INFO)<<"try checking invaild index:"<<index;
-        return;
+void TestPointModel::setChecked(QPointF point,bool val,int type){
+
+    qDebug()<<"set chekced:"<<point;
+    QPointF& clickedPoint = point;
+
+    qreal distance(INT_MAX);
+
+    auto closeIter=sequence.end();
+
+    float x;
+    float y;
+    for (auto i=sequence.begin();i!=sequence.end();++i) {
+
+        auto pointer=i.value();
+        if(type==0){
+                x=pointer->phaseAngle;
+                y=pointer->density;
+        }else if(type==1){
+                x=pointer->ampitude;
+                y=pointer->waterRate;
+        }
+        const auto currentPoint=QPointF{x,y};
+        qreal currentDistance = qSqrt((currentPoint.x() - clickedPoint.x())
+                                          * (currentPoint.x() - clickedPoint.x())
+                                      + (currentPoint.y() - clickedPoint.y())
+                                            * (currentPoint.y() - clickedPoint.y()));
+        if (currentDistance < distance) {
+                distance = currentDistance;
+                closeIter=i;
+        }
     }
 
-    beginResetModel();
-    sequence[index]->isSelected=val;
+    //closeIter.value()->isSelected=val;
+    auto modelIndex=this->index(closeIter.key(),0);
 
-    endResetModel();
+    this->setData(modelIndex,QVariant{val},isSelectedRole);
+
 }
 
 
@@ -202,6 +227,8 @@ void TestPointModel::updateSeries(QtCharts::QXYSeries* from ,
                                   QtCharts::QXYSeries* mask,int type){
     QList<QPointF> selected;
     QList<QPointF> notSeleted;
+
+    notSeleted.push_back(QPointF{10000,0});//dummy point to avoid crush when click on chart with qt5.15 msvc
 
     qreal xmin=0;
     qreal xmax=0;

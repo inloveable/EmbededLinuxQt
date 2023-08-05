@@ -55,8 +55,9 @@ public:
     void remove(int index);
 
 
-    Q_INVOKABLE void setChecked(int index,bool);
-    //helpers://type 0: density 1:waterRate
+    //chart click api
+    Q_INVOKABLE void setChecked(QPointF point, bool,int type);
+
 
     //初步构思，通过check作为统一步骤，设置uncheck来控制series
     //或许可以缓存一下点？
