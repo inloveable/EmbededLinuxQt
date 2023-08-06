@@ -157,14 +157,18 @@ QVariant TestPointModel::data(const QModelIndex &index, int role) const
     case AmpitudeRole:
         return ptr->ampitude;
     case PhaseAngleRole:
-        return ptr->phaseAngle;
+        {
+                auto t=ptr->phaseAngle;
+                QString result = QString::number(t, 'f', 4);
+                return result;
+        }
+
     case TemperatureRole:
     {
         auto t=ptr->temperature;
         QString result = QString::number(t, 'f', 4);
         return result;
     }
-
     case GpsRole:
         return ptr->gps;
     case IsPairingRole:
@@ -225,7 +229,6 @@ void TestPointModel::setChecked(QPointF point,bool val,int type){
         }
     }
 
-    //closeIter.value()->isSelected=val;
     auto modelIndex=this->index(closeIter.key(),0);
 
     this->setData(modelIndex,QVariant{val},isSelectedRole);
@@ -326,6 +329,11 @@ void TestPointModel::getFitSequence(QtCharts::QXYSeries* series,int type){
         this->waterRateR_Square=r2;
     }
 
+    //a=sqrt(r2)
+
+   // currentFitA=c1;
+    //currentFitB=c0;
+    //currentFitR=std::sqrt(r2);
 
     //generate chart line
     QList<QPointF> fitSequence;

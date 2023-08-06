@@ -22,15 +22,24 @@ public:
     Q_INVOKABLE void generateModel(QString name);
     TestPointModel*  getPreparedModel();
 
+
+    Q_INVOKABLE void requestProjectInfo();
+
 signals:
 
     void sendTime(QString,bool);
     void modelReady();
+
+
+    void sendProjectInfo(QList<QObject*> list);
+    Q_INVOKABLE void projectInfoNeedsUpdate();
 private:
     QNetworkAccessManager* manager;
 
     std::mutex modelMutex;
     TestPointModel* prepared=nullptr;
+
+    QList<QObject*> projectInfoBuffer;
 
 
 };

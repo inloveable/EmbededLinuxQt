@@ -86,6 +86,10 @@ private:
     qreal waterRateR_Square=0;
     qreal densityR_Squrare=0;
 
+    double currentFitA;
+    double currentFitB;
+    double currentFitR;
+
 
 };
 

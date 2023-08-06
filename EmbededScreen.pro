@@ -63,6 +63,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 QTPLUGIN+=qlinuxfb
 
 HEADERS += \
+    DataManager/ProjectInfoObject.hpp \
     DataManager/datamanager.hpp \
     PublicDefs.hpp \
     serialmanager.hpp \

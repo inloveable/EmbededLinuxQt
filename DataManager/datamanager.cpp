@@ -1,5 +1,6 @@
 
 #include "datamanager.hpp"
+#include "ProjectInfoObject.hpp"
 #include "qdebug.h"
 #include <mutex>
 #include<QSqlDatabase>
@@ -13,7 +14,7 @@
 DataManager::DataManager(QObject *parent)
     : QObject{parent}
 {
-    initializeDatabase();
+
 }
 
 void DataManager::initializeDatabase(){
@@ -49,20 +50,16 @@ void DataManager::initializeDatabase(){
                     "modelName TEXT,"
                     "createTime TEXT,"
                     "GPS TEXT,"
-                    "density REAL,"
-                    "waterContent REAL,"
-                    "amplitude REAL,"
-                    "phase REAL,"
-                    "temperature REAL,"
                     "r REAL,"
-                    "a REAL"
+                    "a REAL,"
+                    "b REAL"//拟合系数
                     ")")) {
         qDebug() << "Failed to create table, error:" << query.lastError().text();
 
     }
     if (!query.exec("CREATE TABLE measurementPoint ("
                     "pointId INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    "pointName TEXT,"
+                    "pointName varchar,"
                     "belongId INTEGER,"
                     "belongType INTEGER,"
                     "density REAL,"
@@ -70,7 +67,10 @@ void DataManager::initializeDatabase(){
                     "amplitude REAL,"
                     "phase REAL,"
                     "temperature REAL,"
-                    "pointIndex INTEGER"
+                    "pointIndex INTEGER,"
+                    "gps varchar,"
+                    "soildity REAL,"
+                    "dryDensity REAL"
                     ")")) {
         qDebug() << "Failed to create table, error:" << query.lastError().text();
     }
@@ -156,6 +156,40 @@ void DataManager::getPointsWithId(int id, BelongType type)
     }
 }
 
+void DataManager::init(){
+     initializeDatabase();
+}
+
 void DataManager::Destory(){
+
+}
+
+QList<QObject*> DataManager::getAllProjectInfo(){
+    QSqlDatabase db=QSqlDatabase::database();
+    db.open();
+
+    if(!db.isOpen()){
+        LOG(WARNING)<<db.lastError().text().toStdString();
+        LOG(WARNING)<<"database connection failed";
+        return QList<QObject*>{};
+    }
+
+    QSqlQuery query{db};
+    query.exec("select id, createTime, name from ProjectInfo ");
+    QList<QObject*> objs;
+    while(query.next()){
+        int             id=query.value("id").toInt();
+        QString createTime=query.value("createTime").toString();
+        QString   name    =query.value("name").toString();
+        QObject* obj=new ProjectInfoObject;
+
+        auto p=static_cast<ProjectInfoObject*>(obj);
+        p->setIndex(id);
+        p->setName(name);
+        p->setTime(createTime);
+        objs<<obj;
+    };
+
+    return objs;
 
 }

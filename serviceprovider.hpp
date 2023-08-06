@@ -26,6 +26,7 @@ public:
     Q_INVOKABLE TestPointModel* getTestPointModel();
 
     Q_INVOKABLE TestPointModel* getTestPointModel_Ex(const QString& name);
+    Q_INVOKABLE void            requestProjectInfo();
 
 
     static std::tuple<double,double,double> linearRegression(
@@ -36,6 +37,10 @@ public:
 signals:
 
     void sendTime(QString,bool);
+
+
+    void sendProjectInfo(QList<QObject*> infos);
+    Q_INVOKABLE void projectInfoNeedsUpdate();
 private:
     QThread* serviceThread;
     ServiceProviderPrivate* d;
@@ -46,6 +51,6 @@ private:
     QMap<QString,TestPointModel*> modelMap;
 
 
-
+    void callBackend(const QString& func);
 };
 

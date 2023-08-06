@@ -10,7 +10,7 @@
 #include<QFile>
 #include <mutex>
 
-
+#include"datamanager.hpp"
 
 ServiceProviderPrivate::ServiceProviderPrivate(QObject *parent)
     : QObject{parent}
@@ -89,5 +89,16 @@ void ServiceProviderPrivate::generateModel(QString name){
     std::lock_guard<std::mutex> lock{modelMutex};
     this->prepared=model;
     emit modelReady();
+}
+
+void ServiceProviderPrivate::requestProjectInfo(){
+    if(projectInfoBuffer.size()>0){
+        for(auto&& p:projectInfoBuffer){
+            p->deleteLater();
+        }
+    }
+
+    projectInfoBuffer=DataManager::getInstance().getAllProjectInfo();
+    emit sendProjectInfo(projectInfoBuffer);
 }
 

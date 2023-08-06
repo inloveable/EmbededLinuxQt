@@ -3,6 +3,8 @@ import QtQuick 2.15
 
 import "./SoilModeling/"
 import QtQuick.Controls 2.15
+
+import CppCore 1.0
 Rectangle {
     id: item1
     width:1024
@@ -81,7 +83,7 @@ Rectangle {
                 id:listView
                 function removeCurrent(){
                     //TODO:replace these with  actual model actions
-                    listView.model.remove(currentIndex)
+                    //listView.model.remove(currentIndex)
                 }
                 anchors.centerIn: parent
                 height:parent.height*3/4
@@ -145,7 +147,7 @@ Rectangle {
                         Text {
                             width: row1.getWidth(0)
                             height: parent.height
-                            text:model.name
+                            text:modelData.index
 
                             horizontalAlignment: Qt.AlignHCenter
                             verticalAlignment: Qt.AlignVCenter
@@ -155,7 +157,7 @@ Rectangle {
                             id:projectNameText
                             width: row1.getWidth(1)
                             height: parent.height
-                            text:model.name
+                            text:modelData.name
 
                             font.bold: true
                             horizontalAlignment: Qt.AlignHCenter
@@ -164,7 +166,7 @@ Rectangle {
                         Text {
                             width: row1.getWidth(2)
                             height: parent.height
-                            text:model.name
+                            text:modelData.createTime
                             horizontalAlignment: Qt.AlignHCenter
                             verticalAlignment: Qt.AlignVCenter
                             font.bold: true
@@ -172,26 +174,22 @@ Rectangle {
 
                     }
                 }
-                model: ListModel {
-                    ListElement {
-                        name: "Grey"
-                        colorCode: "grey"
-                    }
 
-                    ListElement {
-                        name: "Red"
-                        colorCode: "red"
-                    }
+                Component.onCompleted: {
+                    Service.requestProjectInfo()
+                }
 
-                    ListElement {
-                        name: "Blue"
-                        colorCode: "blue"
-                    }
+                //model: Service.requestProjectInfo()
+            }
 
-                    ListElement {
-                        name: "Green"
-                        colorCode: "green"
-                    }
+            Connections{
+                target:Service
+
+                function onSendProjectInfo(list){
+                      listView.model=list
+                }
+                function onProjectInfoNeedsUpdate(){
+                    Service.requestProjectInfo();
                 }
             }
 

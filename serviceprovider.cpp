@@ -9,6 +9,7 @@
 
 #include<QMessageBox>
 #include<QFontDatabase>
+#include"datamanager.hpp"
 ServiceProvider::ServiceProvider(QObject *parent)
     : QObject{parent}
 {
@@ -18,11 +19,16 @@ ServiceProvider::ServiceProvider(QObject *parent)
     serviceThread->start();
 
     connect(d,&ServiceProviderPrivate::sendTime,this,&ServiceProvider::sendTime);
+    connect(d,&ServiceProviderPrivate::sendProjectInfo,this,&ServiceProvider::sendProjectInfo);
     //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
 
     d->moveToThread(serviceThread);
+    DataManager::getInstance().moveToThread(serviceThread);
+
+
 
     QMetaObject::invokeMethod(d,"init");
+    QMetaObject::invokeMethod(&DataManager::getInstance(),"init");
 
     QFontDatabase data;
     QStringList fontFamilies = data.families();
@@ -48,7 +54,7 @@ ServiceProvider::~ServiceProvider(){
 }
 
 void ServiceProvider::getTime(){
-    QMetaObject::invokeMethod(d,"getTime");
+    callBackend("getTime");
 }
 
 void ServiceProvider::messageBox(QString text){
@@ -69,4 +75,12 @@ std::tuple<double,double,double> ServiceProvider::linearRegression(
 {
     using boost::math::statistics::simple_ordinary_least_squares_with_R_squared;
     return simple_ordinary_least_squares_with_R_squared(x, y);
+}
+
+void  ServiceProvider::requestProjectInfo(){
+    callBackend("requestProjectInfo");
+}
+
+void ServiceProvider::callBackend(const QString& funct){
+    QMetaObject::invokeMethod(d,funct.toLatin1());
 }

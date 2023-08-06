@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
 
-
+    qRegisterMetaType<QList<QObject*>>();
     qmlRegisterType<TestPointModel>("CppCore",1,0,"TestPointModel");
     qmlRegisterType<SeriesPointSwaper>("CppCore",1,0,"SeriesPointSwaper");
     QScopedPointer<ServiceProvider> privider{new ServiceProvider};
