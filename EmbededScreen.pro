@@ -10,6 +10,7 @@ INCLUDEPATH+=./DataManager#subdirs
 
 SOURCES += \
         DataManager/datamanager.cpp \
+        devicemanager.cpp \
         main.cpp \
         serialmanager.cpp \
         seriespointswaper.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     DataManager/ProjectInfoObject.hpp \
     DataManager/datamanager.hpp \
     PublicDefs.hpp \
+    devicemanager.hpp \
     serialmanager.hpp \
     seriespointswaper.hpp \
     serviceprovider.hpp \

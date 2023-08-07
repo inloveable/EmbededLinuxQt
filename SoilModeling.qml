@@ -84,6 +84,7 @@ Item {
 
             onLoaded: {
                 indicator.running=false
+                indicator.z=0;
             }
 
             function change(str){
@@ -102,10 +103,13 @@ Item {
                     contented.active=true;
 
                     indicator.running=true
+                    indicator.z=1
 
                 }else if(str===qsTr("新建模型")){
                     contented.source="qrc:/SoilModeling/AddNewModel.qml";
                     contented.active=true;
+                    indicator.running=true
+                    indicator.z=1
                 }
                 else{
                     console.log("error ui")

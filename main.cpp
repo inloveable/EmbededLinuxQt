@@ -80,7 +80,7 @@ void initGlog(int argc,char** argv){
 
     FLAGS_alsologtostderr = 1;
     FLAGS_minloglevel = google::GLOG_INFO;
-    FLAGS_log_dir = "./log";
+    FLAGS_log_dir = "/usr/log";
     FLAGS_colorlogtostderr = true;//是否启用不同颜色显示(如果终端支持)
     //google::InstallFailureSignalHandler();
     //google::InstallFailureWriter(&SinalHandle);

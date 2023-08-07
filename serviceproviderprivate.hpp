@@ -8,6 +8,7 @@
 #include <mutex>
 
 class TestPointModel;
+class DeviceManager;
 class ServiceProviderPrivate : public QObject
 {
     Q_OBJECT
@@ -25,6 +26,8 @@ public:
 
     Q_INVOKABLE void requestProjectInfo();
 
+    Q_INVOKABLE void exportData();
+
 signals:
 
     void sendTime(QString,bool);
@@ -33,6 +36,10 @@ signals:
 
     void sendProjectInfo(QList<QObject*> list);
     Q_INVOKABLE void projectInfoNeedsUpdate();
+
+
+    void usbLoaded();
+    void usbUnloaded();
 private:
     QNetworkAccessManager* manager;
 
@@ -40,6 +47,8 @@ private:
     TestPointModel* prepared=nullptr;
 
     QList<QObject*> projectInfoBuffer;
+
+    DeviceManager* devices=nullptr;
 
 
 };

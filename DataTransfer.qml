@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.0
+
+import CppCore 1.0
 Rectangle {
     id: rectangle
 
@@ -195,7 +197,7 @@ Rectangle {
                             color:"#ffffff"
                         }
                         Text{
-                            text:"未连接"
+                            text:Service.hasUsb?"已连接":"未连接"
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 15

@@ -10,6 +10,7 @@
 #include<QMessageBox>
 #include<QFontDatabase>
 #include"datamanager.hpp"
+#include<glog/logging.h>
 ServiceProvider::ServiceProvider(QObject *parent)
     : QObject{parent}
 {
@@ -20,6 +21,10 @@ ServiceProvider::ServiceProvider(QObject *parent)
 
     connect(d,&ServiceProviderPrivate::sendTime,this,&ServiceProvider::sendTime);
     connect(d,&ServiceProviderPrivate::sendProjectInfo,this,&ServiceProvider::sendProjectInfo);
+    connect(d,&ServiceProviderPrivate::usbLoaded,this,[this](){
+        this->hasUsb=true;
+        emit usbOnlineChanged();
+    });
     //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
 
     d->moveToThread(serviceThread);
@@ -83,4 +88,10 @@ void  ServiceProvider::requestProjectInfo(){
 
 void ServiceProvider::callBackend(const QString& funct){
     QMetaObject::invokeMethod(d,funct.toLatin1());
+}
+
+void ServiceProvider::selfCheck(){
+    LOG(INFO)<<"self checking";
+
+
 }

@@ -1,9 +1,13 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
+import CppCore 1.0
 import "../"
 Rectangle {
     id: rectangle
     color:"#70A9FA"
+
+
+    property bool selfChecking:false
 
     MyButton {
         id: button
@@ -17,6 +21,42 @@ Rectangle {
         anchors.left: groupBox.left
         anchors.bottom: groupBox.top
 
+        onClicked:{
+            Service.selfCheck();
+            selfCheckTimer.start()
+        }
+
+    }
+
+
+    Connections{
+        target:Service
+
+        function onSelfCheckFinished(sucess){
+            selfCheckTimer.stop()
+            if(!sucess){
+               Service.messageBox(qsTr("自检失败"));
+               return;
+            }
+            progressBar.value=100
+
+            Service.messageBox(qsTr("自检成功"));
+            sensorState.text=sucess?qsTr("在线"):qsTr("断线")
+
+        }
+    }
+
+    Timer{
+        id:selfCheckTimer
+        interval:50
+        repeat:true
+        onTriggered: {
+            if(progressBar.value===99){
+                selfCheckTimer.stop()
+            }
+
+            progressBar.value+=0.5
+        }
     }
 
     ProgressBar {
@@ -27,7 +67,12 @@ Rectangle {
         anchors.top: button.top
         anchors.topMargin: 0
         anchors.leftMargin: 14
-        value: 0.5
+        value: 0
+
+        from:0
+        to:100
+
+
     }
 
     GroupBox {
@@ -69,6 +114,7 @@ Rectangle {
                     height:parent.height
                 }
                 Text{
+                    id:sensorState
                     text:"土壤无核密度仪"
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter

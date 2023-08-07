@@ -1,5 +1,6 @@
 
 #include "serviceproviderprivate.hpp"
+#include "devicemanager.hpp"
 #include "qjsondocument.h"
 #include "qjsonobject.h"
 #include "qnetworkaccessmanager.h"
@@ -9,7 +10,7 @@
 #include<QNetworkAccessManager>
 #include<QFile>
 #include <mutex>
-
+#include"glog/logging.h"
 #include"datamanager.hpp"
 
 ServiceProviderPrivate::ServiceProviderPrivate(QObject *parent)
@@ -72,6 +73,20 @@ void ServiceProviderPrivate::init(){
     manager=new QNetworkAccessManager(this);
 
     //QNetworkRequest request;
+    devices=new DeviceManager(this);
+    connect(devices,&DeviceManager::detectedUsb,this,[=](const QString& usb){
+        LOG(INFO)<<"usb :"<<usb.toStdString();
+
+
+
+        //devices->mountUsb(usb,"/mnt/"+)
+
+        emit usbLoaded();
+    });
+    connect(devices,&DeviceManager::usbUnPluged,this,[=](){
+        //devices->unmountUsb(usb)
+        emit this->usbUnloaded();
+    });
 
 }
 
@@ -100,5 +115,9 @@ void ServiceProviderPrivate::requestProjectInfo(){
 
     projectInfoBuffer=DataManager::getInstance().getAllProjectInfo();
     emit sendProjectInfo(projectInfoBuffer);
+}
+
+void ServiceProviderPrivate::exportData(){
+
 }
 
