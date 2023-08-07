@@ -11,6 +11,7 @@ DeviceManager::DeviceManager(QObject *parent)
     moniter=new QFileSystemWatcher(this);
     moniter->addPath("/dev/");
     connect(moniter,&QFileSystemWatcher::directoryChanged,this,[=](const QString& path){
+
         LOG(INFO)<<"detected directory changed:"<<path.toStdString();
 
         QDir dir("/dev");
@@ -23,6 +24,9 @@ DeviceManager::DeviceManager(QObject *parent)
                 emit usbUnPluged();
             }
         } else {
+            if(usbDetected){
+                return;//usb has different areas,invokes this func multiple times;
+            }
             LOG(INFO) << "Detected SD Udisk(s):";
             auto first=udisks.first();
 

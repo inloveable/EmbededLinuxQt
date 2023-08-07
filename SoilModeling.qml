@@ -10,10 +10,13 @@ Item {
 
     BusyIndicator{
         id:indicator
+
+        z:2
         width:200
         height:200
-        anchors.centerIn: parent
-        //running:(contented.state===Loader.Loading)?true:false
+        anchors.centerIn: mainWindow
+        running:false
+        //running:contented.loading
     }
 
     MyMenu {
@@ -24,6 +27,8 @@ Item {
         collapsedHeight: mainWindow.height * 0.1
 
         property int currentIndex
+
+        //onCollapsedChanged:
 
 
 
@@ -36,6 +41,7 @@ Item {
 
             onItemSelected:function(str) {
                contented.change(str)
+
             }
         }
 
@@ -47,6 +53,7 @@ Item {
             icon: "qrc:/images/icons/refresh.png"
             onItemSelected:function(str) {
                contented.change(str)
+
             }
         }
 
@@ -78,14 +85,12 @@ Item {
 
             property bool clicked: false
 
+
+
             width:parent.width
             height:parent.height
 
 
-            onLoaded: {
-                indicator.running=false
-                indicator.z=0;
-            }
 
             function change(str){
 
@@ -102,18 +107,17 @@ Item {
                     contented.source="qrc:/SoilModeling/ModelList.qml";
                     contented.active=true;
 
-                    indicator.running=true
-                    indicator.z=1
 
                 }else if(str===qsTr("新建模型")){
                     contented.source="qrc:/SoilModeling/AddNewModel.qml";
                     contented.active=true;
-                    indicator.running=true
-                    indicator.z=1
+
                 }
                 else{
                     console.log("error ui")
                 }
+
+
 
             }
         }
