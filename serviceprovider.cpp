@@ -25,6 +25,10 @@ ServiceProvider::ServiceProvider(QObject *parent)
         this->hasUsb=true;
         emit usbOnlineChanged();
     });
+    connect(d,&ServiceProviderPrivate::usbUnloaded,this,[this](){
+        this->hasUsb=false;
+        emit usbOnlineChanged();
+    });
     //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
 
     d->moveToThread(serviceThread);

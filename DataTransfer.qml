@@ -197,7 +197,7 @@ Rectangle {
                             color:"#ffffff"
                         }
                         Text{
-                            text:Service.hasUsb?"已连接":"未连接"
+                            text:Service.usbOnline?qsTr("已连接"):qsTr("未连接")
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 15

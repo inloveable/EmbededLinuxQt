@@ -78,13 +78,14 @@ void ServiceProviderPrivate::init(){
         LOG(INFO)<<"usb :"<<usb.toStdString();
 
 
-
-        //devices->mountUsb(usb,"/mnt/"+)
+        usbNum++;
+        devices->mountUsb(usb,QString("/mnt/usb%1/").arg(usbNum));
 
         emit usbLoaded();
     });
     connect(devices,&DeviceManager::usbUnPluged,this,[=](){
-        //devices->unmountUsb(usb)
+        devices->unmountUsb(QString("/mnt/usb%1/").arg(usbNum));
+        usbNum--;
         emit this->usbUnloaded();
     });
 
