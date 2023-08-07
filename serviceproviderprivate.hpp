@@ -50,6 +50,8 @@ private:
 
     DeviceManager* devices=nullptr;
 
+     int usbNum=0;
+
 
 };
 

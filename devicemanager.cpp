@@ -18,16 +18,22 @@ DeviceManager::DeviceManager(QObject *parent)
 
         if (udisks.isEmpty()) {
             qDebug() << "No SD Udisk detected.";
-            usbDetected=false;//TODO:potentially multi usb device bug here;
-            emit usbUnPluged();
+            if(usbDetected==true){
+                usbDetected=false;//TODO:potentially multi usb device bug here;
+                emit usbUnPluged();
+            }
         } else {
             LOG(INFO) << "Detected SD Udisk(s):";
-            for (const QString& udisk : udisks) {
-                qDebug().noquote() << udisk;
-                emit detectedUsb("/dev/"+udisk);
-                this->usbDetected=true;
-                this->usb=udisk;
-            }
+            auto first=udisks.first();
+
+            emit detectedUsb("/dev/"+first);
+
+           // for (const QString& udisk : udisks) {
+            //    qDebug().noquote() << udisk;
+             //   emit detectedUsb("/dev/"+udisk);
+            //    this->usbDetected=true;
+           //     this->usb=udisk;
+           // }
         }
     });
 }
