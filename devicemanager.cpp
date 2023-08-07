@@ -28,12 +28,7 @@ DeviceManager::DeviceManager(QObject *parent)
 
             emit detectedUsb("/dev/"+first);
 
-           // for (const QString& udisk : udisks) {
-            //    qDebug().noquote() << udisk;
-             //   emit detectedUsb("/dev/"+udisk);
-            //    this->usbDetected=true;
-           //     this->usb=udisk;
-           // }
+            this->usb="/dev/"+first;
         }
     });
 }
@@ -59,13 +54,12 @@ void DeviceManager::mountUsb(const QString& usb,const QString& dst){
     }
 }
 
-void DeviceManager::unmountUsb(const QString& usb){
-    QString command = "umount " + usb;
+void DeviceManager::unmountUsb(const QString& ){
 
     // 执行卸载命令
     QProcess process;
     QStringList args;
-    args<<usb;
+    args<<this->usb;
     process.start("umount",args);
     process.waitForFinished();
 
