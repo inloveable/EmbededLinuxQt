@@ -1,5 +1,7 @@
 
 #include "devicemanager.hpp"
+#include "PublicDefs.hpp"
+#include "instructgenerator.hpp"
 #include "qdebug.h"
 #include "qdir.h"
 #include "qfilesystemwatcher.h"
@@ -31,10 +33,15 @@ DeviceManager::DeviceManager(QObject *parent)
             auto first=udisks.first();
 
             emit detectedUsb("/dev/"+first);
+            usbDetected=true;
 
             this->usb="/dev/"+first;
         }
     });
+
+
+    InstructGenerator gen;
+    auto arr=gen.getInstruction<ReadStatus>();
 }
 
 void DeviceManager::mountUsb(const QString& usb,const QString& dst){
@@ -64,6 +71,7 @@ void DeviceManager::unmountUsb(const QString& ){
     QProcess process;
     QStringList args;
     args<<this->usb;
+    qDebug()<<"unmounting usb:args:"<<args;
     process.start("umount",args);
     process.waitForFinished();
 

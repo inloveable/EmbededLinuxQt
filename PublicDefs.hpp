@@ -45,22 +45,15 @@ public:
 
     //for optimization
     bool    isSelected=true;
+
 private:
 };
 
-//0xAA 0x55 framebody 0xAA 0x56 framehead
+//for template deduction(should nerver be instantiated)
+struct ReadPacket{};
+struct ReadStatus:public ReadPacket{};
+struct ReadData:public ReadPacket{};
 
-class SendPacket{
-public:
-    static std::array<unsigned char,5> readStatus(){
-        return {0xAA,0x56,0x01,0x01,(unsigned char)(0xAA+0x56+0x01+0x01)};
-    };
-    static std::array<unsigned char,5> readArgs(){
-        return {0xAA,0x56,0x01,0x02,(unsigned char)(0xAA+0x56+0x01+0x02)};
-    };
-
-    enum class HeadType{};
-};
 
 
 

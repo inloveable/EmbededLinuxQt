@@ -10,6 +10,7 @@ INCLUDEPATH+=./DataManager#subdirs
 
 SOURCES += \
         DataManager/datamanager.cpp \
+        DataManager/instructgenerator.cpp \
         devicemanager.cpp \
         main.cpp \
         serialmanager.cpp \
@@ -66,6 +67,7 @@ QTPLUGIN+=qlinuxfb
 HEADERS += \
     DataManager/ProjectInfoObject.hpp \
     DataManager/datamanager.hpp \
+    DataManager/instructgenerator.hpp \
     PublicDefs.hpp \
     devicemanager.hpp \
     serialmanager.hpp \
