@@ -1,5 +1,6 @@
 
 #include "serviceprovider.hpp"
+#include "modelinfo.hpp"
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
 #include"serialmanager.hpp"
@@ -11,6 +12,7 @@
 #include<QFontDatabase>
 #include"datamanager.hpp"
 #include<glog/logging.h>
+#include <memory>
 ServiceProvider::ServiceProvider(QObject *parent)
     : QObject{parent}
 {
@@ -46,7 +48,7 @@ ServiceProvider::ServiceProvider(QObject *parent)
 
     SerialManager::printSerials();
 
-    tModel=new TestPointModel(this);
+    //tModel=new TestPointModel(this);
 
 }
 
@@ -96,6 +98,55 @@ void ServiceProvider::callBackend(const QString& funct){
 
 void ServiceProvider::selfCheck(){
     LOG(INFO)<<"self checking";
+}
+
+void ServiceProvider::prepareCreateNewModel(){
+    LOG(INFO)<<"preparing create new model";
+    if(modelInfo==nullptr){
+        modelInfo=std::make_unique<ModelInfo>();
+
+        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),5.2,22,8000,32,36.3,false));
+        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,48,7000,12,35.3,true));
+        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,92,9000,73,48.3,true));
+
+        if(tModel!=nullptr){
+            tModel->deleteLater();
+        }
+        tModel=new TestPointModel(this);
+        for(int i=0;i<modelInfo->testPointSize();++i){
+            tModel->add(modelInfo->getTestPoint(i));
+        }
+    }
+}
+
+void ServiceProvider::deleteNewModelTestPoint(int index){
+    if(modelInfo->testPointSize()==0){
+        LOG(INFO)<<"no more to delete";
+        return;
+    }
+    tModel->removePoint(index);
+    modelInfo->deleteTestPoint(index);
+}
+void ServiceProvider::addNewModelTestPoint(){
+    auto ptr=TestPointInfo::generate(modelInfo->testPointSize(),0,0,0,0,0,false);
+    tModel->add(ptr);
+    modelInfo->addTestPoint(ptr);
+}
 
 
+void  ServiceProvider::saveNewModel(){
+    if(modelInfo==nullptr)return;
+    LOG(INFO)<<"saving new model:"<<modelInfo->modelName.toStdString();
+    modelSaved=true;
+}
+void  ServiceProvider::createNewModelExit(){
+    if(modelSaved){
+        LOG(INFO)<<"modelSaved safe exit";
+    }
+
+    LOG(INFO)<<"model unsaved,unsafe exit";
+
+    modelInfo=nullptr;
+    tModel->deleteLater();
+    tModel=nullptr;
 }

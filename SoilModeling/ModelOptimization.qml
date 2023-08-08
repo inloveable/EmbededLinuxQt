@@ -15,7 +15,6 @@ Item {
         //to init ChartView
         let type=state==="wetDensity"?0:1
         listView.model.updateSeries(testPointSeries,selectedSeries,type)
-
     }
 
     Connections{
@@ -30,6 +29,11 @@ Item {
             }else{
                 listView.model.swapSeriesPoint(selectedSeries,testPointSeries,pointIndex,type)
             }
+        }
+        function onChartNeedsUpdate(){
+            console.log("qml chart updating");
+            let type=state==="wetDensity"?0:1
+            listView.model.updateSeries(testPointSeries,selectedSeries,type)
         }
     }
 
@@ -49,6 +53,8 @@ Item {
 
         ChartView {
             id: line
+
+            theme:ChartView.ChartThemeBlueCerulean
 
             Connections{
                 target:listView.model
@@ -153,7 +159,7 @@ Item {
             anchors.left: parent.left
 
             width:parent.width
-            height:parent.height/3*2
+            height:parent.height/2
 
             header:ViewHeader{
                 width:parent.width
@@ -217,76 +223,91 @@ Item {
             }
         }
 
-        Text {
-            id: text1
+        Column{
             anchors.left: parent.left
+            anchors.top: parent.top
             width:parent.width
-
-            height:50
-            anchors.bottom: text2.top
-
-            text:qsTr("模型名称:"+modelName)
+            height:parent.height/2
 
 
-            font.pixelSize: 25
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.bold: true
-        }
+            Text {
+                id: text1
 
-        Text {
-            id: text2
+                width:parent.width
+                height:50
 
-            y: 58
-            width: parent.width
-            height: 50
-            text: qsTr("数据优化：")
-            anchors.left: parent.left
-            anchors.bottom: listView.top
-            font.pixelSize: 24
-            horizontalAlignment: Text.AlignLeft
-            verticalAlignment: Text.AlignVCenter
-            anchors.bottomMargin: 0
-            font.bold: true
-            anchors.leftMargin: 0
-        }
+                text:qsTr("模型名称:"+modelName)
+                font.pixelSize: 25
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.bold: true
+            }
 
-        MyButton {
-            id: button
+            Text {
+                id: text2
 
-            anchors.bottom: button1.top
-            width:parent.width
-            height:parent.height-listView.height
-                   -text1.height-text2.height-button1.height
-            text: qsTr("切换参数")
+                width: parent.width
+                height: 50
+                text: qsTr("参数:")
 
-            onClicked:{
-                if(item1.state==="wetDensity"){
-                    item1.state="waterRate"
-                }else if(item1.state==="waterRate"){
-                    item1.state="wetDensity"
+                font.pixelSize: 24
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                font.bold: true
+
+            }
+
+            MyButton {
+                id: button
+
+
+                width:parent.width
+                height:50
+                text: qsTr("切换参数")
+
+                onClicked:{
+                    if(item1.state==="wetDensity"){
+                        item1.state="waterRate"
+                    }else if(item1.state==="waterRate"){
+                        item1.state="wetDensity"
+                    }
+                    let type=item1.state==="wetDensity"?0:1
+                    listView.model.updateSeries(testPointSeries,selectedSeries,type)
                 }
-                let type=item1.state==="wetDensity"?0:1
-                listView.model.updateSeries(testPointSeries,selectedSeries,type)
+                originColor:"#0C5917"
+                hoverColor:Qt.lighter(originColor,1.5)
             }
-            originColor:"#0C5917"
-            hoverColor:Qt.lighter(originColor,1.5)
+
+            MyButton {
+                id: button1
+
+                width:parent.width
+                height:50
+                text: qsTr("拟合优化")
+
+                originColor:"#0C5917"
+                hoverColor:Qt.lighter(originColor,1.5)
+                onClicked: {
+                    let val=item1.state==="wetDensity"?0:1
+                    listView.model.getFitSequence(fitLineSeries,val)
+                }
+            }
+            MyButton {
+                id: button2
+
+                width:parent.width
+                height:50
+                text: qsTr("保存模型")
+
+                originColor:"#0C5917"
+                hoverColor:Qt.lighter(originColor,1.5)
+                onClicked: {
+                    console.log("saving model")
+                }
+            }
         }
 
-        MyButton {
-            id: button1
-            anchors.bottom: text1.top
-            width:parent.width
-            height:50
-            text: qsTr("拟合优化")
 
-            originColor:"#0C5917"
-            hoverColor:Qt.lighter(originColor,1.5)
-            onClicked: {
-                let val=item1.state==="wetDensity"?0:1
-                listView.model.getFitSequence(fitLineSeries,val)
-            }
-        }
     }
     states: [
         State {

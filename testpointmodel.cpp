@@ -16,13 +16,7 @@
 TestPointModel::TestPointModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    auto index=getAvailableIndex();
-    sequence[index]=TestPointInfo::generate(index,5.2,22,8000,32,36.3,false);
 
-    index=getAvailableIndex();
-    sequence[index]=TestPointInfo::generate(index,6.2,48,7000,12,35.3,true);
-    index=getAvailableIndex();
-    sequence[index]=TestPointInfo::generate(index,6.2,92,9000,73,48.3,true);
 
 
 }
@@ -60,15 +54,7 @@ void TestPointModel::resetIndex(){
 
 }
 
-bool TestPointModel::add(const std::shared_ptr<TestPointInfo>& inf){
-    if(sequence.constFind(inf->index)!=sequence.cend()){
 
-        LOG(INFO)<<"error when add model data,duplicate index";
-        return false;
-    }
-    sequence[inf->index]=inf;
-    return true;
-}
 
 
 bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int role){
@@ -79,8 +65,10 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
         // Set data in model here. It can also be a good idea to check whether
         // the new value actually differs from the current value
            sequence[index.row()]->waterRate=data.toDouble();
-       emit dataChanged(index, index, { Qt::EditRole, WaterRateRole });
-            return true;
+           emit dataChanged(index, index, { Qt::EditRole, WaterRateRole });
+           emit chartNeedsUpdate();
+           qDebug()<<"chart needs update";
+           return true;
     }
     if(role==isSelectedRole){
 
@@ -112,6 +100,8 @@ void TestPointModel::swapSeriesPoint(QtCharts::QXYSeries* from,QtCharts::QXYSeri
         swaper.swapPoint(pointer->ampitude,pointer->waterRate,from,to);
     }
 }
+
+
 
 QVariant TestPointModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
@@ -238,6 +228,7 @@ void TestPointModel::setChecked(QPointF point,bool val,int type){
 
 void TestPointModel::updateSeries(QtCharts::QXYSeries* from ,
                                   QtCharts::QXYSeries* mask,int type){
+    qDebug()<<"updating series";
     QList<QPointF> selected;
     QList<QPointF> notSeleted;
 
@@ -348,6 +339,26 @@ void TestPointModel::getFitSequence(QtCharts::QXYSeries* series,int type){
 
 void TestPointModel::findPointAndCheck(QPointF point,bool check,int type){
 
+}
+
+void TestPointModel::removePoint(int index){
+    auto iter=sequence.find(index);
+    if(iter!=sequence.end()){
+        beginResetModel();
+        sequence.remove(index);
+        endResetModel();
+    }
+}
+bool TestPointModel::add(const std::shared_ptr<TestPointInfo>& inf){
+    if(sequence.constFind(inf->index)!=sequence.cend()){
+
+        LOG(INFO)<<"error when add model data,duplicate index";
+        return false;
+    }
+    beginInsertRows(QModelIndex(),inf->index,inf->index);
+        sequence[inf->index]=inf;
+    endInsertRows();
+    return true;
 }
 
 

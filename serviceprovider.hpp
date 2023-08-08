@@ -9,12 +9,14 @@
 
 class TestPointModel;
 class ServiceProviderPrivate;
+class ModelInfo;
 class ServiceProvider : public QObject
 {
     Q_OBJECT
     QML_ELEMENT//D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/config.json
 
     Q_PROPERTY(bool usbOnline READ usbOnline NOTIFY usbOnlineChanged)
+
         public:
                  explicit ServiceProvider(QObject *parent = nullptr);
     ~ServiceProvider();
@@ -32,6 +34,18 @@ class ServiceProvider : public QObject
 
     Q_INVOKABLE void selfCheck();
 
+
+    //create new model apis
+    Q_INVOKABLE void prepareCreateNewModel();
+    Q_INVOKABLE void deleteNewModelTestPoint(int index);
+    Q_INVOKABLE void addNewModelTestPoint();
+    Q_INVOKABLE void saveNewModel();
+    Q_INVOKABLE void createNewModelExit();
+
+
+
+
+    /*------------------------------------------------------------*/
 
     bool  usbOnline()const{return hasUsb;};
 
@@ -56,7 +70,7 @@ private:
     QThread* serviceThread;
     ServiceProviderPrivate* d;
 
-    TestPointModel* tModel=nullptr;
+
 
     void onModelReady();
     QMap<QString,TestPointModel*> modelMap;
@@ -68,5 +82,15 @@ private:
     qint64 selfCheckExpireTime=100000;//10s;
 
     bool hasUsb=false;
+    bool modelSaved=false;
+
+
+    std::unique_ptr<ModelInfo> modelInfo=nullptr;
+    TestPointModel* tModel=nullptr;
+
+
+
+
+
 };
 

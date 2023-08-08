@@ -13,6 +13,7 @@ SOURCES += \
         DataManager/instructgenerator.cpp \
         devicemanager.cpp \
         main.cpp \
+        modelinfo.cpp \
         serialmanager.cpp \
         seriespointswaper.cpp \
         serviceprovider.cpp \
@@ -70,6 +71,7 @@ HEADERS += \
     DataManager/instructgenerator.hpp \
     PublicDefs.hpp \
     devicemanager.hpp \
+    modelinfo.hpp \
     serialmanager.hpp \
     seriespointswaper.hpp \
     serviceprovider.hpp \

@@ -147,12 +147,10 @@ Item {
 
                     inputMethodHints: Qt.ImhDigitsOnly
 
-                    onEditingFinished: {
-                        model.waterRate=waterRateEdit.text
-                        //model.setData(index,waterRateEdit.text,"waterRate")
-                    }
                     onFocusChanged: {
                         waterRateInputActive(waterRateEdit.focus)
+                        if(focus===false)
+                        model.waterRate=waterRateEdit.text
                     }
                 }
             }

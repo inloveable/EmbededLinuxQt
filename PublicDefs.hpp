@@ -4,6 +4,8 @@
 #include<QString>
 #include <memory>
 #include<array>
+#include <variant>
+#include<vector>
 class TestPointInfo{
 public:
 
@@ -48,6 +50,9 @@ public:
 
 private:
 };
+
+
+
 
 //for template deduction(should nerver be instantiated)
 struct ReadPacket{};

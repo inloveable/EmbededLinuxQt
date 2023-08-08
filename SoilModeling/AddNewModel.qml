@@ -10,7 +10,7 @@ Item {
         id:view
 
         anchors.fill: parent
-        currentIndex: 1
+        currentIndex: 0
 
         Rectangle{
             id:root
@@ -108,7 +108,7 @@ Item {
                             id: rectangle2
                             width:parent.width/3
                             height:parent.height
-                            tipText:"新建模型"
+                            tipText:"模型名称"
                             inputText: "ABC"
 
                             onTextFocusChanged:function(fo){
@@ -384,14 +384,14 @@ Item {
                             isPairing:model.isPairing
 
                             onDensityInputActive:function (active) {
-                              console.log("density:"+active)
+
                                 if(active===true){
                                     keyboard1.state="invoked"
                                 }
                                 listView.currentIndex=index
                             }
                             onWaterRateInputActive: function(active){
-                                console.log("waterrate:"+active)
+
                                 if(active===true){
                                     keyboard1.state="invoked"
                                 }
@@ -417,6 +417,10 @@ Item {
 
                     originColor: "#8e0e00"
                     hoverColor: Qt.lighter(originColor,1.2)
+
+                    onClicked: {
+                        Service.addNewModelTestPoint()
+                    }
                 }
 
                 MyButton {
@@ -431,6 +435,13 @@ Item {
 
                     originColor: "#8e0e00"
                     hoverColor: Qt.lighter(originColor,1.2)
+
+                    onClicked: {
+                        Service.deleteNewModelTestPoint(listView.count-1);
+
+                    }
+
+
                 }
                 MyButton {
                     id: button3

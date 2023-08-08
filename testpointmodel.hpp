@@ -52,7 +52,7 @@ public:
 
 
     bool add(const std::shared_ptr<TestPointInfo>& info);
-    void remove(int index);
+
 
 
     //chart click api
@@ -69,10 +69,15 @@ public:
                       QtCharts::QXYSeries* mask,int type);
 
     Q_INVOKABLE void swapSeriesPoint(QtCharts::QXYSeries* from,QtCharts::QXYSeries* to,int pointIndex,int type);
+
+    void removePoint(int index);
+
 signals:
     void linearRegressionReady();
     void updateAxis(qreal xmin,qreal xmax,qreal ymin,qreal ymax);
     void requireSeiresSwap(int pointIndex,bool reverse=false);
+
+    void chartNeedsUpdate();
 
 private:
 

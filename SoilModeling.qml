@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
+import CppCore 1.0
 Item {
     id:mainWindow
 
@@ -109,6 +110,8 @@ Item {
 
 
                 }else if(str===qsTr("新建模型")){
+
+                    Service.prepareCreateNewModel();
                     contented.source="qrc:/SoilModeling/AddNewModel.qml";
                     contented.active=true;
 
