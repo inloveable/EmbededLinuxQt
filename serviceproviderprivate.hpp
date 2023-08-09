@@ -9,6 +9,7 @@
 
 class TestPointModel;
 class DeviceManager;
+class ModelInfo;
 class ServiceProviderPrivate : public QObject
 {
     Q_OBJECT
@@ -28,6 +29,9 @@ public:
 
     Q_INVOKABLE void exportData();
 
+
+    void saveModelInfo(std::shared_ptr<ModelInfo>);
+
 signals:
 
     void sendTime(QString,bool);
@@ -36,6 +40,9 @@ signals:
 
     void sendProjectInfo(QList<QObject*> list);
     Q_INVOKABLE void projectInfoNeedsUpdate();
+
+
+
 
 
     void usbLoaded();

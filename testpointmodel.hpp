@@ -79,6 +79,9 @@ signals:
 
     void chartNeedsUpdate();
 
+
+    void sendFitArgs(qreal a,qreal b,qreal r2);
+
 private:
 
     QMap<int,std::shared_ptr<TestPointInfo>> sequence;
@@ -94,6 +97,8 @@ private:
     double currentFitA;
     double currentFitB;
     double currentFitR;
+
+    //ModelInfo* modelInfo=nullptr;
 
 
 };

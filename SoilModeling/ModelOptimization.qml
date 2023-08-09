@@ -237,10 +237,19 @@ Item {
                 height:50
 
                 text:qsTr("模型名称:"+modelName)
-                font.pixelSize: 25
+                font.pixelSize: 20
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.bold: true
+            }
+
+
+            Connections{
+                target:listView.model
+
+                function onSendFitArgs(a,b,r2){
+                     text2.text="参数:a:"+a+" b:"+b+" r^2:"+r2.toFixed(4);
+                }
             }
 
             Text {
@@ -250,7 +259,7 @@ Item {
                 height: 50
                 text: qsTr("参数:")
 
-                font.pixelSize: 24
+                font.pixelSize: 16
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 font.bold: true
@@ -303,6 +312,7 @@ Item {
                 hoverColor:Qt.lighter(originColor,1.5)
                 onClicked: {
                     console.log("saving model")
+                    Service.saveNewModel()
                 }
             }
         }

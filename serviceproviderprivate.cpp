@@ -9,6 +9,7 @@
 #include "testpointmodel.hpp"
 #include<QNetworkAccessManager>
 #include<QFile>
+#include <memory>
 #include <mutex>
 #include"glog/logging.h"
 #include"datamanager.hpp"
@@ -120,5 +121,13 @@ void ServiceProviderPrivate::requestProjectInfo(){
 
 void ServiceProviderPrivate::exportData(){
 
+}
+
+void ServiceProviderPrivate::saveModelInfo(std::shared_ptr<ModelInfo> in){
+
+    LOG(INFO)<<"saving model";
+    auto info=in;
+    auto& data=DataManager::getInstance();
+    data.saveModelInfo(in);
 }
 

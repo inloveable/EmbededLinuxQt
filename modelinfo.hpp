@@ -7,6 +7,7 @@
 #include<vector>
 #include<memory>
 #include<QString>
+#include<QMetaType>
 
 class ModelInfo{
 public:
@@ -14,6 +15,9 @@ public:
     float   maximumDryness;
     float   bestWaterRate;
 
+    float   argA=0.0f;
+    float   argB=0.0f;
+    float   argR2=0.0f;
 
     std::size_t testPointSize();
 
@@ -24,3 +28,5 @@ public:
 private:
     std::vector<std::shared_ptr<TestPointInfo>> testPoints;
 };
+
+Q_DECLARE_METATYPE(ModelInfo);

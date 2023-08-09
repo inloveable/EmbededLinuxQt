@@ -5,6 +5,9 @@
 #include <QObject>
 
 #include<mutex>
+#include<memory>
+class TestPointInfo;
+class ModelInfo;
 class DataManager : public QObject
 {
     Q_OBJECT
@@ -25,6 +28,12 @@ public:
 
     Q_INVOKABLE void init();
 
+    void saveModelInfo(const std::shared_ptr<ModelInfo>& info);
+
+    enum class BelongType{Model=0,Project=1};
+    void saveTestPoint(const std::shared_ptr<TestPointInfo>& point,
+                       BelongType belong,int belongId);
+
 
     //ProjectInfoObject*
    QList<QObject*> getAllProjectInfo();
@@ -37,7 +46,7 @@ private:
 
     std::mutex sqlmu;
 
-    enum class BelongType{Model=0,Project=1};
+
 
     int  getProjectId(QString name);
     int  getSoilModelId(QString name);

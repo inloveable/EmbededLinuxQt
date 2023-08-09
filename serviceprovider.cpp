@@ -13,6 +13,9 @@
 #include"datamanager.hpp"
 #include<glog/logging.h>
 #include <memory>
+
+Q_DECLARE_METATYPE(std::shared_ptr<ModelInfo>);
+
 ServiceProvider::ServiceProvider(QObject *parent)
     : QObject{parent}
 {
@@ -31,6 +34,7 @@ ServiceProvider::ServiceProvider(QObject *parent)
         this->hasUsb=false;
         emit usbOnlineChanged();
     });
+    connect(this,&ServiceProvider::saveModelInfo,d,&ServiceProviderPrivate::saveModelInfo);
     //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
 
     d->moveToThread(serviceThread);
@@ -47,6 +51,10 @@ ServiceProvider::ServiceProvider(QObject *parent)
     qDebug()<<"fonts:"<<fontFamilies;
 
     SerialManager::printSerials();
+
+    qRegisterMetaType<ModelInfo>();
+
+    qRegisterMetaType<std::shared_ptr<ModelInfo>>();
 
     //tModel=new TestPointModel(this);
 
@@ -105,14 +113,22 @@ void ServiceProvider::prepareCreateNewModel(){
     if(modelInfo==nullptr){
         modelInfo=std::make_unique<ModelInfo>();
 
-        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),5.2,22,8000,32,36.3,false));
-        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,48,7000,12,35.3,true));
-        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,92,9000,73,48.3,true));
+
 
         if(tModel!=nullptr){
             tModel->deleteLater();
         }
         tModel=new TestPointModel(this);
+        connect(tModel,&TestPointModel::sendFitArgs,this,[&](qreal a,qreal b,qreal r2){//what if here uses [=]? interesting
+            modelInfo->argA=a;
+            modelInfo->argB=b;
+            modelInfo->argR2=r2;
+        });
+
+        //only for test,use addNewModelTestPoint()
+        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),5.2,22,8000,32,36.3,false));
+        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,48,7000,12,35.3,true));
+        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,92,9000,73,48.3,true));
         for(int i=0;i<modelInfo->testPointSize();++i){
             tModel->add(modelInfo->getTestPoint(i));
         }
@@ -135,8 +151,13 @@ void ServiceProvider::addNewModelTestPoint(){
 
 
 void  ServiceProvider::saveNewModel(){
+    if(modelSaved){
+        this->messageBox(tr("模型已保存,请勿重复保存"));
+        return;
+    }
     if(modelInfo==nullptr)return;
     LOG(INFO)<<"saving new model:"<<modelInfo->modelName.toStdString();
+    emit saveModelInfo(std::shared_ptr<ModelInfo>(std::move(modelInfo)));
     modelSaved=true;
 }
 void  ServiceProvider::createNewModelExit(){
@@ -146,7 +167,10 @@ void  ServiceProvider::createNewModelExit(){
 
     LOG(INFO)<<"model unsaved,unsafe exit";
 
+
     modelInfo=nullptr;
     tModel->deleteLater();
     tModel=nullptr;
 }
+
+

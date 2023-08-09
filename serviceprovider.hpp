@@ -5,6 +5,7 @@
 #include "qobjectdefs.h"
 #include "qqml.h"
 #include <QObject>
+#include <memory>
 
 
 class TestPointModel;
@@ -66,6 +67,9 @@ signals:
     void usbOnlineChanged();
 
     void selfCheckFinished(bool);
+
+    //backend signals;
+    void saveModelInfo(std::shared_ptr<ModelInfo> info);
 private:
     QThread* serviceThread;
     ServiceProviderPrivate* d;

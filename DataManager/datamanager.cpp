@@ -1,7 +1,9 @@
 
 #include "datamanager.hpp"
 #include "ProjectInfoObject.hpp"
+#include "modelinfo.hpp"
 #include "qdebug.h"
+#include <memory>
 #include <mutex>
 #include<QSqlDatabase>
 #include<QSqlQuery>
@@ -9,8 +11,7 @@
 #include<QSqlError>
 #include<glog/logging.h>
 
-
-
+#include<QDateTime>
 DataManager::DataManager(QObject *parent)
     : QObject{parent}
 {
@@ -61,7 +62,7 @@ void DataManager::initializeDatabase(){
                     "pointId INTEGER PRIMARY KEY AUTOINCREMENT,"
                     "pointName varchar,"
                     "belongId INTEGER,"
-                    "belongType INTEGER,"
+                    "belongType INTEGER,"//0:model 1:project
                     "density REAL,"
                     "waterContent REAL,"
                     "amplitude REAL,"
@@ -193,3 +194,84 @@ QList<QObject*> DataManager::getAllProjectInfo(){
     return objs;
 
 }
+
+void DataManager::saveModelInfo(const std::shared_ptr<ModelInfo>& model)
+{
+    std::lock_guard<std::mutex> lock{sqlmu};
+    QSqlDatabase database = QSqlDatabase::database();
+    //database.setDatabaseName("mydatabase.db");
+
+
+    // 打开数据库
+    if (!database.open()) {
+        qWarning() << "Failed to open database"<<database.lastError();
+        return;
+    }
+
+
+    QSqlQuery query;
+
+    query.exec("SELECT MAX(id) FROM soilModel;");
+    query.next();
+    int index=query.value(0).toInt()+1;
+    qDebug()<<"model index:"<<index;
+
+    query.prepare("INSERT INTO soilModel (id,modelName,createTime,GPS,r,a,b) "
+                  "VALUES (:modelName,:maximumDryness,:bestWaterRate,:gps,:argR2,:argA,:argB)");
+
+    query.bindValue(":modelName",index);
+    query.bindValue(":maximumDryness", model->modelName);
+    query.bindValue(":bestWaterRate", QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+    query.bindValue(":gps",QVariant{QVariant::String});
+    query.bindValue(":argA", model->argA);
+    query.bindValue(":argB", model->argB);
+    query.bindValue(":argR2", model->argR2);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to insert data, error:" << query.lastError().text();
+        return;
+    }
+
+    for(int i=0;i<model->testPointSize();++i){
+        saveTestPoint(model->getTestPoint(i),BelongType::Model,index);
+    }
+
+}
+
+void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, BelongType belong, int belongId) {
+    // 建立数据库连接
+    QSqlDatabase database = QSqlDatabase::database();
+
+
+    // 打开数据库
+    if (!database.open()) {
+        qWarning() << "Failed to open database";
+        return;
+    }
+
+    // 准备 SQL 查询语句
+    QSqlQuery query;
+    query.prepare("INSERT INTO measurementPoint (pointIndex, density, waterContent, amplitude, phase,"
+                  " temperature, gps, soildity, dryDensity, belongType, belongId) "
+                  "VALUES (:pointIndex, :density, :waterContent, :amplitude, :phase, "
+                  ":temperature, :gps, :soildity, :dryDensity, :belongType, :belongId)");
+
+    // 绑定参数
+    query.bindValue(":pointIndex", point->index);
+    query.bindValue(":density", point->density);
+    query.bindValue(":waterContent", point->waterRate);
+    query.bindValue(":amplitude", point->ampitude);
+    query.bindValue(":phase", point->phaseAngle);
+    query.bindValue(":temperature", point->temperature);
+    query.bindValue(":gps", point->gps);
+    query.bindValue(":soildity", point->soildity);
+    query.bindValue(":dryDensity", point->dryDesity);
+    query.bindValue(":belongType", static_cast<int>(belong));
+    query.bindValue(":belongId", belongId);
+    // 执行查询
+    if (!query.exec()) {
+        qWarning() << "Failed to insert test point, error:" << query.lastError().text();
+        return;
+    }
+}
+

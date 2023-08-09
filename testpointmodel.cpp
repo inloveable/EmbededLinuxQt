@@ -320,11 +320,8 @@ void TestPointModel::getFitSequence(QtCharts::QXYSeries* series,int type){
         this->waterRateR_Square=r2;
     }
 
-    //a=sqrt(r2)
+    emit sendFitArgs(c1,c0,r2);
 
-   // currentFitA=c1;
-    //currentFitB=c0;
-    //currentFitR=std::sqrt(r2);
 
     //generate chart line
     QList<QPointF> fitSequence;

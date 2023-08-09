@@ -20,8 +20,12 @@ public:
 
     void checkSerialIsOnline(std::function<void(bool,void*)> func);
 
+    void checkStatus();
+
+
 signals:
     void detectedUsb(QString usb);
+    void statusResult();
     void usbUnPluged();
 private:
 
