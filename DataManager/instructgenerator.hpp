@@ -65,9 +65,9 @@ inline void InstructGenerator::read<0x02>(std::array<unsigned char, 8>& data) {
     float real_data = (A31to24<<8)| A23to16;
     float img_data = (A15to8<<8)| A7to0;
 
-    std::complex<float> val;
-    val._Val[0]=real_data;
-    val._Val[1]=img_data;
+   // std::complex<float> val;//conflict between compliers
+    //val._Val[0]=real_data;
+    ///val._Val[1]=img_data;
 }
 
 template<>

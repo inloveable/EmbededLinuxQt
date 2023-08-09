@@ -29,7 +29,10 @@ void SerialManager::printSerials(){
             }
             QByteArray arr;
             arr.push_back(0x01);
+
             port.write(arr);
+            port.flush();
+            port.close();;
         }
     }
 

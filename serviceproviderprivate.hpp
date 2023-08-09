@@ -6,7 +6,7 @@
 #include "qobjectdefs.h"
 #include <QObject>
 #include <mutex>
-
+#include<memory>
 class TestPointModel;
 class DeviceManager;
 class ModelInfo;

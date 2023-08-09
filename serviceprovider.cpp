@@ -17,7 +17,7 @@
 Q_DECLARE_METATYPE(std::shared_ptr<ModelInfo>);
 
 ServiceProvider::ServiceProvider(QObject *parent)
-    : QObject{parent}
+    : tModel{nullptr},modelInfo{nullptr},QObject{parent}
 {
     d=new ServiceProviderPrivate();
     this->serviceThread=new QThread();
@@ -50,7 +50,7 @@ ServiceProvider::ServiceProvider(QObject *parent)
 
     qDebug()<<"fonts:"<<fontFamilies;
 
-    SerialManager::printSerials();
+
 
 
 

@@ -89,8 +89,8 @@ private:
     bool modelSaved=false;
 
 
-    std::unique_ptr<ModelInfo> modelInfo=nullptr;
-    TestPointModel* tModel=nullptr;
+    std::unique_ptr<ModelInfo> modelInfo;
+    TestPointModel* tModel;
 
 
 
