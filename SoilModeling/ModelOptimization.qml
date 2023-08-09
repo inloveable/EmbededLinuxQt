@@ -248,7 +248,7 @@ Item {
                 target:listView.model
 
                 function onSendFitArgs(a,b,r2){
-                     text2.text="参数:a:"+a+" b:"+b+" r^2:"+r2.toFixed(4);
+                     text2.text="参数:a:"+a.toFixed(4)+" b:"+b.toFixed(4)+" r^2:"+r2.toFixed(4);
                 }
             }
 

@@ -56,6 +56,13 @@ Item {
                contented.change(str)
 
             }
+
+            onCollapsedChanged: function(){
+                if(collapsed===false){
+                    console.log("create new model exit")
+                    Service.createNewModelExit();
+                }
+            }
         }
 
 

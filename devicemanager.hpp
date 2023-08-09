@@ -6,6 +6,7 @@
 #include<QFileSystemWatcher>
 
 class QProcess;
+class SerialManager;
 class DeviceManager : public QObject
 {
     Q_OBJECT
@@ -36,6 +37,8 @@ private:
 
     bool    usbDetected=false;
     QString usb;
+
+    SerialManager* serials=nullptr;
 
 
 

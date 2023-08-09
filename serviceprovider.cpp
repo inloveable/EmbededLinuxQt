@@ -52,6 +52,8 @@ ServiceProvider::ServiceProvider(QObject *parent)
 
     SerialManager::printSerials();
 
+
+
     qRegisterMetaType<ModelInfo>();
 
     qRegisterMetaType<std::shared_ptr<ModelInfo>>();

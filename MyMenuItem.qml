@@ -16,6 +16,8 @@ Item {
 
     signal itemSelected(string index)
 
+
+
     id: root
     width: parent.width
     height: _getHeight()

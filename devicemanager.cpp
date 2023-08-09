@@ -6,6 +6,7 @@
 #include "qdir.h"
 #include "qfilesystemwatcher.h"
 #include "qprocess.h"
+#include "serialmanager.hpp"
 #include<glog/logging.h>
 DeviceManager::DeviceManager(QObject *parent)
     : QObject{parent}
@@ -42,6 +43,9 @@ DeviceManager::DeviceManager(QObject *parent)
 
     InstructGenerator gen;
     auto arr=gen.getInstruction<ReadStatus>();
+
+    serials=new SerialManager(this);
+    SerialManager::printSerials();
 }
 
 void DeviceManager::mountUsb(const QString& usb,const QString& dst){
