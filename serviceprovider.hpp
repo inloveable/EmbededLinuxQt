@@ -17,6 +17,7 @@ class ServiceProvider : public QObject
     QML_ELEMENT//D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/config.json
 
     Q_PROPERTY(bool usbOnline READ usbOnline NOTIFY usbOnlineChanged)
+        Q_PROPERTY(int batteryVal READ getCurrentBattery NOTIFY batteryChanged);
 
         public:
                  explicit ServiceProvider(QObject *parent = nullptr);
@@ -45,6 +46,10 @@ class ServiceProvider : public QObject
 
 
 
+    Q_INVOKABLE int getCurrentBattery();
+
+    Q_INVOKABLE void requestPointInfoUpdate(int index);//配对
+    Q_INVOKABLE void requestPointTest();//测试
 
     /*------------------------------------------------------------*/
 
@@ -70,6 +75,13 @@ signals:
 
     //backend signals;
     void saveModelInfo(std::shared_ptr<ModelInfo> info);
+    void batteryChanged();
+
+
+    void requestParingComplete(bool,int);
+
+
+
 private:
     QThread* serviceThread;
     ServiceProviderPrivate* d;
@@ -91,6 +103,8 @@ private:
 
     std::unique_ptr<ModelInfo> modelInfo;
     TestPointModel* tModel;
+
+    int batteryValue=100;
 
 
 

@@ -4,6 +4,9 @@ import QtQuick.Controls 2.15
 Rectangle {
     id: rectangle1
 
+    signal testA();
+    signal testB();
+
      Rectangle {
          id: rectangle
 
@@ -28,6 +31,8 @@ Rectangle {
          anchors.bottom: parent.bottom
          anchors.bottomMargin: 0
          anchors.horizontalCenter: parent.horizontalCenter
+
+
      }
 
      Rectangle {
@@ -83,6 +88,10 @@ Rectangle {
          anchors.top: rectangle.bottom
          anchors.topMargin: 40
          anchors.horizontalCenter: rectangle.horizontalCenter
+
+         onClicked: {
+             testA()
+         }
      }
 
      Text {
@@ -125,5 +134,9 @@ Rectangle {
          anchors.top: rectangleB.bottom
          anchors.topMargin: 40
          anchors.horizontalCenter: rectangleB.horizontalCenter
+
+         onClicked: {
+             testB();
+         }
      }
 }

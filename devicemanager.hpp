@@ -22,12 +22,25 @@ public:
     void checkSerialIsOnline(std::function<void(bool,void*)> func);
 
     void checkStatus();
+    void checkAllArgs();
+
+    //status
+    bool impedence=false;
+    bool batterry=false;
+    bool temperature=false;
 
 
 signals:
     void detectedUsb(QString usb);
-    void statusResult();
+    void statusReady();
     void usbUnPluged();
+
+    void onTemperature(float temp);
+    void onBatterySent(int battery);
+
+    void onArgsSent(float amp,float phaseAngle);
+
+
 private:
 
 
@@ -39,6 +52,8 @@ private:
     QString usb;
 
     SerialManager* serials=nullptr;
+
+
 
 
 

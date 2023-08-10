@@ -1,7 +1,7 @@
 
 #include "devicemanager.hpp"
 #include "PublicDefs.hpp"
-#include "instructgenerator.hpp"
+
 #include "qdebug.h"
 #include "qdir.h"
 #include "qfilesystemwatcher.h"
@@ -40,18 +40,21 @@ DeviceManager::DeviceManager(QObject *parent)
         }
     });
 
-
-    InstructGenerator gen;
-    auto arr=gen.getInstruction<ReadStatus>();
-
     serials=new SerialManager(this);
+    serials->setStatusCallback([obj=this](bool inde,bool battery,bool tempe){
+        obj->impedence=inde;
+        obj->batterry=battery;
+        obj->temperature=tempe;
+        obj->statusReady();
+    });
     SerialManager::printSerials();
+
+    connect(serials,&SerialManager::sendArgs,this,&DeviceManager::onArgsSent);
+    connect(serials,&SerialManager::sendBatteryVal,this,&DeviceManager::onBatterySent);
+    connect(serials,&SerialManager::sendTemperature,this,&DeviceManager::onTemperature);
 }
 
 void DeviceManager::mountUsb(const QString& usb,const QString& dst){
-    // 构造挂载命令
-
-    // 执行挂载命令
 
     QDir dir;
     dir.mkpath(dst);
@@ -85,6 +88,14 @@ void DeviceManager::unmountUsb(const QString& ){
     } else {
         qDebug() << "Failed to unmount USB device.";
     }
+}
+
+void DeviceManager::checkStatus(){
+    serials->sendStatusCheck();
+}
+
+void DeviceManager::checkAllArgs(){
+    serials->sendRequireArg();
 }
 
 DeviceManager::~DeviceManager(){

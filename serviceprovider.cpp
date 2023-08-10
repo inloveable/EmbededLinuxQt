@@ -1,6 +1,7 @@
 
 #include "serviceprovider.hpp"
 #include "modelinfo.hpp"
+#include "qmetaobject.h"
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
 #include"serialmanager.hpp"
@@ -34,8 +35,29 @@ ServiceProvider::ServiceProvider(QObject *parent)
         this->hasUsb=false;
         emit usbOnlineChanged();
     });
+    connect(d,&ServiceProviderPrivate::batteryValueUpdated,this,[this](int val){
+        this->batteryValue=val;
+        emit this->batteryChanged();
+    });
     connect(this,&ServiceProvider::saveModelInfo,d,&ServiceProviderPrivate::saveModelInfo);
     //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
+    connect(d,&ServiceProviderPrivate::pointParingComplete,this,&ServiceProvider::requestParingComplete);
+    connect(d,&ServiceProviderPrivate::argsValueReady,this,[obj=this](float amp,float phase,int index){
+        if(obj->tModel==nullptr){
+            return;
+        }
+        auto modelIndex=obj->tModel->index(index);
+        obj->tModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
+        obj->tModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
+    });
+    connect(d,&ServiceProviderPrivate::temperatureValueReady,this,[obj=this](float temp,int index){
+        if(obj->tModel==nullptr){
+            return;
+        }
+        auto modelIndex=obj->tModel->index(index);
+        obj->tModel->setData(modelIndex,temp,TestPointModel::TemperatureRole);
+    });
+
 
     d->moveToThread(serviceThread);
     DataManager::getInstance().moveToThread(serviceThread);
@@ -49,17 +71,16 @@ ServiceProvider::ServiceProvider(QObject *parent)
     QStringList fontFamilies = data.families();
 
     qDebug()<<"fonts:"<<fontFamilies;
-
-
-
-
-
     qRegisterMetaType<ModelInfo>();
 
     qRegisterMetaType<std::shared_ptr<ModelInfo>>();
 
     //tModel=new TestPointModel(this);
 
+}
+
+int ServiceProvider::getCurrentBattery(){
+    return batteryValue;
 }
 
 TestPointModel* ServiceProvider::getTestPointModel(){
@@ -174,5 +195,15 @@ void  ServiceProvider::createNewModelExit(){
     tModel->deleteLater();
     tModel=nullptr;
 }
+
+void ServiceProvider::requestPointInfoUpdate(int index){
+
+    QMetaObject::invokeMethod(d,"requestPointInfoUpdate",Q_ARG(int,index));
+}
+
+void ServiceProvider::requestPointTest(){
+    callBackend("requestPointTest");
+}
+
 
 

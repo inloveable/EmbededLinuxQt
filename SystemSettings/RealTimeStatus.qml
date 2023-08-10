@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
+import CppCore 1.0
 Rectangle{
     color: "#1b39be"
     GroupBox {
@@ -41,7 +42,7 @@ Rectangle{
                     height:parent.height
                 }
                 Text{
-                    text:"土壤无核密度仪"
+                    text:"--"
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
@@ -65,7 +66,7 @@ Rectangle{
                     height:parent.height
                 }
                 Text{
-                    text:"EDG-25"
+                    text:"--"
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
                     font.bold: true
@@ -86,7 +87,7 @@ Rectangle{
                     height:parent.height
                 }
                 Text{
-                    text:"土壤无核密度仪"
+                    text:"--"
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
                     font.bold: true
@@ -108,7 +109,7 @@ Rectangle{
                    height:parent.height
                 }
                 Text{
-                    text:"土壤无核密度仪"
+                    text:"--"
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
                     font.bold: true
@@ -129,7 +130,7 @@ Rectangle{
                     height:parent.height
                 }
                 Text{
-                    text:"土壤无核密度仪"
+                    text:"--"
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
                     font.bold: true
@@ -150,7 +151,7 @@ Rectangle{
                     height:parent.height
                 }
                 Text{
-                    text:"土壤无核密度仪"
+                    text:Service.batteryVal+" %"
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
                     font.bold: true
