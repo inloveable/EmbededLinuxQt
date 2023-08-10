@@ -17,6 +17,8 @@ Item {
     signal densityInputActive(bool active)
     signal waterRateInputActive(bool active)
 
+    property string paringStatus:"INIT";
+
 
     property int itemIndex:0;
     property real density:0.90;
@@ -224,12 +226,42 @@ Item {
             font.pointSize: 15
             font.bold: true
 
+
+            property alias backgroundColor:buttonbg.color
             background:Rectangle{
-                color:root.isPairing?"#EBAA61":"green"
+                id:buttonbg
+
                 radius:5
                 border.width: 1
                 border.color: "white"
             }
+
+            state:paringStatus
+
+            states:[
+                State{
+                    name:"INIT"
+                    PropertyChanges {
+                        target: button
+                        backgroundColor:"green"
+                    }
+                },
+                State{
+                   name:"PAIRING"
+                   PropertyChanges {
+                       target: button
+                       backgroundColor:"#EBAA61"
+                   }
+                },
+                State{
+                   name:"ERROR"
+                   PropertyChanges {
+                       target: button
+                       backgroundColor:"red"
+                   }
+                }
+
+            ]
 
             onClicked: {
                 if(root.isPairing){

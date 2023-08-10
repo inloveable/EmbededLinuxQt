@@ -89,7 +89,14 @@ void ServiceProviderPrivate::init(){
         usbNum--;
         emit this->usbUnloaded();
     });
-
+    connect(devices,&DeviceManager::onArgsSent,this,&ServiceProviderPrivate::onArgsSent);
+    connect(devices,&DeviceManager::onBatterySent,this,&ServiceProviderPrivate::onBatterySent);
+    connect(devices,&DeviceManager::onTemperature,this,&ServiceProviderPrivate::onTemperature);
+    connect(devices,&DeviceManager::statusReady,this,[obj=this](){
+        emit obj->pointParingComplete(obj->devices->impedence
+                                      &&obj->devices->temperature
+                                          &&obj->devices->batterry,obj->currentRequestPointIndex);
+    });
 }
 
 TestPointModel* ServiceProviderPrivate::getPreparedModel(){
@@ -114,7 +121,6 @@ void ServiceProviderPrivate::requestProjectInfo(){
             p->deleteLater();
         }
     }
-
     projectInfoBuffer=DataManager::getInstance().getAllProjectInfo();
     emit sendProjectInfo(projectInfoBuffer);
 }
@@ -129,5 +135,72 @@ void ServiceProviderPrivate::saveModelInfo(std::shared_ptr<ModelInfo> in){
     auto info=in;
     auto& data=DataManager::getInstance();
     data.saveModelInfo(in);
+}
+
+void ServiceProviderPrivate::onArgsSent(float amp,float angle){
+    static std::unique_ptr<DataField> amps=nullptr;
+    if(!amps){
+        amps=std::make_unique<DataField>(currentRequestPointIndex);
+    }
+    static std::unique_ptr<DataField> angles=nullptr;
+    if(!angles){
+        angles=std::make_unique<DataField>(currentRequestPointIndex);
+    }
+    //put it here because those two values are which the actual important ones.
+    //this signal aims to acknowledge ui of the coming of data,to update(needs twice in total)
+    emit temperatureValueRecv(currentRequestPointIndex);
+
+    angles->setValue(angle);
+    amps->setValue(amp);
+    if(angles->isReady()&&amps->isReady()){
+        emit argsValueReady(amps->getValue(),angles->getValue(),currentRequestPointIndex);
+        angles->reset();
+        amps->reset();
+        argsDone=true;
+        if(argsDone&&temperatureDone){
+            currentRequestPointIndex=-1;
+        }
+        LOG(INFO)<<"args value ready sending";
+    }
+
+
+}
+void ServiceProviderPrivate::onTemperature(float tem){
+    static std::unique_ptr<DataField> temperatures=nullptr;
+    if(!temperatures){
+        temperatures=std::make_unique<DataField>(currentRequestPointIndex);
+    }
+
+    temperatures->setValue(tem);
+    if(temperatures->isReady()){
+        temperatures->reset();
+        LOG(INFO)<<"temperature value ready sending";
+        temperatureDone=true;
+        if(argsDone&&temperatureDone){
+            currentRequestPointIndex=-1;
+        }
+        emit temperatureValueReady(temperatures->getValue(),currentRequestPointIndex);
+    }
+}
+void ServiceProviderPrivate::onBatterySent(int battery){
+    LOG(INFO)<<"battery value updated:"<<battery;
+    emit batteryValueUpdated(battery);
+
+}
+
+void ServiceProviderPrivate::requestPointInfoUpdate(int index){
+    LOG(INFO)<<"backend paring";
+    currentRequestPointIndex=index;
+    this->devices->checkStatus();
+}
+
+void ServiceProviderPrivate::requestPointTest(){
+    if(currentRequestPointIndex<0){
+        LOG(INFO)<<"not paired return";
+    }
+
+    argsDone=false;
+    temperatureDone=false;
+    devices->checkAllArgs();
 }
 

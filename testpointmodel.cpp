@@ -61,6 +61,17 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
 
 
 
+    /*    enum TestPointRoles {
+        IndexRole = Qt::UserRole + 1,
+        DensityRole,
+        WaterRateRole,
+        AmpitudeRole,
+        PhaseAngleRole,
+        TemperatureRole,
+        GpsRole,
+        IsPairingRole,
+        isSelectedRole
+    };*/
     if (role == WaterRateRole) {
         // Set data in model here. It can also be a good idea to check whether
         // the new value actually differs from the current value
@@ -69,6 +80,26 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
            emit chartNeedsUpdate();
            qDebug()<<"chart needs update";
            return true;
+    }
+    if(role==TemperatureRole){
+           sequence[index.row()]->temperature=data.toDouble();
+           emit dataChanged(index,index,{TemperatureRole});
+    }
+    if(role==PhaseAngleRole){
+           sequence[index.row()]->phaseAngle=data.toDouble();
+           emit dataChanged(index,index,{PhaseAngleRole});
+    }
+    if(role==DensityRole){
+           sequence[index.row()]->density=data.toDouble();
+           emit dataChanged(index,index,{Qt::EditRole,DensityRole});
+    }
+    if(role==GpsRole){
+           sequence[index.row()]->gps=data.toBool();
+           emit dataChanged(index,index,{GpsRole});
+    }
+    if(role==AmpitudeRole){
+           sequence[index.row()]->ampitude=data.toDouble();
+           emit dataChanged(index,index,{Qt::EditRole, WaterRateRole});
     }
     if(role==isSelectedRole){
 

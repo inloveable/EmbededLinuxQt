@@ -268,6 +268,13 @@ Item {
                     TestTwoPoint{
                         anchors.fill: parent
                         color:"transparent"
+
+                        onTestA:{
+                            requestPointTest()
+                        }
+                        onTestB:{
+                            requestPointTest();
+                        }
                     }
 
                 }
@@ -332,6 +339,19 @@ Item {
 
                         anchors.fill: parent
                         anchors.topMargin: 0
+
+                        Connections{
+                            target:Service
+                            function onRequestParingComplete(result,index){
+                                let item=listView.itemAtIndex(index)
+                                if(result===true){
+                                    item.paringStatus="INIT"
+                                }else{
+                                    item.paringStatus="ERROR"
+                                }
+                            }
+                        }
+
                         header:ViewHeader{
                                width:parent.width
                                height:50
@@ -396,6 +416,10 @@ Item {
                                     keyboard1.state="invoked"
                                 }
                                 listView.currentIndex=index
+                            }
+                            onRequireTest: function(index){
+                                Service.requestPointInfoUpdate(index)
+                                paringStatus="PAIRING"
                             }
 
 

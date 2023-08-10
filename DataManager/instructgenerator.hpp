@@ -1,8 +1,11 @@
 
 #pragma once
 
+#include "qmath.h"
 #include<array>
 #include <complex>
+#include <exception>
+#include <functional>
 #include <type_traits>
 
 
@@ -24,10 +27,17 @@ public:
     void parseData(std::array<unsigned char,8>& data);
 
 
+    std::function<void(int)>                  batteryCb;
+    std::function<void(float)>                temperatureCb;
+    std::function<void(float,float,float)>    argCb;
+    std::function<void(bool,bool,bool)>       statusCb;
+
 private:
 
     template<unsigned char N>
     inline void    read(std::array<unsigned char,8>& data);
+
+
 
 
 };
@@ -48,9 +58,12 @@ InstructGenerator::getInstruction(){
 
 template<>
 inline void InstructGenerator::read<0x01>(std::array<unsigned char, 8>& data) {
-    // 读取状态
-    unsigned char status = data[3];  // 假设状态位在第4个字节
-    // 执行针对状态的操作
+    try{
+        statusCb(data[3],data[4],data[5]);
+    }catch(...){
+
+    }
+
 }
 
 template<>
@@ -68,6 +81,27 @@ inline void InstructGenerator::read<0x02>(std::array<unsigned char, 8>& data) {
    // std::complex<float> val;//conflict between compliers
     //val._Val[0]=real_data;
     ///val._Val[1]=img_data;
+    ///
+    auto mag=sqrt(std::pow(real_data,2)+std::pow(img_data,2));
+    auto alpha =atan(img_data/ real_data);
+
+    if(real_data<0 &&img_data>0){
+        alpha = atan((float)img_data/(float)real_data)/M_PI*180+180;
+    }
+    if (real_data<0 &&img_data<0){
+        alpha = atan((float)img_data/(float)real_data)/M_PI*180+180;
+    }
+    if (real_data>0 &&img_data<0){
+        alpha = atan((float)img_data/(float)real_data)/M_PI*180+360;
+    }
+
+    auto Amp =1/ mag* 10000;
+
+    try{
+        argCb(mag,alpha,Amp);
+    }catch(std::exception& ex){
+        LOG(WARNING)<<"arg cb not set";
+    }
 }
 
 template<>
@@ -87,6 +121,12 @@ inline void InstructGenerator::read<0x03>(std::array<unsigned char, 8>& data) {
         tj = part_int+part_fraction;
     }
     LOG(INFO)<<"recv temperature:"<<tj;
+
+    try{
+        temperatureCb(tj);
+    }catch(std::exception& ex){
+        LOG(WARNING)<<"temperature cb not set";
+    }
 }
 
 template<>
@@ -96,5 +136,13 @@ inline void InstructGenerator::read<0x04>(std::array<unsigned char, 8>& data) {
     // 根据获取到的数据执行针对电池电量的操作
     int val=A31to24;
     LOG(INFO)<<"recv battery:"<<val<<"%";
+
+
+
+    try{
+        batteryCb(val);
+    }catch(std::exception& ex){
+        LOG(WARNING)<<"battery cb not set";
+    }
 }
 
