@@ -264,10 +264,9 @@ Item {
             ]
 
             onClicked: {
-                if(root.isPairing){
-                    return;
+                if(state=="PAIRING"){
+                    return
                 }
-                root.isPairing=true;
                 requireTest(itemIndex);
             }
 
