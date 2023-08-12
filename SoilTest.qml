@@ -205,7 +205,7 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
 
-                //anchors.bottomMargin:40
+                anchors.bottomMargin: 40
                 anchors.rightMargin: 40
 
                 onReturnSignal:{
@@ -217,6 +217,7 @@ Rectangle {
                     if(type==="deleteTest"){
                         Service.removeProject(listView.currentItem.projectIndex)
                     }else if(type==="openTest"){
+                        Service.prepareProject(listView.currentItem.projectIndex)
                         let item=swipeView.push(
                                 "qrc:/SoilTest/SoilTestPoint.qml",
                                 {
@@ -226,6 +227,7 @@ Rectangle {
                                 )
 
                         item.returnSignal.connect(function(){
+                            Service.projectInfoExit();
                             swipeView.pop()
                         }
                         )

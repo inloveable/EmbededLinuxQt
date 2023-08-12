@@ -73,22 +73,29 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
     if(role==TemperatureRole){
            sequence[index.row()]->temperature=data.toDouble();
            emit dataChanged(index,index,{TemperatureRole});
+           return true;
     }
     if(role==PhaseAngleRole){
            sequence[index.row()]->phaseAngle=data.toDouble();
            emit dataChanged(index,index,{PhaseAngleRole});
+           return true;
     }
     if(role==DensityRole){
            sequence[index.row()]->density=data.toDouble();
            emit dataChanged(index,index,{Qt::EditRole,DensityRole});
+           qDebug()<<"density change:"<<sequence[index.row()]->density<<" density about:"<<data.toDouble();
+           emit chartNeedsUpdate();
+           return true;
     }
     if(role==GpsRole){
            sequence[index.row()]->gps=data.toBool();
            emit dataChanged(index,index,{GpsRole});
+           return true;
     }
     if(role==AmpitudeRole){
            sequence[index.row()]->ampitude=data.toDouble();
-           emit dataChanged(index,index,{Qt::EditRole, WaterRateRole});
+           emit dataChanged(index,index,{Qt::EditRole,AmpitudeRole});
+           return true;
     }
     if(role==isSelectedRole){
 
@@ -107,7 +114,13 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
     }
     if(role==ModelRole){
             sequence[index.row()]->modelIndex=data.toInt();
-            emit dataChanged(index,index,{Qt::EditRole,DensityRole});
+            emit dataChanged(index,index,{Qt::EditRole,ModelRole});
+            return true;
+    }
+    if(role==Solidity){
+            sequence[index.row()]->soildity=data.toFloat();
+            emit dataChanged(index,index,{Qt::EditRole,Solidity});
+            return true;
     }
     return false;
 }
@@ -207,6 +220,8 @@ QHash<int, QByteArray> TestPointModel::roleNames() const{
     roles[GpsRole] = "gps";
     roles[IsPairingRole] = "isPairing";
     roles[isSelectedRole]="isSelected";
+    roles[Solidity]="solidity";
+    roles[ModelRole]="modelIndex";
     return roles;
 }
 

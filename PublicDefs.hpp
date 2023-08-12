@@ -7,6 +7,7 @@
 #include <variant>
 #include<vector>
 #include<QList>
+#include<QMetaType>
 class TestPointInfo{
 public:
 
@@ -40,6 +41,7 @@ public:
     float  temperature;
     bool    gps;
     bool    isPairing;
+    int    pointId=-1;//to updateInfo in database;
 
 
     int modelIndex=0;
@@ -64,8 +66,11 @@ class ProjectInfo{
 public:
     QString projectName;
     int     projectId;
+    QString gps;
+    QString createTime;
     QList<std::shared_ptr<TestPointInfo>> points;
 };
+Q_DECLARE_METATYPE(ProjectInfo);
 
 
 

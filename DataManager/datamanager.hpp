@@ -33,6 +33,9 @@ public:
     enum class BelongType{Model=0,Project=1};
     void saveTestPoint(const std::shared_ptr<TestPointInfo>& point,
                        BelongType belong,int belongId);
+    std::vector<int> getPoints(int belongId,BelongType belongType);
+    std::shared_ptr<TestPointInfo> getPointWithId(int id);
+
 
 
     Q_INVOKABLE QList<QPair<QString,int>> getModelInfoFromDb();
@@ -42,6 +45,9 @@ public:
     QList<QObject*> getAllProjectInfo();
     void            addProject(QString project,QString createTime,QString gps);
     void            removeProject(int index);
+
+
+    std::tuple<QString,QString,QString> getProjectInfo(int index);
 
 
 signals:
@@ -55,7 +61,7 @@ private:
 
     int  getProjectId(QString name);
     int  getSoilModelId(QString name);
-    void getPointsWithId(int id,BelongType type);
+
 
 
 

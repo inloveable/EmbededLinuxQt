@@ -55,17 +55,14 @@ Item {
                 }
 
             }
-
-
-
             x:root.width/2-width/2
-            y:root.height/2-height/2
+            y:root.height-height
             states: [
                 State{
                     name:"stayPut"
                     PropertyChanges {
                         target: rect
-                        y:root.height/2-height/2
+                        y:root.height-height
                         rotation:0
                     }
                 },
@@ -73,7 +70,7 @@ Item {
                     name:"expanded"
                     PropertyChanges {
                         target: rect
-                        y:model.expandXoffset+root.height/2-height/2
+                        y:model.expandXoffset+root.height-height
                         rotation:360
                     }
 

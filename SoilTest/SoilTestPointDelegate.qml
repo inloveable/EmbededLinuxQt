@@ -1,15 +1,32 @@
 import QtQuick 2.15
-
+import QtQuick.Controls 2.15
 Rectangle {
 
     id:root
     signal densityInputActive(bool active)
     signal waterRateInputActive(bool active)
+    signal solidityInputActive(bool active)
+    property alias densityFocus:densityEdit.focus
+    property alias waterRateFocus:waterRateEdit.focus
+    property alias solidtiyFocus:solidity.focus
+
+    color:"transparent"
+
+    function disableEdit(){
+        waterRateEdit.focus=false
+        densityEdit.focus=false
+        solidity.focus=false;
+    }
 
 
-    property alias index:indexText.text
+    property alias indexText:indexText.text
+    property alias comboBoxModel:modelCombo.model
+    property alias comboValue:modelCombo.currentIndex
     property alias densityText:densityEdit.text
     property alias waterRateText:waterRateEdit.text
+    property alias phaseAngleText:phaseAngleText.text
+    property alias ampText:ampText.text
+    property alias solidityText:solidity.text
 
 
     property var widthRate:[]
@@ -25,23 +42,41 @@ Rectangle {
     }
     Row{
         anchors.fill: parent
-        Text{
-            id:indexText
+        Rectangle{
             width:getWidth(0)
             height:parent.height
+            color:"transparent"
+            Text{
+                id:indexText
 
-            horizontalAlignment: Qt.AlignHCenter
-            verticalAlignment: Qt.AlignVCenter
+                anchors.fill: parent
 
-            font.pixelSize: 16
-            font.bold: true
-            color:"white"
+
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+
+                font.pixelSize: 20
+                font.bold: true
+                color:"white"
+            }
         }
+
+
+        Rectangle{
+            width:getWidth(1)
+            height:parent.height
+            color:"transparent"
+            ComboBox{
+                id:modelCombo
+                anchors.fill:parent
+            }
+        }
+
         Rectangle{
             //color:backgroundColor
             opacity:0.5
             height:parent.height
-            width:getWidth(1)
+            width:getWidth(2)
 
             Rectangle{
                 width:parent.width-10
@@ -70,6 +105,8 @@ Rectangle {
                     onFocusChanged: {
                         console.log("density focus:"+densityEdit.focus)
                         densityInputActive(densityEdit.focus)
+                        if(focus===false)
+                        model.density=densityEdit.text
                     }
                     //elide:Text.ElideRight
                 }
@@ -79,7 +116,8 @@ Rectangle {
             //color:backgroundColor
             opacity:0.5
             height:parent.height
-            width:getWidth(2)
+            width:getWidth(3)
+
 
             Rectangle{
                 width:parent.width-10
@@ -108,6 +146,68 @@ Rectangle {
                 }
             }
         }
+        Rectangle{
+            height:parent.height
+            width:getWidth(4)
+            border.width: 1
+            border.color: "gray"
+            color:"transparent"
 
+            Text{
+                id:phaseAngleText
+                anchors.fill: parent
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+
+                font.pixelSize: 20
+                font.bold: true
+                color:"white"
+            }
+        }
+        Rectangle{
+            height:parent.height
+            width:getWidth(5)
+            border.width: 1
+            border.color: "gray"
+
+            color:"transparent"
+
+            Text{
+                id:ampText
+                anchors.fill: parent
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+
+                font.pixelSize: 20
+                font.bold: true
+                color:"white"
+            }
+        }
+
+        Rectangle{
+            height:parent.height
+            width:getWidth(5)
+
+            border.width: 1
+            border.color: "white"
+            radius:5
+            color:solidity.focus?"white":"transparent"
+            opacity:0.5
+
+            TextEdit{
+                id:solidity
+                anchors.fill: parent
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                font.pixelSize: 20
+                font.bold: true
+                color:"white"
+                onFocusChanged: {
+                    solidityInputActive(solidity.focus)
+                    if(focus===false)
+                    model.solidity=solidity.text
+                }
+            }
+        }
     }
 }

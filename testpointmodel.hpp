@@ -28,6 +28,7 @@ public:
         GpsRole,
         IsPairingRole,
         isSelectedRole,
+        Solidity,
         ModelRole
     };
     Q_ENUM(TestPointRoles)

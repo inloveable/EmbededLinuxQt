@@ -12,6 +12,7 @@
 #include<glog/logging.h>
 
 #include<QDateTime>
+#include <vector>
 DataManager::DataManager(QObject *parent)
     : QObject{parent}
 {
@@ -128,34 +129,52 @@ DataManager::BelongType DataManager::getBelongType(int id)
     return BelongType::Model; // 默认返回模型类型
 }
 
-void DataManager::getPointsWithId(int id, BelongType type)
+std::vector<int> DataManager::getPoints(int belongId,BelongType belongType){
+    std::vector<int> rec;
+
+    LOG(INFO)<<"getting point ids with:"<<belongId<<" belongType:"<<(int)belongType;
+
+    QSqlQuery query;
+    query.prepare("SELECT pointId FROM measurementPoint WHERE belongId=:id AND belongType=:belongType");
+    query.bindValue(":id", belongId);
+    query.bindValue(":belongType",(int)belongType);
+    if (!query.exec()) {
+        qDebug() << "Failed to execute query, error:" << query.lastError().text();
+        return rec; // 默认返回模型类型
+    }
+
+    while(query.next()){
+        rec.push_back(query.value("pointId").toInt());
+    }
+
+    return rec;
+}
+
+std::shared_ptr<TestPointInfo> DataManager::getPointWithId(int id)
 {
 
     QSqlQuery query;
-    query.prepare("SELECT * FROM measurementPoint WHERE belongType=:type");
+    query.prepare("SELECT * FROM measurementPoint WHERE pointId=:id");
     query.bindValue(":id", id);
-    query.bindValue(":type",int(type));
 
     if (!query.exec()) {
         qDebug() << "Failed to execute query, error:" << query.lastError().text();
-        return;
+        return nullptr;
     }
-    while (query.next()) {
-        // 处理查询结果
-        int pointId = query.value("pointId").toInt();
-        QString pointName = query.value("pointName").toString();
-        int belongId = query.value("belongId").toInt();
-        int belongType = query.value("belongType").toInt();
-        int buildModel = query.value("buildModel").toInt();
-        int pointIndex = query.value("pointIndex").toInt();
-        qreal density = query.value("density").toReal();
-        qreal waterContent = query.value("waterContent").toReal();
-        qreal amplitude = query.value("amplitude").toReal();
-        qreal phase = query.value("phase").toReal();
-        qreal temperature = query.value("temperature").toReal();
-        // 处理测点记录
-        // ...
+    std::shared_ptr<TestPointInfo> rec{nullptr};
+    while (query.next()) {      
+        rec = std::make_shared<TestPointInfo>();
+        rec->pointId = query.value("pointId").toInt();
+        rec->modelIndex = query.value("modelId").toInt();
+        rec->index = query.value("pointIndex").toInt();
+        rec->density = query.value("density").toReal();
+        rec->waterRate = query.value("waterContent").toReal();
+        rec->ampitude = query.value("amplitude").toReal();
+        rec->phaseAngle = query.value("phase").toReal();
+        rec->temperature = query.value("temperature").toReal();
     }
+
+    return rec;
 }
 
 void DataManager::init(){
@@ -251,8 +270,36 @@ void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, Bel
 
     // 准备 SQL 查询语句
     QSqlQuery query;
+
+    query.exec(QString("select * from measurementPoint where pointId='%1'").arg(point->pointId));
+    if(query.next()){
+        LOG(INFO)<<"point exists,updating";
+        query.prepare("UPDATE measurementPoint SET pointIndex=:pointIndex, density=:density, waterContent=:waterContent, "
+                      "amplitude=:amplitude, phase=:phase, temperature=:temperature, gps=:gps, soildity=:soildity, "
+                      "dryDensity=:dryDensity, belongType=:belongType, belongId=:belongId WHERE pointId=:pointId");
+        query.bindValue(":pointIndex", point->index);
+        query.bindValue(":density", point->density);
+        query.bindValue(":waterContent", point->waterRate);
+        query.bindValue(":amplitude", point->ampitude);
+        query.bindValue(":phase", point->phaseAngle);
+        query.bindValue(":temperature", point->temperature);
+        query.bindValue(":gps", point->gps);
+        query.bindValue(":soildity", point->soildity);
+        query.bindValue(":dryDensity", point->dryDesity);
+        query.bindValue(":belongType", (int)belong);
+        query.bindValue(":belongId", belongId);
+        query.bindValue(":pointId", point->pointId);
+        if(!query.exec()){
+            LOG(WARNING)<<"sql error:"<<query.lastError().text().toStdString();
+        }
+
+        return;
+
+    }
+
+
     query.prepare("INSERT INTO measurementPoint (pointIndex, density, waterContent, amplitude, phase,"
-                  " temperature, gps, soildity, dryDensity, belongType, belongId) "
+                  "temperature, gps, soildity, dryDensity, belongType, belongId) "
                   "VALUES (:pointIndex, :density, :waterContent, :amplitude, :phase, "
                   ":temperature, :gps, :soildity, :dryDensity, :belongType, :belongId)");
 
@@ -268,11 +315,19 @@ void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, Bel
     query.bindValue(":dryDensity", point->dryDesity);
     query.bindValue(":belongType", static_cast<int>(belong));
     query.bindValue(":belongId", belongId);
+
+
     // 执行查询
     if (!query.exec()) {
         qWarning() << "Failed to insert test point, error:" << query.lastError().text();
         return;
     }
+
+
+    query.exec("SELECT MAX(pointId) FROM measurementPoint;");
+    query.next();
+    int index=query.value(0).toInt();
+    point->pointId=index;
 }
 
 
@@ -327,4 +382,21 @@ void DataManager::removeProject(int index){
 
 QList<QPair<QString,int>> DataManager::getModelInfoFromDb(){
     return QList<QPair<QString,int>>{};
+}
+
+std::tuple<QString,QString,QString> DataManager::getProjectInfo(int index){
+    auto db=QSqlDatabase::database();
+    if(!db.open()){
+        LOG(INFO)<<"db not open in:getProjectInfo";
+    }
+    QSqlQuery query{db};
+    query.exec(QString("select name,createTime,gps from projectInfo where id='%1'").arg(index));
+
+    std::tuple<QString,QString,QString> rec;
+    while(query.next()){
+        std::get<0>(rec)=query.value("name").toString();
+        std::get<1>(rec)=query.value("createTime").toString();
+        std::get<2>(rec)=query.value("gps").toString();
+    }
+    return rec;
 }

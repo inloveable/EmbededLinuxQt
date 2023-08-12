@@ -3,6 +3,7 @@
 #include "modelinfo.hpp"
 
 #include "qmetaobject.h"
+#include "qnamespace.h"
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
 #include"serialmanager.hpp"
@@ -17,9 +18,10 @@
 #include <memory>
 
 Q_DECLARE_METATYPE(std::shared_ptr<ModelInfo>);
+Q_DECLARE_METATYPE(std::shared_ptr<ProjectInfo>);
 
 ServiceProvider::ServiceProvider(QObject *parent)
-    : tModel{nullptr},modelInfo{nullptr},QObject{parent}
+    : QObject{parent},modelInfo{nullptr},projectInfo{nullptr},tModel{nullptr}
 {
     d=new ServiceProviderPrivate();
     this->serviceThread=new QThread();
@@ -38,9 +40,13 @@ ServiceProvider::ServiceProvider(QObject *parent)
     QStringList fontFamilies = data.families();
 
     qDebug()<<"fonts:"<<fontFamilies;
-    qRegisterMetaType<ModelInfo>();
 
+
+    qRegisterMetaType<ModelInfo>();
     qRegisterMetaType<std::shared_ptr<ModelInfo>>();
+    qRegisterMetaType<ProjectInfo>();
+    qRegisterMetaType<std::shared_ptr<ProjectInfo>>();
+
 
     //tModel=new TestPointModel(this);
 
@@ -82,7 +88,15 @@ TestPointModel* ServiceProvider::getTestPointModel_Project(){
 }
 
 void ServiceProvider::prepareProject(int index){
+    if(!projectInfo){
+        projectInfo=std::make_unique<ProjectInfo>();
+    }
+    if(!projectTestPointModel){
+        projectTestPointModel=new TestPointModel(this);
+    }
 
+    projectInfo->projectId=index;
+    emit this->sendProjectInfoToInit(projectInfo.get(),projectTestPointModel);
 }
 
 
@@ -209,6 +223,9 @@ void ServiceProvider::initPrivateSignals(){
         auto modelIndex=obj->tModel->index(index);
         obj->tModel->setData(modelIndex,temp,TestPointModel::TemperatureRole);
     });
+    connect(this,&ServiceProvider::sendProjectInfoToInit,d,&ServiceProviderPrivate::onSentProjectInfo
+            ,Qt::BlockingQueuedConnection);//for sync
+    connect(this,&ServiceProvider::saveProjectInfo,d,&ServiceProviderPrivate::onSaveProjectInfo);
 
 }
 
@@ -217,8 +234,52 @@ void ServiceProvider::addProject(QString name){
 }
 
 void ServiceProvider::removeProject(int index){
-    LOG(INFO)<<"front end service remove project called";
      QMetaObject::invokeMethod(d,"removeProject",Q_ARG(int,index));
+}
+
+void ServiceProvider::projectInfoExit(){
+     LOG(INFO)<<"project info exiting";
+     if(projectInfo){
+         projectInfo=nullptr;
+     }
+     if(this->projectTestPointModel){
+         projectTestPointModel->deleteLater();
+         projectTestPointModel=nullptr;
+     }
+}
+
+void ServiceProvider::projectInfoSave(){
+     LOG(INFO)<<"saving project info";
+     emit this->saveProjectInfo(projectInfo.get());
+}
+
+void ServiceProvider::addProjectTestPoint()
+{
+     if(projectInfo==nullptr){
+         return;
+     }
+     auto ptr=TestPointInfo::generate(projectInfo->points.size(),0,0,0,0,0,false);
+     ptr->soildity=0;
+     ptr->modelIndex=0;
+     ptr->dryDesity=0;
+     ptr->gps="--";
+
+
+     projectTestPointModel->add(ptr);
+     projectInfo->points.push_back(ptr);
+
+}
+void ServiceProvider::removeProjectTestPoint(int index)
+{
+     if(projectInfo==nullptr){
+         return;
+     }
+     if(projectInfo->points.size()==0){
+         LOG(INFO)<<"no more to delete";
+         return;
+     }
+     projectTestPointModel->removePoint(index);
+     projectInfo->points.removeAt(index);
 }
 
 

@@ -10,6 +10,7 @@
 class TestPointModel;
 class DeviceManager;
 class ModelInfo;
+class ProjectInfo;
 class ServiceProviderPrivate : public QObject
 {
     Q_OBJECT
@@ -79,7 +80,8 @@ public:
 
     Q_INVOKABLE void requestPointInfoUpdate(int index);//配对
     Q_INVOKABLE void requestPointTest();//测试
-
+    void onSentProjectInfo(ProjectInfo* project,TestPointModel* model);
+    void onSaveProjectInfo(ProjectInfo* project);
 
 signals:
 
@@ -109,6 +111,8 @@ signals:
     void pointParingComplete(bool,int index);
 
     void sendStatus(bool ,bool ,bool);
+
+
 private:
     QNetworkAccessManager* manager;
 

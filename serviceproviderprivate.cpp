@@ -1,5 +1,6 @@
 
 #include "serviceproviderprivate.hpp"
+#include "PublicDefs.hpp"
 #include "devicemanager.hpp"
 #include "qjsondocument.h"
 #include "qjsonobject.h"
@@ -215,5 +216,39 @@ void ServiceProviderPrivate::removeProject(int index){
     DataManager::getInstance().removeProject(index);
 
     emit this->projectInfoNeedsUpdate();
+}
+
+void ServiceProviderPrivate::onSentProjectInfo(ProjectInfo* project,
+                                               TestPointModel* projectModel){
+    //sender guarantees project has correct index(projectId)
+
+    LOG(INFO)<<"backend project info init";
+    auto& data=DataManager::getInstance();
+    auto [name,createTime,gps]=data.getProjectInfo(project->projectId);
+    project->projectName=name;
+    project->createTime=createTime;
+    project->gps=gps;
+
+    const auto pointIds=data.getPoints(project->projectId,DataManager::BelongType::Project);
+
+    for(auto&& id:pointIds){
+        auto ptr=data.getPointWithId(id);
+        project->points.push_back(ptr);
+        projectModel->add(ptr);
+    }
+
+    LOG(INFO)<<"project total poing count:"<<project->points.size();
+
+}
+
+void ServiceProviderPrivate::onSaveProjectInfo(ProjectInfo* info){
+    LOG(INFO)<<"backend saving project info";
+    auto& data=DataManager::getInstance();
+
+
+    for(auto&& i:info->points){
+        data.saveTestPoint(i,DataManager::BelongType::Project,info->projectId);
+    }
+
 }
 

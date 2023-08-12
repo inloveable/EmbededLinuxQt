@@ -11,6 +11,7 @@
 class TestPointModel;
 class ServiceProviderPrivate;
 class ModelInfo;
+class ProjectInfo;
 class ServiceProvider : public QObject
 {
     Q_OBJECT
@@ -52,6 +53,10 @@ class ServiceProvider : public QObject
 
     Q_INVOKABLE void            prepareProject(int index);
     Q_INVOKABLE TestPointModel* getTestPointModel_Project();
+    Q_INVOKABLE void            projectInfoSave();
+    Q_INVOKABLE void            projectInfoExit();
+    Q_INVOKABLE void            addProjectTestPoint();
+    Q_INVOKABLE void            removeProjectTestPoint(int index);
     /*------------------------------------------------------------*/
 
     bool  usbOnline()const{return hasUsb;};
@@ -85,6 +90,10 @@ signals:
 
     void requestParingComplete(bool,int);
 
+    void sendProjectInfoToInit(ProjectInfo*,TestPointModel*);
+    void saveProjectInfo(ProjectInfo* info);
+
+
 
 
 private:
@@ -108,6 +117,7 @@ private:
 
 
     std::unique_ptr<ModelInfo> modelInfo;
+    std::unique_ptr<ProjectInfo> projectInfo;
     TestPointModel* tModel;
     TestPointModel* projectTestPointModel=nullptr;
 
