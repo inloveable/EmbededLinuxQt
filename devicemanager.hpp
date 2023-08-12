@@ -29,6 +29,10 @@ public:
     bool batterry=false;
     bool temperature=false;
 
+    QString getGps() const {
+        return gps;
+    };
+
 
 signals:
     void detectedUsb(QString usb);
@@ -54,8 +58,8 @@ private:
     SerialManager* serials=nullptr;
 
 
-
-
-
+    QString gps="--";
 };
+
+
 

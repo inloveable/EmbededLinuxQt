@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-
+import "../keyboard/content/"
+import CppCore 1.0
 Rectangle {
    id:root
 
@@ -11,10 +12,10 @@ Rectangle {
 
    signal returnSignal()
 
-   property string projectName
+   property string projectId
 
    Component.onCompleted: {
-       console.log("item project name:["+projectName+"]")
+
    }
 
    ListView {
@@ -24,46 +25,67 @@ Rectangle {
        height: 257
 
        anchors.horizontalCenter: parent.horizontalCenter
-       model: ListModel {
-           ListElement {
-               name: "Grey"
-               colorCode: "grey"
-           }
+       model: Service.getTestPointModel_Project(projectId)
+       delegate: SoilTestPointDelegate{
+           width:parent.width
+           height:50
+       }
 
-           ListElement {
-               name: "Red"
-               colorCode: "red"
-           }
+       Connections{
+           target:keyboard1
+           function onKeyPressed(textR){
+               if(textR!=="."&&isNaN(Number(textR))){
+                   return;
+               }
 
-           ListElement {
-               name: "Blue"
-               colorCode: "blue"
-           }
+               if(listView.currentItem.densityFocus){
+                   //all these effert are for the absence of virtualkeyboard
+                   let text=listView.currentItem.densityText
+                   listView.currentItem.densityText=text+textR
 
-           ListElement {
-               name: "Green"
-               colorCode: "green"
+               }
+               else if(listView.currentItem.waterRateFocus){
+                   let text=listView.currentItem.waterRateText
+                   listView.currentItem.waterRateText=text+textR
+
+               }else{
+                   return;
+               }
+           }
+           function onDeleteSignal(){
+              let active;
+              if(listView.currentItem.densityFocus){
+                  //all these effert are for the absence of virtualkeyboard
+                  let text=listView.currentItem.densityText
+                  listView.currentItem.densityText=
+                          text.substring(0, text.length - 1)
+              }
+              else if(listView.currentItem.waterRateFocus){
+                  let text=listView.currentItem.waterRateText
+                  listView.currentItem.waterRateText=
+                          text.substring(0, text.length - 1)
+              }else{
+                  return;
+              }
            }
        }
-       delegate: Item {
-           x: 5
-           width: 80
-           height: 40
-           Row {
-               id: row1
-               Rectangle {
-                   width: 40
-                   height: 40
-                   color: colorCode
-               }
+   }
 
-               Text {
-                   text: name
-                   anchors.verticalCenter: parent.verticalCenter
-                   font.bold: true
-               }
-               spacing: 10
-           }
+   Screen01{
+       id:keyboard1
+       z:99
+       width:parent.width
+       height:parent.height/2
+
+       opacity:0.3
+
+       screenHeight: parent.height
+
+       anchors.left: parent.left
+
+       onHostHidden: {
+
+              listView.currentItem.disableEdit()
        }
    }
 

@@ -35,8 +35,13 @@ public:
                        BelongType belong,int belongId);
 
 
+    Q_INVOKABLE QList<QPair<QString,int>> getModelInfoFromDb();
+
+
     //ProjectInfoObject*
-   QList<QObject*> getAllProjectInfo();
+    QList<QObject*> getAllProjectInfo();
+    void            addProject(QString project,QString createTime,QString gps);
+    void            removeProject(int index);
 
 
 signals:

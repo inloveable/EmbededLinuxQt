@@ -14,8 +14,7 @@ Item {
         densityEdit.focus=false
     }
 
-    signal densityInputActive(bool active)
-    signal waterRateInputActive(bool active)
+
 
     property string paringStatus:"INIT";
 
@@ -31,6 +30,8 @@ Item {
 
     property alias densityFocus:densityEdit.focus
     property alias waterRateFocus:waterRateEdit.focus
+    signal densityInputActive(bool active)
+    signal waterRateInputActive(bool active)
 
     property alias densityText:densityEdit.text
     property alias waterRateText:waterRateEdit.text

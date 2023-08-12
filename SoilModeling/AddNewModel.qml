@@ -75,6 +75,7 @@ Item {
                                  let active;
                                 if(rectangle2.ptextFocus){
                                     active=rectangle2
+                                    Service.setModelName(active.inputText+textR)
                                 }
                                 else if(rectangle3.ptextFocus){
                                     active=rectangle3
@@ -90,6 +91,8 @@ Item {
                                let active;
                                if(rectangle2.ptextFocus){
                                    active=rectangle2
+                                   Service.setModelName(active.inputText.substring(0, active.inputText.length - 1))
+
                                }
                                else if(rectangle3.ptextFocus){
                                    active=rectangle3
@@ -113,6 +116,7 @@ Item {
 
                             onTextFocusChanged:function(fo){
 
+                                console.log("inputing model name")
                                 if(fo===true){
 
                                     keyboard.state="invoked"
@@ -121,6 +125,7 @@ Item {
                                     if(row.anyFocus()){
                                         return;
                                     }
+
                                     keyboard.state="hidden"
                                 }
                             }

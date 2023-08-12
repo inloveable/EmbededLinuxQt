@@ -71,7 +71,8 @@ void DataManager::initializeDatabase(){
                     "pointIndex INTEGER,"
                     "gps varchar,"
                     "soildity REAL,"
-                    "dryDensity REAL"
+                    "dryDensity REAL,"
+                    "modelId INTEGER"//only useful when belongType==1
                     ")")) {
         qDebug() << "Failed to create table, error:" << query.lastError().text();
     }
@@ -242,7 +243,6 @@ void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, Bel
     // 建立数据库连接
     QSqlDatabase database = QSqlDatabase::database();
 
-
     // 打开数据库
     if (!database.open()) {
         qWarning() << "Failed to open database";
@@ -275,3 +275,56 @@ void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, Bel
     }
 }
 
+
+void DataManager::addProject(QString project,QString createTime,QString gps){
+    QSqlQuery query;
+
+    query.exec("SELECT MAX(id) FROM projectInfo;");
+    query.next();
+    int index=query.value(0).toInt()+1;
+    qDebug()<<"model index:"<<index;
+    // 构建插入语句
+
+    QString insertQuery = QString("INSERT INTO projectInfo (id,name, createTime, gps) "
+                                  "VALUES ('%1', '%2', '%3','%4')")
+                              .arg(index)
+                              .arg(project)
+                              .arg(createTime)
+                              .arg(gps);
+    // 执行插入语句
+    if (!query.exec(insertQuery)) {
+        qDebug() << "Failed to add project, error:" << query.lastError().text();
+        // 关闭数据库连接或进行其他错误处理
+        return;
+    }
+
+    // 添加项目成功
+    qDebug() << "Project added successfully";
+    // 可以进行其他操作或返回适当的成功标识
+
+}
+
+void DataManager::removeProject(int index){
+
+    QSqlQuery query;
+    QString deleteQuery = QString("DELETE FROM projectInfo WHERE id = %1").arg(index);
+
+
+    if (!query.exec(deleteQuery)) {
+        return;
+    }
+
+    // 检查是否有行受到影响
+    if (query.numRowsAffected() > 0) {
+        // 删除成功
+        qDebug() << "Project removed successfully";
+    } else {
+        // 未找到匹配的项目
+        qDebug() << "No project found with index:" << index;
+    }
+
+}
+
+QList<QPair<QString,int>> DataManager::getModelInfoFromDb(){
+    return QList<QPair<QString,int>>{};
+}

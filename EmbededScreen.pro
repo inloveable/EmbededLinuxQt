@@ -19,8 +19,7 @@ SOURCES += \
         serviceprovider.cpp \
         serviceproviderprivate.cpp \
         testpointmodel.cpp \
-        timeprovider.cpp \
-        uiimageprovider.cpp
+        timeprovider.cpp
 
 RESOURCES += qml.qrc
 
@@ -77,5 +76,4 @@ HEADERS += \
     serviceprovider.hpp \
     serviceproviderprivate.hpp \
     testpointmodel.hpp \
-    timeprovider.hpp \
-    uiimageprovider.h
+    timeprovider.hpp

@@ -117,6 +117,7 @@ Rectangle {
 
 
 
+                    property alias projectIndex:indexText.text
                     property string projectName:projectNameText.text
                     color:ListView.isCurrentItem?"#47484c":"#61649f"
 
@@ -145,6 +146,7 @@ Rectangle {
                         }
 
                         Text {
+                            id:indexText
                             width: row1.getWidth(0)
                             height: parent.height
                             text:modelData.index
@@ -175,23 +177,24 @@ Rectangle {
                     }
                 }
 
+
+
                 Component.onCompleted: {
-                    Service.requestProjectInfo()
+                   Service.requestProjectInfo()
                 }
+                Connections{
+                    target:Service
 
-                //model: Service.requestProjectInfo()
-            }
-
-            Connections{
-                target:Service
-
-                function onSendProjectInfo(list){
-                      listView.model=list
-                }
-                function onProjectInfoNeedsUpdate(){
-                    Service.requestProjectInfo();
+                    function onSendProjectInfo(list){
+                          listView.model=list
+                    }
+                    function onProjectInfoNeedsUpdate(){
+                        Service.requestProjectInfo();
+                    }
                 }
             }
+
+
 
             ExpbandableNavigator {
                 id: expbandableNavigator
@@ -212,12 +215,12 @@ Rectangle {
 
                 onTypeInvoked: function(type){
                     if(type==="deleteTest"){
-                        listView.removeCurrent()
+                        Service.removeProject(listView.currentItem.projectIndex)
                     }else if(type==="openTest"){
                         let item=swipeView.push(
                                 "qrc:/SoilTest/SoilTestPoint.qml",
                                 {
-                                    projectName:listView.currentItem.projectName
+                                    projectId:listView.currentItem.projectId
                                 }
 
                                 )
@@ -226,6 +229,8 @@ Rectangle {
                             swipeView.pop()
                         }
                         )
+                    }else if(type==="addTest"){
+                      Service.addProject("project"+listView.count)
                     }
                 }
 

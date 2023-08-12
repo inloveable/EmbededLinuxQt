@@ -1,6 +1,7 @@
 
 #include "serviceprovider.hpp"
 #include "modelinfo.hpp"
+
 #include "qmetaobject.h"
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
@@ -24,41 +25,7 @@ ServiceProvider::ServiceProvider(QObject *parent)
     this->serviceThread=new QThread();
 
     serviceThread->start();
-
-    connect(d,&ServiceProviderPrivate::sendTime,this,&ServiceProvider::sendTime);
-    connect(d,&ServiceProviderPrivate::sendProjectInfo,this,&ServiceProvider::sendProjectInfo);
-    connect(d,&ServiceProviderPrivate::usbLoaded,this,[this](){
-        this->hasUsb=true;
-        emit usbOnlineChanged();
-    });
-    connect(d,&ServiceProviderPrivate::usbUnloaded,this,[this](){
-        this->hasUsb=false;
-        emit usbOnlineChanged();
-    });
-    connect(d,&ServiceProviderPrivate::batteryValueUpdated,this,[this](int val){
-        this->batteryValue=val;
-        emit this->batteryChanged();
-    });
-    connect(this,&ServiceProvider::saveModelInfo,d,&ServiceProviderPrivate::saveModelInfo);
-    //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
-    connect(d,&ServiceProviderPrivate::pointParingComplete,this,&ServiceProvider::requestParingComplete);
-    connect(d,&ServiceProviderPrivate::argsValueReady,this,[obj=this](float amp,float phase,int index){
-        if(obj->tModel==nullptr){
-            return;
-        }
-        auto modelIndex=obj->tModel->index(index);
-        obj->tModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
-        obj->tModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
-    });
-    connect(d,&ServiceProviderPrivate::temperatureValueReady,this,[obj=this](float temp,int index){
-        if(obj->tModel==nullptr){
-            return;
-        }
-        auto modelIndex=obj->tModel->index(index);
-        obj->tModel->setData(modelIndex,temp,TestPointModel::TemperatureRole);
-    });
-
-
+    initPrivateSignals();
     d->moveToThread(serviceThread);
     DataManager::getInstance().moveToThread(serviceThread);
 
@@ -78,6 +45,8 @@ ServiceProvider::ServiceProvider(QObject *parent)
     //tModel=new TestPointModel(this);
 
 }
+
+
 
 int ServiceProvider::getCurrentBattery(){
     return batteryValue;
@@ -103,11 +72,17 @@ void ServiceProvider::messageBox(QString text){
     QMessageBox::information(nullptr,"提示",text);
 }
 
-TestPointModel* ServiceProvider::getTestPointModel_Ex(const QString& name){
+TestPointModel* ServiceProvider::getTestPointModel_Project(){
 
-    //load model from database
-   // auto model=
+    if(this->projectTestPointModel!=nullptr){
+        return projectTestPointModel;
+    }
+
     return nullptr;
+}
+
+void ServiceProvider::prepareProject(int index){
+
 }
 
 
@@ -135,9 +110,6 @@ void ServiceProvider::prepareCreateNewModel(){
     LOG(INFO)<<"preparing create new model";
     if(modelInfo==nullptr){
         modelInfo=std::make_unique<ModelInfo>();
-
-
-
         if(tModel!=nullptr){
             tModel->deleteLater();
         }
@@ -147,14 +119,6 @@ void ServiceProvider::prepareCreateNewModel(){
             modelInfo->argB=b;
             modelInfo->argR2=r2;
         });
-
-        //only for test,use addNewModelTestPoint()
-        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),5.2,22,8000,32,36.3,false));
-        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,48,7000,12,35.3,true));
-        modelInfo->addTestPoint(TestPointInfo::generate(modelInfo->testPointSize(),6.2,92,9000,73,48.3,true));
-        for(int i=0;i<modelInfo->testPointSize();++i){
-            tModel->add(modelInfo->getTestPoint(i));
-        }
     }
 }
 
@@ -186,10 +150,9 @@ void  ServiceProvider::saveNewModel(){
 void  ServiceProvider::createNewModelExit(){
     if(modelSaved){
         LOG(INFO)<<"modelSaved safe exit";
+    }else{
+         LOG(INFO)<<"model unsaved,unsafe exit";
     }
-
-    LOG(INFO)<<"model unsaved,unsafe exit";
-
 
     modelInfo=nullptr;
     tModel->deleteLater();
@@ -203,6 +166,59 @@ void ServiceProvider::requestPointInfoUpdate(int index){
 
 void ServiceProvider::requestPointTest(){
     callBackend("requestPointTest");
+}
+
+void ServiceProvider::setModelName(QString name){
+    if(modelInfo!=nullptr){
+         LOG(INFO)<<"setting model name:"<<name.toStdString();
+         modelInfo->modelName=name;
+    }
+}
+
+void ServiceProvider::initPrivateSignals(){
+    connect(d,&ServiceProviderPrivate::sendTime,this,&ServiceProvider::sendTime);
+    connect(d,&ServiceProviderPrivate::sendProjectInfo,this,&ServiceProvider::sendProjectInfo);
+    connect(d,&ServiceProviderPrivate::projectInfoNeedsUpdate,this,&ServiceProvider::projectInfoNeedsUpdate);
+    connect(d,&ServiceProviderPrivate::usbLoaded,this,[this](){
+        this->hasUsb=true;
+        emit usbOnlineChanged();
+    });
+    connect(d,&ServiceProviderPrivate::usbUnloaded,this,[this](){
+        this->hasUsb=false;
+        emit usbOnlineChanged();
+    });
+    connect(d,&ServiceProviderPrivate::batteryValueUpdated,this,[this](int val){
+        this->batteryValue=val;
+        emit this->batteryChanged();
+    });
+    connect(this,&ServiceProvider::saveModelInfo,d,&ServiceProviderPrivate::saveModelInfo);
+    //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
+    connect(d,&ServiceProviderPrivate::pointParingComplete,this,&ServiceProvider::requestParingComplete);
+    connect(d,&ServiceProviderPrivate::argsValueReady,this,[obj=this](float amp,float phase,int index){
+        if(obj->tModel==nullptr){
+            return;
+        }
+        auto modelIndex=obj->tModel->index(index);
+        obj->tModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
+        obj->tModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
+    });
+    connect(d,&ServiceProviderPrivate::temperatureValueReady,this,[obj=this](float temp,int index){
+        if(obj->tModel==nullptr){
+            return;
+        }
+        auto modelIndex=obj->tModel->index(index);
+        obj->tModel->setData(modelIndex,temp,TestPointModel::TemperatureRole);
+    });
+
+}
+
+void ServiceProvider::addProject(QString name){
+    QMetaObject::invokeMethod(d,"addProject",Q_ARG(QString,name));
+}
+
+void ServiceProvider::removeProject(int index){
+    LOG(INFO)<<"front end service remove project called";
+     QMetaObject::invokeMethod(d,"removeProject",Q_ARG(int,index));
 }
 
 

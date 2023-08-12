@@ -27,8 +27,9 @@ public:
     TestPointModel*  getPreparedModel();
 
 
-
+    Q_INVOKABLE void removeProject(int index);
     Q_INVOKABLE void requestProjectInfo();
+    Q_INVOKABLE void addProject(QString project);
 
     Q_INVOKABLE void exportData();
 
@@ -89,7 +90,7 @@ signals:
 
 
     void sendProjectInfo(QList<QObject*> list);
-    Q_INVOKABLE void projectInfoNeedsUpdate();
+    void projectInfoNeedsUpdate();
 
 
 
@@ -115,6 +116,8 @@ private:
     TestPointModel* prepared=nullptr;
 
     QList<QObject*> projectInfoBuffer;
+
+
 
     DeviceManager* devices=nullptr;
 

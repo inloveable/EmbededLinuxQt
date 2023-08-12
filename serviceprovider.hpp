@@ -25,14 +25,8 @@ class ServiceProvider : public QObject
 
 
     Q_INVOKABLE void getTime();
-
     Q_INVOKABLE void messageBox(QString text);
-
-
     Q_INVOKABLE TestPointModel* getTestPointModel();
-
-    Q_INVOKABLE TestPointModel* getTestPointModel_Ex(const QString& name);
-    Q_INVOKABLE void            requestProjectInfo();
 
     Q_INVOKABLE void selfCheck();
 
@@ -43,14 +37,21 @@ class ServiceProvider : public QObject
     Q_INVOKABLE void addNewModelTestPoint();
     Q_INVOKABLE void saveNewModel();
     Q_INVOKABLE void createNewModelExit();
+    Q_INVOKABLE void setModelName(QString name);
 
 
 
     Q_INVOKABLE int getCurrentBattery();
-
     Q_INVOKABLE void requestPointInfoUpdate(int index);//配对
     Q_INVOKABLE void requestPointTest();//测试
 
+    //projectInfoApis
+    Q_INVOKABLE void            requestProjectInfo();
+    Q_INVOKABLE void            addProject(QString name);
+    Q_INVOKABLE void            removeProject(int index);
+
+    Q_INVOKABLE void            prepareProject(int index);
+    Q_INVOKABLE TestPointModel* getTestPointModel_Project();
     /*------------------------------------------------------------*/
 
     bool  usbOnline()const{return hasUsb;};
@@ -66,8 +67,12 @@ signals:
     void sendTime(QString,bool);
 
 
+
+    //projectInfo apis
     void sendProjectInfo(QList<QObject*> infos);
     Q_INVOKABLE void projectInfoNeedsUpdate();
+
+    //---------------------------------------------
 
     void usbOnlineChanged();
 
@@ -85,6 +90,7 @@ signals:
 private:
     QThread* serviceThread;
     ServiceProviderPrivate* d;
+    void initPrivateSignals();
 
 
 
@@ -103,9 +109,9 @@ private:
 
     std::unique_ptr<ModelInfo> modelInfo;
     TestPointModel* tModel;
+    TestPointModel* projectTestPointModel=nullptr;
 
     int batteryValue=100;
-
 
 
 

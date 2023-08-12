@@ -23,6 +23,11 @@ public:
     inline std::enable_if_t<std::is_base_of_v<ReadPacket,T>,std::array<unsigned char,8>>
     getInstruction();
 
+    /*
+     * AA 55 01 01 01 00 00 00 :STATUS RESPOND
+     * AA 55 03 00 00 00 00 00  温度
+     */
+
 
     void parseData(std::array<unsigned char,8>& data);
 

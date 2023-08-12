@@ -61,17 +61,6 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
 
 
 
-    /*    enum TestPointRoles {
-        IndexRole = Qt::UserRole + 1,
-        DensityRole,
-        WaterRateRole,
-        AmpitudeRole,
-        PhaseAngleRole,
-        TemperatureRole,
-        GpsRole,
-        IsPairingRole,
-        isSelectedRole
-    };*/
     if (role == WaterRateRole) {
         // Set data in model here. It can also be a good idea to check whether
         // the new value actually differs from the current value
@@ -115,6 +104,10 @@ bool TestPointModel::setData(const QModelIndex& index,const QVariant& data,int r
             emit requireSeiresSwap(index.row(),isReverse);
 
             return true;
+    }
+    if(role==ModelRole){
+            sequence[index.row()]->modelIndex=data.toInt();
+            emit dataChanged(index,index,{Qt::EditRole,DensityRole});
     }
     return false;
 }
@@ -365,9 +358,6 @@ void TestPointModel::getFitSequence(QtCharts::QXYSeries* series,int type){
     fillSeries(series,fitSequence);
 }
 
-void TestPointModel::findPointAndCheck(QPointF point,bool check,int type){
-
-}
 
 void TestPointModel::removePoint(int index){
     auto iter=sequence.find(index);

@@ -1,19 +1,21 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
-#include "qdir.h"
-#include "qqml.h"
-#include "qscopedpointer.h"
-
+#include <QDir>
+#include <QtQml>
+#include <QScopedPointer>
 #include<QFile>
-
-#include<QThread>
-#include "seriespointswaper.hpp"
-#include"serviceprovider.hpp"
-#include "testpointmodel.hpp"
-#include"DataManager/datamanager.hpp"
 
 #include<glog/logging.h>
 #include <iostream>
+#include<QThread>
+
+#include "seriespointswaper.hpp"
+#include"serviceprovider.hpp"
+#include "testpointmodel.hpp"
+
+#include"DataManager/datamanager.hpp"
+
+
 void initGlog(int argc,char** argv);
 int main(int argc, char *argv[])
 {
@@ -38,6 +40,7 @@ int main(int argc, char *argv[])
 
     qRegisterMetaType<QList<QObject*>>();
     qmlRegisterType<TestPointModel>("CppCore",1,0,"TestPointModel");
+
     qmlRegisterType<SeriesPointSwaper>("CppCore",1,0,"SeriesPointSwaper");
     QScopedPointer<ServiceProvider> privider{new ServiceProvider};
     DataManager::getInstance();//init datamanager

@@ -6,6 +6,7 @@
 #include<array>
 #include <variant>
 #include<vector>
+#include<QList>
 class TestPointInfo{
 public:
 
@@ -40,10 +41,10 @@ public:
     bool    gps;
     bool    isPairing;
 
+
+    int modelIndex=0;
     float soildity;
     float dryDesity;
-
-
 
     //for optimization
     bool    isSelected=true;
@@ -59,7 +60,12 @@ struct ReadPacket{};
 struct ReadStatus:public ReadPacket{};
 struct ReadData:public ReadPacket{};
 
-
+class ProjectInfo{
+public:
+    QString projectName;
+    int     projectId;
+    QList<std::shared_ptr<TestPointInfo>> points;
+};
 
 
 

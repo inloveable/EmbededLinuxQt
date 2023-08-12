@@ -43,5 +43,6 @@
         <file>images/icons/soiltesticons/return.png</file>
         <file>images/icons/soiltesticons/add.png</file>
         <file>SoilTest/SoilTestPoint.qml</file>
+        <file>SoilTest/SoilTestPointDelegate.qml</file>
     </qresource>
 </RCC>

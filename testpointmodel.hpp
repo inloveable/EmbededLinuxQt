@@ -27,7 +27,8 @@ public:
         TemperatureRole,
         GpsRole,
         IsPairingRole,
-        isSelectedRole
+        isSelectedRole,
+        ModelRole
     };
     Q_ENUM(TestPointRoles)
 
@@ -57,22 +58,23 @@ public:
 
     //chart click api
     Q_INVOKABLE void setChecked(QPointF point, bool,int type);
-
-
-    //初步构思，通过check作为统一步骤，设置uncheck来控制series
-    //或许可以缓存一下点？
-    Q_INVOKABLE void findPointAndCheck(QPointF point,bool check,int type);
-
-    //type 0: density 1:waterRate
     Q_INVOKABLE void getFitSequence(QtCharts::QXYSeries* series,int type);
     Q_INVOKABLE void updateSeries(QtCharts::QXYSeries* actual,
-                      QtCharts::QXYSeries* mask,int type);
-
+                                  QtCharts::QXYSeries* mask,int type);
     Q_INVOKABLE void swapSeriesPoint(QtCharts::QXYSeries* from,QtCharts::QXYSeries* to,int pointIndex,int type);
+
+
+    //type 0: density 1:waterRate
+
 
     void removePoint(int index);
 
+    auto getSequence() const{
+        return sequence;
+    }
+
 signals:
+    //create new model signals
     void linearRegressionReady();
     void updateAxis(qreal xmin,qreal xmax,qreal ymin,qreal ymax);
     void requireSeiresSwap(int pointIndex,bool reverse=false);
@@ -81,6 +83,10 @@ signals:
 
 
     void sendFitArgs(qreal a,qreal b,qreal r2);
+
+
+    //project signals
+    //void pointModelUpdated(int pointIndex,int modelIndex);
 
 private:
 

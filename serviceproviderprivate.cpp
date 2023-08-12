@@ -204,3 +204,16 @@ void ServiceProviderPrivate::requestPointTest(){
     devices->checkAllArgs();
 }
 
+void ServiceProviderPrivate::addProject(QString project){
+    DataManager::getInstance().addProject(project,
+                                          QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")
+                                          ,devices->getGps());
+    emit this->projectInfoNeedsUpdate();
+}
+
+void ServiceProviderPrivate::removeProject(int index){
+    DataManager::getInstance().removeProject(index);
+
+    emit this->projectInfoNeedsUpdate();
+}
+
