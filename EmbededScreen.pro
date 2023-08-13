@@ -9,6 +9,7 @@ CONFIG+=c++17
 INCLUDEPATH+=./DataManager#subdirs
 
 SOURCES += \
+        DataManager/dataexporter.cpp \
         DataManager/datamanager.cpp \
         DataManager/instructgenerator.cpp \
         devicemanager.cpp \
@@ -66,6 +67,7 @@ QTPLUGIN+=qlinuxfb
 
 HEADERS += \
     DataManager/ProjectInfoObject.hpp \
+    DataManager/dataexporter.hpp \
     DataManager/datamanager.hpp \
     DataManager/instructgenerator.hpp \
     PublicDefs.hpp \

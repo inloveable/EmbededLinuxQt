@@ -10,6 +10,10 @@ Rectangle {
     property alias waterRateFocus:waterRateEdit.focus
     property alias solidtiyFocus:solidity.focus
 
+
+
+    signal comboBoxIndexChanged(int itemIndex,int modelIndex);
+
     color:"transparent"
 
     function disableEdit(){
@@ -68,6 +72,35 @@ Rectangle {
             color:"transparent"
             ComboBox{
                 id:modelCombo
+                background:Rectangle{
+                    color:"transparent"
+                    anchors.fill: parent
+                }
+                font.pixelSize: 20
+                font.bold:true
+                contentItem: Text {
+                       anchors.fill: parent
+
+                       text: parent.displayText
+                       font: parent.font
+                       color:"white"
+                       verticalAlignment: Text.AlignVCenter
+                       horizontalAlignment: Text.AlignHCenter
+                       elide: Text.ElideRight
+
+                  }
+
+
+
+                onCurrentValueChanged: {
+                    comboBoxIndexChanged(root.index,currentValue)
+                }
+
+
+
+                textRole: "modelName"
+                valueRole:"modelIndex"
+
                 anchors.fill:parent
             }
         }
@@ -99,16 +132,18 @@ Rectangle {
 
                     onEditingFinished: {
 
-                         model.density=densityEdit.text
+                         root.model.density=densityEdit.text
 
                     }
                     onFocusChanged: {
                         console.log("density focus:"+densityEdit.focus)
                         densityInputActive(densityEdit.focus)
                         if(focus===false)
-                        model.density=densityEdit.text
+                        root.model.density=densityEdit.text
                     }
                     //elide:Text.ElideRight
+
+
                 }
             }
         }
@@ -141,7 +176,7 @@ Rectangle {
                     onFocusChanged: {
                         waterRateInputActive(waterRateEdit.focus)
                         if(focus===false)
-                        model.waterRate=waterRateEdit.text
+                        root.model.waterRate=waterRateEdit.text
                     }
                 }
             }
@@ -205,7 +240,7 @@ Rectangle {
                 onFocusChanged: {
                     solidityInputActive(solidity.focus)
                     if(focus===false)
-                    model.solidity=solidity.text
+                    root.model.solidity=solidity.text
                 }
             }
         }

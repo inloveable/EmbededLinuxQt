@@ -1,6 +1,7 @@
-
+﻿
 #include "datamanager.hpp"
 #include "ProjectInfoObject.hpp"
+#include "dataexporter.hpp"
 #include "modelinfo.hpp"
 #include "qdebug.h"
 #include <memory>
@@ -12,6 +13,7 @@
 #include<glog/logging.h>
 
 #include<QDateTime>
+#include <tuple>
 #include <vector>
 DataManager::DataManager(QObject *parent)
     : QObject{parent}
@@ -52,9 +54,12 @@ void DataManager::initializeDatabase(){
                     "modelName TEXT,"
                     "createTime TEXT,"
                     "GPS TEXT,"
-                    "r REAL,"
-                    "a REAL,"
-                    "b REAL"//拟合系数
+                    "rD REAL,"
+                    "aD REAL,"
+                    "bD REAL,"//拟合系数
+                    "rW REAL,"
+                    "aW REAL,"
+                    "bW REAL"//拟合系数
                     ")")) {
         qDebug() << "Failed to create table, error:" << query.lastError().text();
 
@@ -179,6 +184,7 @@ std::shared_ptr<TestPointInfo> DataManager::getPointWithId(int id)
 
 void DataManager::init(){
      initializeDatabase();
+    DataExporter().exportModel(4,"./testModel.txt");
 }
 
 void DataManager::Destory(){
@@ -236,8 +242,8 @@ void DataManager::saveModelInfo(const std::shared_ptr<ModelInfo>& model)
     int index=query.value(0).toInt()+1;
     qDebug()<<"model index:"<<index;
 
-    query.prepare("INSERT INTO soilModel (id,modelName,createTime,GPS,r,a,b) "
-                  "VALUES (:modelName,:maximumDryness,:bestWaterRate,:gps,:argR2,:argA,:argB)");
+    query.prepare("INSERT INTO soilModel (id,modelName,createTime,GPS,r,a,b,rW,aW,bW) "
+                  "VALUES (:modelName,:maximumDryness,:bestWaterRate,:gps,:argR2,:argA,:argB,:rW,:aW,bW)");
 
     query.bindValue(":modelName",index);
     query.bindValue(":maximumDryness", model->modelName);
@@ -246,6 +252,9 @@ void DataManager::saveModelInfo(const std::shared_ptr<ModelInfo>& model)
     query.bindValue(":argA", model->argA);
     query.bindValue(":argB", model->argB);
     query.bindValue(":argR2", model->argR2);
+    query.bindValue(":rW", model->argR2Water);
+    query.bindValue(":aW", model->argAWater);
+    query.bindValue(":bW", model->argBWater);
 
     if (!query.exec()) {
         qWarning() << "Failed to insert data, error:" << query.lastError().text();
@@ -381,7 +390,32 @@ void DataManager::removeProject(int index){
 }
 
 QList<QPair<QString,int>> DataManager::getModelInfoFromDb(){
-    return QList<QPair<QString,int>>{};
+    QList<QPair<QString, int>> modelInfoList;
+
+    // 创建数据库连接
+    QSqlDatabase db = QSqlDatabase::database();
+
+
+    if (db.open()) {
+        // 执行查询语句
+        QString queryStr = "SELECT id, modelName FROM soilModel";
+        QSqlQuery query(queryStr);
+
+        // 处理查询结果
+        while (query.next()) {
+            QString modelName = query.value(1).toString();
+            int id = query.value(0).toInt();
+            modelInfoList.append(qMakePair(modelName, id));
+
+        }
+
+        // 关闭数据库连接
+    } else {
+        // 连接数据库失败处理逻辑
+        LOG(INFO)<<"Failed to connect to the database";
+    }
+
+    return modelInfoList;
 }
 
 std::tuple<QString,QString,QString> DataManager::getProjectInfo(int index){
@@ -400,3 +434,98 @@ std::tuple<QString,QString,QString> DataManager::getProjectInfo(int index){
     }
     return rec;
 }
+
+std::shared_ptr<ModelInfo> DataManager:: getModelInfoWithId(int id){
+    std::shared_ptr<ModelInfo> info {nullptr};
+
+    std::lock_guard<std::mutex> lock{sqlmu};
+    QSqlDatabase database = QSqlDatabase::database();
+
+    // 打开数据库
+    if (!database.open()) {
+        qWarning() << "Failed to open database" << database.lastError();
+        return info;
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM soilModel WHERE id = :id");
+    query.bindValue(":id", id);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to execute query" << query.lastError().text();
+        return info;
+    }
+
+    if (query.next()) {
+        info= std::make_shared<ModelInfo>();
+        info->id = query.value("id").toInt();
+        info->modelName = query.value("modelName").toString();
+        info->gps = query.value("GPS").toString();
+        info->argA = query.value("a").toDouble();
+        info->argB = query.value("b").toDouble();
+        info->argR2 = query.value("r").toDouble();
+        info->argR2Water = query.value("rW").toDouble();
+        info->argAWater = query.value("aW").toDouble();
+        info->argBWater = query.value("bW").toDouble();
+        info->createTime=query.value("createTime").toString();
+    }
+
+    const auto pointIds=this->getPoints(info->id,DataManager::BelongType::Model);
+
+    for(auto&& id:pointIds){
+        auto ptr=this->getPointWithId(id);
+        info->addTestPoint(ptr);
+    }
+    return info;
+}
+
+
+void DataManager::removePoint(std::shared_ptr<TestPointInfo> info){
+    QSqlDatabase database = QSqlDatabase::database();
+
+    // 打开数据库
+    if (!database.open()) {
+        qWarning() << "Failed to open database" << database.lastError();
+        return;
+    }
+
+    QSqlQuery query;
+
+    query.prepare("DELETE FROM measurementPoint WHERE pointId = :id");
+    query.bindValue(":id", info->pointId);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to execute query" << query.lastError().text();
+        return;
+    }
+
+}
+
+std::tuple<float,float,float,float,float,float> DataManager::getModelArgWithId(int index){
+    QSqlDatabase database = QSqlDatabase::database();
+
+    // 打开数据库
+    if (!database.open()) {
+        qWarning() << "Failed to open database" << database.lastError();
+        return {};
+    }
+
+    QSqlQuery query;
+
+    query.prepare("select a,b,r,aW,bW,rW FROM soilModel WHERE id = :id");
+    query.bindValue(":id", index);
+    if (!query.exec()) {
+        qWarning() << "Failed to execute query" << query.lastError().text();
+        return {};
+    }
+
+    if(query.next()){
+        LOG(INFO)<<"return arg";
+        return {query.value("a").toFloat(),query.value("b").toFloat(),
+                query.value("r").toFloat(),query.value("aW").toFloat(),
+                query.value("bW").toFloat(),query.value("rW").toFloat()};
+    }
+    return {};
+}
+
+

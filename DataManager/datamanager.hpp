@@ -6,6 +6,7 @@
 
 #include<mutex>
 #include<memory>
+#include <optional>
 class TestPointInfo;
 class ModelInfo;
 class DataManager : public QObject
@@ -35,10 +36,13 @@ public:
                        BelongType belong,int belongId);
     std::vector<int> getPoints(int belongId,BelongType belongType);
     std::shared_ptr<TestPointInfo> getPointWithId(int id);
+    Q_INVOKABLE void                           removePoint(std::shared_ptr<TestPointInfo> point);
 
 
 
     Q_INVOKABLE QList<QPair<QString,int>> getModelInfoFromDb();
+    std::shared_ptr<ModelInfo>  getModelInfoWithId(int id);
+    Q_INVOKABLE std::tuple<float,float,float,float,float,float> getModelArgWithId(int index);
 
 
     //ProjectInfoObject*
@@ -51,6 +55,7 @@ public:
 
 
 signals:
+
 private:
     explicit DataManager(QObject *parent = nullptr);
     void initializeDatabase();

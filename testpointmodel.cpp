@@ -359,7 +359,7 @@ void TestPointModel::getFitSequence(QtCharts::QXYSeries* series,int type){
         this->waterRateR_Square=r2;
     }
 
-    emit sendFitArgs(c1,c0,r2);
+    emit sendFitArgs(c1,c0,r2,type);
 
 
     //generate chart line

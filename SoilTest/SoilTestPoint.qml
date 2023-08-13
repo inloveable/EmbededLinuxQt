@@ -99,6 +99,27 @@ Rectangle {
        }
    }
 
+   MyButton{
+       id:refreshButton
+
+       width:100
+       height:50
+       anchors.top: saveProjectButton.bottom
+       anchors.topMargin: 10
+
+       anchors.right: viewArea.left
+       anchors.rightMargin: 10
+
+       text:qsTr("刷新")
+
+       originColor: buttonOriginColor
+       hoverColor:buttonHoverColor
+
+       onClicked: {
+           Service.refreshTestPointDataWithModel()
+       }
+   }
+
 
    Rectangle{
        id:viewArea
@@ -117,9 +138,28 @@ Rectangle {
        ListView {
            id: listView
 
+           Component.onCompleted: {
+               Service.requestTinyModelInfo()
+           }
+
+           Connections{
+               target:Service
+
+               function onTinyModelInfoUpdated(){
+                   console.log("front end recv tiny modelinfo")
+                   listView.tinyModelInfo=Service.getTinyModelInfos()
+               }
+
+           }
+           property var tinyModelInfo;
+
            anchors.fill: parent
 
            model: Service.getTestPointModel_Project(projectId)
+
+
+
+
            delegate: SoilTestPointDelegate{
                width:parent.width
                height:50
@@ -129,6 +169,8 @@ Rectangle {
                waterRateText: model.waterRate
                ampText:model.ampitude//error spelling
                phaseAngleText:model.phaseAngle
+
+               comboBoxModel:listView.tinyModelInfo
 
                widthRate:[1,3,3,2,2,2,2]
 
@@ -151,6 +193,11 @@ Rectangle {
                        keyboard1.state="invoked"
                    }
                    listView.currentIndex=index
+               }
+
+               onComboBoxIndexChanged:function(itemIndex,modelIndex){
+                   console.log("test point:"+index+" ‘s model changed to:"+modelIndex);
+                   Service.setPointToModel(index,modelIndex);
                }
            }
 
@@ -279,6 +326,10 @@ Rectangle {
            anchors.verticalCenter: parent.verticalCenter
            anchors.right: toolSeparator.left
            anchors.rightMargin:width
+
+           onClicked: {
+               Service.requestPointTest(listView.count-1)
+           }
        }
 
        RoundButton {
@@ -289,6 +340,9 @@ Rectangle {
            anchors.leftMargin: width
            width: 75
            height: 75
+           onClicked: {
+               Service.requestPointTest(listView.count-1)
+           }
        }
 
        ToolSeparator {
@@ -297,6 +351,7 @@ Rectangle {
            anchors.top: parent.top
            anchors.topMargin: 0
            anchors.horizontalCenter: parent.horizontalCenter
+
        }
    }
 

@@ -35,7 +35,12 @@ public:
     Q_INVOKABLE void exportData();
 
 
-    void saveModelInfo(std::shared_ptr<ModelInfo>);
+    Q_INVOKABLE void saveModelInfo(std::shared_ptr<ModelInfo>);
+
+
+
+    Q_INVOKABLE void getModelInfoFromDb();
+    Q_INVOKABLE void requestModelInfo(int id);
 
 
 
@@ -80,6 +85,8 @@ public:
 
     Q_INVOKABLE void requestPointInfoUpdate(int index);//配对
     Q_INVOKABLE void requestPointTest();//测试
+    Q_INVOKABLE void requestPointTest(int index);//测试
+
     void onSentProjectInfo(ProjectInfo* project,TestPointModel* model);
     void onSaveProjectInfo(ProjectInfo* project);
 
@@ -96,7 +103,8 @@ signals:
 
 
 
-
+    void sendModelListForTestPoint(QList<QPair<QString,int>>);
+    void sendModelInfoForTestPoint(std::shared_ptr<ModelInfo>);
 
     void usbLoaded();
     void usbUnloaded();

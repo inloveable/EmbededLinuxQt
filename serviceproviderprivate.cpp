@@ -205,6 +205,14 @@ void ServiceProviderPrivate::requestPointTest(){
     devices->checkAllArgs();
 }
 
+void ServiceProviderPrivate::requestPointTest(int index){
+
+    currentRequestPointIndex=index;
+    argsDone=false;
+    temperatureDone=false;
+    devices->checkAllArgs();
+}
+
 void ServiceProviderPrivate::addProject(QString project){
     DataManager::getInstance().addProject(project,
                                           QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")
@@ -251,4 +259,15 @@ void ServiceProviderPrivate::onSaveProjectInfo(ProjectInfo* info){
     }
 
 }
+void ServiceProviderPrivate::getModelInfoFromDb(){
+    auto data=DataManager::getInstance().getModelInfoFromDb();
+    emit this->sendModelListForTestPoint(data);
+}
+
+void ServiceProviderPrivate::requestModelInfo(int id){
+    auto data=DataManager::getInstance().getModelInfoWithId(id);
+    emit this->sendModelInfoForTestPoint(data);
+}
+
+
 

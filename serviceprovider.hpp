@@ -12,6 +12,7 @@ class TestPointModel;
 class ServiceProviderPrivate;
 class ModelInfo;
 class ProjectInfo;
+class TinyModelInfo;
 class ServiceProvider : public QObject
 {
     Q_OBJECT
@@ -45,6 +46,7 @@ class ServiceProvider : public QObject
     Q_INVOKABLE int getCurrentBattery();
     Q_INVOKABLE void requestPointInfoUpdate(int index);//配对
     Q_INVOKABLE void requestPointTest();//测试
+    Q_INVOKABLE void requestPointTest(int index);//测试(project)
 
     //projectInfoApis
     Q_INVOKABLE void            requestProjectInfo();
@@ -57,6 +59,15 @@ class ServiceProvider : public QObject
     Q_INVOKABLE void            projectInfoExit();
     Q_INVOKABLE void            addProjectTestPoint();
     Q_INVOKABLE void            removeProjectTestPoint(int index);
+    Q_INVOKABLE void            requestTinyModelInfo();
+
+    Q_INVOKABLE void            refreshTestPointDataWithModel();
+
+    Q_INVOKABLE void            setPointToModel(int pointI,int modelI);
+
+    Q_INVOKABLE QList<QObject*> getTinyModelInfos(){
+        return tinyModelInfos;
+    }
     /*------------------------------------------------------------*/
 
     bool  usbOnline()const{return hasUsb;};
@@ -64,6 +75,9 @@ class ServiceProvider : public QObject
     static std::tuple<double,double,double> linearRegression(
         const std::vector<double>& x,
         const std::vector<double>& y);
+    static float getFitValue(qreal a,qreal b,qreal x){
+        return a*x+b;
+    };
 
     static qreal absDistance(QPointF& p,QPointF p1);
 
@@ -76,7 +90,7 @@ signals:
     //projectInfo apis
     void sendProjectInfo(QList<QObject*> infos);
     Q_INVOKABLE void projectInfoNeedsUpdate();
-
+    void tinyModelInfoUpdated();
     //---------------------------------------------
 
     void usbOnlineChanged();
@@ -92,6 +106,10 @@ signals:
 
     void sendProjectInfoToInit(ProjectInfo*,TestPointModel*);
     void saveProjectInfo(ProjectInfo* info);
+
+    std::tuple<float,float,float,float,float,float> getModelArgWithId(int index);
+
+
 
 
 
@@ -121,10 +139,15 @@ private:
     TestPointModel* tModel;
     TestPointModel* projectTestPointModel=nullptr;
 
+    QMap<int,int> pointIndexToModelIMap;
+
     int batteryValue=100;
 
 
+    QList<QObject*> tinyModelInfos;
 
+
+    bool isProject;
 
 
 

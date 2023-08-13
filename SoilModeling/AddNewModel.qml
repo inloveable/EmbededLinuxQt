@@ -125,6 +125,7 @@ Item {
                                     if(row.anyFocus()){
                                         return;
                                     }
+                                    Service.setModelName(rectangle2.inputText)
 
                                     keyboard.state="hidden"
                                 }

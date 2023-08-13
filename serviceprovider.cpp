@@ -6,11 +6,10 @@
 #include "qnamespace.h"
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
-#include"serialmanager.hpp"
 #include "testpointmodel.hpp"
 
 #include <boost/math/statistics/linear_regression.hpp>
-
+#include"datamanager.hpp"
 #include<QMessageBox>
 #include<QFontDatabase>
 #include"datamanager.hpp"
@@ -19,6 +18,7 @@
 
 Q_DECLARE_METATYPE(std::shared_ptr<ModelInfo>);
 Q_DECLARE_METATYPE(std::shared_ptr<ProjectInfo>);
+Q_DECLARE_METATYPE(std::shared_ptr<TestPointInfo>);
 
 ServiceProvider::ServiceProvider(QObject *parent)
     : QObject{parent},modelInfo{nullptr},projectInfo{nullptr},tModel{nullptr}
@@ -46,6 +46,8 @@ ServiceProvider::ServiceProvider(QObject *parent)
     qRegisterMetaType<std::shared_ptr<ModelInfo>>();
     qRegisterMetaType<ProjectInfo>();
     qRegisterMetaType<std::shared_ptr<ProjectInfo>>();
+    qRegisterMetaType<QList<QPair<QString,int>>>();
+    qRegisterMetaType<std::shared_ptr<TestPointInfo>>();
 
 
     //tModel=new TestPointModel(this);
@@ -88,6 +90,7 @@ TestPointModel* ServiceProvider::getTestPointModel_Project(){
 }
 
 void ServiceProvider::prepareProject(int index){
+    isProject=true;
     if(!projectInfo){
         projectInfo=std::make_unique<ProjectInfo>();
     }
@@ -97,6 +100,7 @@ void ServiceProvider::prepareProject(int index){
 
     projectInfo->projectId=index;
     emit this->sendProjectInfoToInit(projectInfo.get(),projectTestPointModel);
+
 }
 
 
@@ -104,8 +108,13 @@ std::tuple<double,double,double> ServiceProvider::linearRegression(
                                 const std::vector<double>& x,
                                 const std::vector<double>& y)
 {
-    using boost::math::statistics::simple_ordinary_least_squares_with_R_squared;
-    return simple_ordinary_least_squares_with_R_squared(x, y);
+    try{
+        using boost::math::statistics::simple_ordinary_least_squares_with_R_squared;
+        return simple_ordinary_least_squares_with_R_squared(x, y);
+    }catch(...){//the divider might be zero;
+        return {};
+    }
+
 }
 
 void  ServiceProvider::requestProjectInfo(){
@@ -121,6 +130,7 @@ void ServiceProvider::selfCheck(){
 }
 
 void ServiceProvider::prepareCreateNewModel(){
+    isProject=false;
     LOG(INFO)<<"preparing create new model";
     if(modelInfo==nullptr){
         modelInfo=std::make_unique<ModelInfo>();
@@ -128,10 +138,18 @@ void ServiceProvider::prepareCreateNewModel(){
             tModel->deleteLater();
         }
         tModel=new TestPointModel(this);
-        connect(tModel,&TestPointModel::sendFitArgs,this,[&](qreal a,qreal b,qreal r2){//what if here uses [=]? interesting
-            modelInfo->argA=a;
-            modelInfo->argB=b;
-            modelInfo->argR2=r2;
+        connect(tModel,&TestPointModel::sendFitArgs,this,[&](qreal a,qreal b,
+                                                                qreal r2,int type){//what if here uses [=]? interesting
+
+            if(type==0){
+                modelInfo->argA=a;
+                modelInfo->argB=b;
+                modelInfo->argR2=r2;
+            }else if(type==1){
+                modelInfo->argAWater=a;
+                modelInfo->argBWater=b;
+                modelInfo->argR2Water=r2;
+            }
         });
     }
 }
@@ -182,6 +200,10 @@ void ServiceProvider::requestPointTest(){
     callBackend("requestPointTest");
 }
 
+void ServiceProvider::requestPointTest(int index){
+    QMetaObject::invokeMethod(d,"requestPointTest",Q_ARG(int,index));
+}
+
 void ServiceProvider::setModelName(QString name){
     if(modelInfo!=nullptr){
          LOG(INFO)<<"setting model name:"<<name.toStdString();
@@ -209,12 +231,21 @@ void ServiceProvider::initPrivateSignals(){
     //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
     connect(d,&ServiceProviderPrivate::pointParingComplete,this,&ServiceProvider::requestParingComplete);
     connect(d,&ServiceProviderPrivate::argsValueReady,this,[obj=this](float amp,float phase,int index){
-        if(obj->tModel==nullptr){
-            return;
+        if(!obj->isProject){
+            if(obj->tModel==nullptr){
+                return;
+            }
+            auto modelIndex=obj->tModel->index(index);
+            obj->tModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
+            obj->tModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
+        }else{
+            if(obj->projectTestPointModel==nullptr){
+                return;
+            }
+            auto modelIndex=obj->projectTestPointModel->index(index);
+            obj->projectTestPointModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
+            obj->projectTestPointModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
         }
-        auto modelIndex=obj->tModel->index(index);
-        obj->tModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
-        obj->tModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
     });
     connect(d,&ServiceProviderPrivate::temperatureValueReady,this,[obj=this](float temp,int index){
         if(obj->tModel==nullptr){
@@ -226,6 +257,43 @@ void ServiceProvider::initPrivateSignals(){
     connect(this,&ServiceProvider::sendProjectInfoToInit,d,&ServiceProviderPrivate::onSentProjectInfo
             ,Qt::BlockingQueuedConnection);//for sync
     connect(this,&ServiceProvider::saveProjectInfo,d,&ServiceProviderPrivate::onSaveProjectInfo);
+    connect(d,&ServiceProviderPrivate::sendModelInfoForTestPoint,this,[](std::shared_ptr<ModelInfo> info){
+        if(info==nullptr){
+            LOG(INFO)<<"modelInfo not found";
+            return;
+        }
+        LOG(INFO)<<"recv modelInfo,generating data";
+    });
+    connect(d,&ServiceProviderPrivate::sendModelListForTestPoint,this,[obj=this, this](QList<QPair<QString,int>> info){
+        if(tinyModelInfos.size()>0){
+            for(auto&& t:tinyModelInfos){
+                t->deleteLater();
+            }
+        }
+        QList<QObject*> in;
+        for(auto&& i:info){
+            QObject* m=new TinyModelInfo(obj);
+            static_cast<TinyModelInfo*>(m)->setModelIndex(i.second);
+            static_cast<TinyModelInfo*>(m)->setModelName(i.first);
+            in.push_back(m);
+        }
+        this->tinyModelInfos=in;
+
+        //after prepare project model
+        if(this->projectInfo!=nullptr){
+            pointIndexToModelIMap.clear();
+            for(auto&& p:projectInfo->points){
+                if(tinyModelInfos.size()>0)
+                pointIndexToModelIMap[p->index]=0;
+                else
+                pointIndexToModelIMap[p->index]=-1;
+            }
+        }
+
+        emit this->tinyModelInfoUpdated();
+    });
+
+
 
 }
 
@@ -278,9 +346,68 @@ void ServiceProvider::removeProjectTestPoint(int index)
          LOG(INFO)<<"no more to delete";
          return;
      }
+     std::shared_ptr<TestPointInfo> ptr;
+
+     for(auto&& p:projectInfo->points){
+         if(p->index==index){
+            ptr=p;
+            break;
+         }
+     }
+
+     QMetaObject::invokeMethod(&DataManager::getInstance(),"removePoint",
+                               Q_ARG(std::shared_ptr<TestPointInfo>,ptr));
+
      projectTestPointModel->removePoint(index);
      projectInfo->points.removeAt(index);
 }
 
+void ServiceProvider::requestTinyModelInfo(){
+     callBackend("getModelInfoFromDb");
+}
 
+void ServiceProvider::setPointToModel(int pointI,int modelI){
+     auto iter=pointIndexToModelIMap.find(pointI);
+     if(iter!=pointIndexToModelIMap.end()){
+         LOG(INFO)<<"setting point to model:"<<pointI<<" model:"<<modelI;
+         pointIndexToModelIMap[pointI]=modelI;
+     }
+}
+
+void ServiceProvider::refreshTestPointDataWithModel(){
+     if(this->projectTestPointModel==nullptr){
+         return;
+     }
+
+     auto& pointModel=this->projectTestPointModel;
+     connect(this,&ServiceProvider::getModelArgWithId,
+             &DataManager::getInstance(),&DataManager::getModelArgWithId,
+             Qt::BlockingQueuedConnection);
+     for(auto&& iter=this->pointIndexToModelIMap.begin();
+         iter!=pointIndexToModelIMap.end();++iter){
+         const int pIndex=iter.key();
+         const int mIndex=iter.value();
+
+         auto ptr=pointModel->getSequence().value(pIndex);
+         if(ptr==nullptr){
+            LOG(INFO)<<"logic error point pointer with index:"<<pIndex<<" is NULL";
+            continue;
+         }
+
+
+         auto [aD,bD,r2D,aW,bW,r2W]=emit getModelArgWithId(mIndex);
+
+         LOG(INFO)<<"density:y="<<aD<<"*x+"<<bD;
+         LOG(INFO)<<"water:y="<<aW<<"*x+"<<bW;
+         auto density=this->getFitValue(aD,bD,ptr->ampitude);
+         auto waterR=this->getFitValue(aW,bW,ptr->phaseAngle);
+         auto modelIndex=pointModel->index(pIndex);
+         pointModel->setData(modelIndex,density,TestPointModel::DensityRole);
+         pointModel->setData(modelIndex,waterR,TestPointModel::WaterRateRole);
+     }
+
+     disconnect(this,&ServiceProvider::getModelArgWithId,
+             &DataManager::getInstance(),&DataManager::getModelArgWithId
+             );
+}
 

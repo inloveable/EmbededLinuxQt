@@ -58,14 +58,14 @@ public:
 
 
     //chart click api
-    Q_INVOKABLE void setChecked(QPointF point, bool,int type);
+    Q_INVOKABLE void setChecked(QPointF point, bool,int type);//type 0: density 1:waterRate
     Q_INVOKABLE void getFitSequence(QtCharts::QXYSeries* series,int type);
     Q_INVOKABLE void updateSeries(QtCharts::QXYSeries* actual,
                                   QtCharts::QXYSeries* mask,int type);
     Q_INVOKABLE void swapSeriesPoint(QtCharts::QXYSeries* from,QtCharts::QXYSeries* to,int pointIndex,int type);
 
 
-    //type 0: density 1:waterRate
+
 
 
     void removePoint(int index);
@@ -83,7 +83,7 @@ signals:
     void chartNeedsUpdate();
 
 
-    void sendFitArgs(qreal a,qreal b,qreal r2);
+    void sendFitArgs(qreal a,qreal b,qreal r2,int type);
 
 
     //project signals
