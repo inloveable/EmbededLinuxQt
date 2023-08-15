@@ -1,4 +1,4 @@
-
+﻿
 #include "instructgenerator.hpp"
 #include <array>
 
@@ -17,5 +17,8 @@ void InstructGenerator::parseData(std::array<unsigned char,8>& data){
     case 0x02:{this->read<0x02>(data);break;};
     case 0x03:{this->read<0x03>(data);break;};
     case 0x04:{this->read<0x04>(data);break;};
+    case 0x05:{this->read<0x05>(data);break;};
+    case 0x06:{this->read<0x06>(data);break;};
+    case 0x07:{this->read<0x07>(data);break;};
     }
 }

@@ -1,9 +1,11 @@
-
+﻿
 #pragma once
 
 
 #include <QObject>
 #include<QFileSystemWatcher>
+#include <utility>
+#include <variant>
 
 class QProcess;
 class SerialManager;
@@ -29,14 +31,13 @@ public:
     bool batterry=false;
     bool temperature=false;
 
-    QString getGps() const {
-        return gps;
-    };
+    QString getGps() const ;
 
 
 signals:
     void detectedUsb(QString usb);
     void statusReady();
+    //void gpsReady();
     void usbUnPluged();
 
     void onTemperature(float temp);
@@ -57,8 +58,15 @@ private:
 
     SerialManager* serials=nullptr;
 
+    QString longitudeSign{"--"};
+    QString latitudeSign{"--"};
+    float   longtitudeVal=0.0f;
+    float   latitudeVal=0.0f;
 
-    QString gps="--";
+    bool hasGps=false;
+
+
+
 };
 
 

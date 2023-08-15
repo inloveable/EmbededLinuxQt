@@ -1,7 +1,8 @@
-
+﻿
 #include "serviceproviderprivate.hpp"
 #include "PublicDefs.hpp"
 #include "devicemanager.hpp"
+#include "modelinfo.hpp"
 #include "qjsondocument.h"
 #include "qjsonobject.h"
 #include "qnetworkaccessmanager.h"
@@ -96,7 +97,8 @@ void ServiceProviderPrivate::init(){
     connect(devices,&DeviceManager::statusReady,this,[obj=this](){
         emit obj->pointParingComplete(obj->devices->impedence
                                       &&obj->devices->temperature
-                                          &&obj->devices->batterry,obj->currentRequestPointIndex);
+                                          &&obj->devices->batterry,obj->currentRequestPointIndex
+                                      ,obj->devices->getGps());
     });
 }
 
@@ -135,6 +137,7 @@ void ServiceProviderPrivate::saveModelInfo(std::shared_ptr<ModelInfo> in){
     LOG(INFO)<<"saving model";
     auto info=in;
     auto& data=DataManager::getInstance();
+    in->gps=devices->getGps();
     data.saveModelInfo(in);
 }
 
@@ -213,10 +216,10 @@ void ServiceProviderPrivate::requestPointTest(int index){
     devices->checkAllArgs();
 }
 
-void ServiceProviderPrivate::addProject(QString project){
+void ServiceProviderPrivate::addProject(QString project,qreal dryness){
     DataManager::getInstance().addProject(project,
                                           QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")
-                                          ,devices->getGps());
+                                          ,devices->getGps(),dryness);
     emit this->projectInfoNeedsUpdate();
 }
 
@@ -232,10 +235,17 @@ void ServiceProviderPrivate::onSentProjectInfo(ProjectInfo* project,
 
     LOG(INFO)<<"backend project info init";
     auto& data=DataManager::getInstance();
-    auto [name,createTime,gps]=data.getProjectInfo(project->projectId);
+    auto [name,createTime,gps,dryness]=data.getProjectInfo(project->projectId);
     project->projectName=name;
     project->createTime=createTime;
     project->gps=gps;
+    if(dryness!=""){
+        project->dryness=dryness.toDouble();
+    }else{
+        project->dryness=0.0f;
+    }
+
+
 
     const auto pointIds=data.getPoints(project->projectId,DataManager::BelongType::Project);
 

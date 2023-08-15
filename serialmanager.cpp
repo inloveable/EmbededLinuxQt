@@ -1,4 +1,4 @@
-
+﻿
 #include "serialmanager.hpp"
 #include "qdebug.h"
 #include "qserialportinfo.h"
@@ -28,9 +28,23 @@ SerialManager::SerialManager(QObject *parent)
     auto batterCb=[obj=this](int battery){
         emit obj->sendBatteryVal(battery);
     };
+    auto longitudeCb=[obj=this](float lon){
+        emit obj->sendlongitude(lon);
+    };
+
+    auto latitudeCb=[obj=this](float la){
+        emit obj->sendlatitude(la);
+    };
+    auto positionCb=[obj=this](unsigned char lo,unsigned char la){
+        emit obj->sendPosition(lo,la);
+    };
+
 
     generator.batteryCb=batterCb;
     generator.temperatureCb=tempCb;
+    generator.latitudeCb=latitudeCb;
+    generator.positionCb=positionCb;
+    generator.longitudeCb=longitudeCb;
 
 
 

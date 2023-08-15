@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 
@@ -9,6 +9,7 @@
 #include <optional>
 class TestPointInfo;
 class ModelInfo;
+class ProjectInfo;
 class DataManager : public QObject
 {
     Q_OBJECT
@@ -47,12 +48,11 @@ public:
 
     //ProjectInfoObject*
     QList<QObject*> getAllProjectInfo();
-    void            addProject(QString project,QString createTime,QString gps);
+    void            addProject(QString project,QString createTime,QString gps,qreal dryess);
     void            removeProject(int index);
 
 
-    std::tuple<QString,QString,QString> getProjectInfo(int index);
-
+    std::tuple<QString,QString,QString,QString> getProjectInfo(int index);
 
 signals:
 

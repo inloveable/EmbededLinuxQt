@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 #include "qmath.h"
@@ -36,6 +36,10 @@ public:
     std::function<void(float)>                temperatureCb;
     std::function<void(float,float,float)>    argCb;
     std::function<void(bool,bool,bool)>       statusCb;
+
+    std::function<void(float)>                longitudeCb;
+    std::function<void(float)>                latitudeCb;
+    std::function<void(unsigned char,unsigned char)>                positionCb;
 
 private:
 
@@ -138,16 +142,63 @@ template<>
 inline void InstructGenerator::read<0x04>(std::array<unsigned char, 8>& data) {
     // 读取电池电量
     unsigned char A31to24 = data[3];  // 假设 A31~24 位在第4个字节
-    // 根据获取到的数据执行针对电池电量的操作
     int val=A31to24;
     LOG(INFO)<<"recv battery:"<<val<<"%";
-
-
 
     try{
         batteryCb(val);
     }catch(std::exception& ex){
         LOG(WARNING)<<"battery cb not set";
     }
+
+}
+
+template<>
+inline void InstructGenerator::read<0x05>(std::array<unsigned char, 8>& data) {
+    // 读经度
+
+    unsigned char A31to24 = data[3];  // 假设 A31~24 位在第4个字节
+    unsigned char A23to16 = data[4];  // 假设 A23~16 位在第5个字节
+    unsigned char A15to8 = data[5];   // 假设 A15~8 位在第6个字节
+    unsigned char A7to0 = data[6];    // 假设 A7~0 位在第7个字节
+
+
+    float val=((A31to24<<24)|(A23to16<<16)|(A15to8<<8)|(A7to0))/10000;
+    try{
+        longitudeCb(val);
+    }catch(std::exception& ex){
+        LOG(INFO)<<"longitude callback not set";
+    }
+}
+
+template<>
+inline void InstructGenerator::read<0x06>(std::array<unsigned char, 8>& data) {
+    // 读纬度
+    unsigned char A31to24 = data[3];  // 假设 A31~24 位在第4个字节
+    unsigned char A23to16 = data[4];  // 假设 A23~16 位在第5个字节
+    unsigned char A15to8 = data[5];   // 假设 A15~8 位在第6个字节
+    unsigned char A7to0 = data[6];    // 假设 A7~0 位在第7个字节
+
+
+    float val=((A31to24<<24)|(A23to16<<16)|(A15to8<<8)|(A7to0))/10000;
+    try{
+        latitudeCb(val);
+    }catch(std::exception& ex){
+        LOG(INFO)<<"latitude callback not set";
+    }
+}
+
+template<>
+inline void InstructGenerator::read<0x07>(std::array<unsigned char, 8>& data) {
+    // 读gps方位
+    unsigned char A31to24 = data[3];  // 假设 A31~24 位在第4个字节
+    unsigned char A23to16 = data[4];  // 假设 A23~16 位在第5个字节
+
+    try{
+        positionCb(A31to24,A23to16);
+    }catch(std::exception& ex){
+        LOG(INFO)<<"latitude callback not set";
+    }
+
 }
 

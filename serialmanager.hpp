@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 
@@ -25,6 +25,9 @@ signals:
     void sendTemperature(float);
     void sendBatteryVal(int);
     void sendArgs(float,float);
+    void sendlongitude(float);
+    void sendlatitude(float);
+    void sendPosition(unsigned char,unsigned char);
 
 private:
     QSerialPort* rs485=nullptr;

@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 
@@ -50,7 +50,7 @@ class ServiceProvider : public QObject
 
     //projectInfoApis
     Q_INVOKABLE void            requestProjectInfo();
-    Q_INVOKABLE void            addProject(QString name);
+    Q_INVOKABLE void            addProject(QString name,qreal dryness);
     Q_INVOKABLE void            removeProject(int index);
 
     Q_INVOKABLE void            prepareProject(int index);

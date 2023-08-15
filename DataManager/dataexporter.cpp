@@ -69,3 +69,50 @@ void DataExporter::exportModel(int index, std::string fileName) {
 
     file.close();
 }
+
+void DataExporter::exportProject(int index,std::string fileName){
+    auto& data = DataManager::getInstance();
+    auto [name,createTime,gps,dryness]=data.getProjectInfo(index);
+
+
+
+    QFile file(QString::fromStdString(fileName));
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open file: " << &fileName;
+        return;
+    }
+
+
+
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+
+    out << QString("\t工程测试:\n");
+    out << QString("\t编号: %1\n").arg(index);
+    out << QString("\t工程名称: %1\n").arg(name);
+    out << QString("\t建立时间: %1\n").arg(createTime);
+    out << QString("\tGPS: %1\n").arg(gps);
+    out << QString("\t干密度:%1\n").arg(dryness);
+
+
+    out << QString("                \t数据点数据");
+    out<<"\n";
+
+    const auto pointIds=data.getPoints(index,DataManager::BelongType::Project);
+
+    out << QString("数据点数据:\t测点编号\t模型编号\t湿密度\t含水率\t压实度\t幅值\t相角\tGPS位置\n");
+    for (auto&& id : pointIds) {
+        auto ptr = data.getPointWithId(id);
+        if(ptr==nullptr){
+            return;
+        }
+
+        out << QString("数据点数据:\t") << ptr->index << "\t" << ptr->modelIndex << "\t"
+            << ptr->density << "\t" << ptr->waterRate << "\t"
+            << ptr->soildity << "\t"
+            << ptr->ampitude << "\t" << ptr->phaseAngle << "\t"
+            << ptr->gps << "\n";
+    }
+
+    file.close();
+}

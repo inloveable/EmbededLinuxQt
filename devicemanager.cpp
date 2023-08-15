@@ -1,4 +1,4 @@
-
+﻿
 #include "devicemanager.hpp"
 #include "PublicDefs.hpp"
 
@@ -47,11 +47,21 @@ DeviceManager::DeviceManager(QObject *parent)
         obj->temperature=tempe;
         obj->statusReady();
     });
-    SerialManager::printSerials();
 
+SerialManager::printSerials();
     connect(serials,&SerialManager::sendArgs,this,&DeviceManager::onArgsSent);
     connect(serials,&SerialManager::sendBatteryVal,this,&DeviceManager::onBatterySent);
     connect(serials,&SerialManager::sendTemperature,this,&DeviceManager::onTemperature);
+    connect(serials,&SerialManager::sendPosition,this,[obj=this](unsigned char lo,unsigned char la){
+        obj->longitudeSign=lo;
+        obj->latitudeSign=la;
+    });
+    connect(serials,&SerialManager::sendlatitude,this,[obj=this](float val){
+        obj->latitudeVal=val ;
+    });
+    connect(serials,&SerialManager::sendlongitude,this,[obj=this](float val){
+        obj->longtitudeVal=val;
+    });
 }
 
 void DeviceManager::mountUsb(const QString& usb,const QString& dst){
@@ -102,5 +112,9 @@ DeviceManager::~DeviceManager(){
 
 }
 
+QString DeviceManager::getGps() const {
+    QString format{"经度: %1 %2  纬度: %3 %4"};
 
+    return format.arg(longitudeSign).arg(longtitudeVal).arg(latitudeSign).arg(latitudeVal);
+};
 

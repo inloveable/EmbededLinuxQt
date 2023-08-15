@@ -41,7 +41,8 @@ void DataManager::initializeDatabase(){
                     "id INTEGER PRIMARY KEY,"
                     "createTime VARCHAR,"
                     "name VARCHAR,"
-                    "gps VARCHAR"
+                    "gps VARCHAR,"
+                    "dryness REAL"
                     ")"))
     {
         qDebug() << "Failed to create table, error:" << query.lastError().text();
@@ -185,6 +186,7 @@ std::shared_ptr<TestPointInfo> DataManager::getPointWithId(int id)
 void DataManager::init(){
      initializeDatabase();
     DataExporter().exportModel(4,"./testModel.txt");
+    DataExporter().exportProject(1,"./testProject.txt");
 }
 
 void DataManager::Destory(){
@@ -248,7 +250,7 @@ void DataManager::saveModelInfo(const std::shared_ptr<ModelInfo>& model)
     query.bindValue(":modelName",index);
     query.bindValue(":maximumDryness", model->modelName);
     query.bindValue(":bestWaterRate", QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
-    query.bindValue(":gps",QVariant{QVariant::String});
+    query.bindValue(":gps",model->gps);
     query.bindValue(":argA", model->argA);
     query.bindValue(":argB", model->argB);
     query.bindValue(":argR2", model->argR2);
@@ -340,7 +342,7 @@ void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, Bel
 }
 
 
-void DataManager::addProject(QString project,QString createTime,QString gps){
+void DataManager::addProject(QString project,QString createTime,QString gps,qreal dryness){
     QSqlQuery query;
 
     query.exec("SELECT MAX(id) FROM projectInfo;");
@@ -349,12 +351,13 @@ void DataManager::addProject(QString project,QString createTime,QString gps){
     qDebug()<<"model index:"<<index;
     // 构建插入语句
 
-    QString insertQuery = QString("INSERT INTO projectInfo (id,name, createTime, gps) "
-                                  "VALUES ('%1', '%2', '%3','%4')")
+    QString insertQuery = QString("INSERT INTO projectInfo (id,name, createTime, gps,dryness) "
+                                  "VALUES ('%1', '%2', '%3','%4','%5')")
                               .arg(index)
                               .arg(project)
                               .arg(createTime)
-                              .arg(gps);
+                              .arg(gps)
+                              .arg(dryness);
     // 执行插入语句
     if (!query.exec(insertQuery)) {
         qDebug() << "Failed to add project, error:" << query.lastError().text();
@@ -418,19 +421,20 @@ QList<QPair<QString,int>> DataManager::getModelInfoFromDb(){
     return modelInfoList;
 }
 
-std::tuple<QString,QString,QString> DataManager::getProjectInfo(int index){
+std::tuple<QString,QString,QString,QString> DataManager::getProjectInfo(int index){
     auto db=QSqlDatabase::database();
     if(!db.open()){
         LOG(INFO)<<"db not open in:getProjectInfo";
     }
     QSqlQuery query{db};
-    query.exec(QString("select name,createTime,gps from projectInfo where id='%1'").arg(index));
+    query.exec(QString("select name,createTime,gps,dryness from projectInfo where id='%1'").arg(index));
 
-    std::tuple<QString,QString,QString> rec;
+    std::tuple<QString,QString,QString,QString> rec;
     while(query.next()){
         std::get<0>(rec)=query.value("name").toString();
         std::get<1>(rec)=query.value("createTime").toString();
         std::get<2>(rec)=query.value("gps").toString();
+        std::get<3>(rec)=query.value("dryness").toString();
     }
     return rec;
 }

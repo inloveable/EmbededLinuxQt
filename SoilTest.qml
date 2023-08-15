@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 
 
 import "./SoilModeling/"
@@ -11,6 +11,37 @@ Rectangle {
     height:600
 
     color:"blue"
+
+    Loader{
+        id:addProjectLoader
+      anchors.fill: parent
+
+
+
+        active:false
+
+        source:"qrc:/SoilTest/AddProjectDialog.qml"
+
+        onLoaded: {
+
+            addProjectLoader.z=1
+
+            addProjectLoader.item.accepted.connect(function(){
+                console.log("project added");
+
+                 Service.addProject(addProjectLoader.item.projectName,addProjectLoader.item.dryness)
+
+                addProjectLoader.active=false
+
+            })
+            addProjectLoader.item.rejected.connect(function(){
+                console.log("project not added");
+                addProjectLoader.active=false
+            })
+            addProjectLoader.item.open()
+        }
+
+    }
 
     signal returnSignal()
 
@@ -196,6 +227,8 @@ Rectangle {
 
 
 
+
+
             ExpbandableNavigator {
                 id: expbandableNavigator
 
@@ -232,7 +265,10 @@ Rectangle {
                         }
                         )
                     }else if(type==="addTest"){
-                      Service.addProject("project"+listView.count)
+
+                        console.log("active")
+                      addProjectLoader.active=true
+
                     }
                 }
 

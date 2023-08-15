@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 
@@ -30,7 +30,7 @@ public:
 
     Q_INVOKABLE void removeProject(int index);
     Q_INVOKABLE void requestProjectInfo();
-    Q_INVOKABLE void addProject(QString project);
+    Q_INVOKABLE void addProject(QString project,qreal dryness);
 
     Q_INVOKABLE void exportData();
 
@@ -116,7 +116,7 @@ signals:
 
     void argsValueReady(float amp,float angle,int pointIndex);
 
-    void pointParingComplete(bool,int index);
+    void pointParingComplete(bool,int index,QString gps);
 
     void sendStatus(bool ,bool ,bool);
 

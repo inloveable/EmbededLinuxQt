@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 #include<QString>
@@ -48,6 +48,8 @@ public:
     float soildity;
     float dryDesity;
 
+    QString gpsStr;
+
     //for optimization
     bool    isSelected=true;
 
@@ -68,6 +70,7 @@ public:
     int     projectId;
     QString gps;
     QString createTime;
+    qreal   dryness;
     QList<std::shared_ptr<TestPointInfo>> points;
 };
 Q_DECLARE_METATYPE(ProjectInfo);

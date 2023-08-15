@@ -1,4 +1,4 @@
-
+﻿
 #include "serviceprovider.hpp"
 #include "modelinfo.hpp"
 
@@ -229,22 +229,43 @@ void ServiceProvider::initPrivateSignals(){
     });
     connect(this,&ServiceProvider::saveModelInfo,d,&ServiceProviderPrivate::saveModelInfo);
     //connect(d,&ServiceProviderPrivate::modelReady,this,&ServiceProvider::onModelReady);
-    connect(d,&ServiceProviderPrivate::pointParingComplete,this,&ServiceProvider::requestParingComplete);
+    connect(d,&ServiceProviderPrivate::pointParingComplete,this,[obj=this](bool sucess,int index,QString gpsSt){
+        auto point=obj->modelInfo->getTestPoint(index);
+        if(point!=nullptr){
+            point->gps=true;
+            point->gpsStr=gpsSt;
+        }
+        emit obj->requestParingComplete(sucess,index);
+    });
     connect(d,&ServiceProviderPrivate::argsValueReady,this,[obj=this](float amp,float phase,int index){
+
+
         if(!obj->isProject){
             if(obj->tModel==nullptr){
                 return;
             }
             auto modelIndex=obj->tModel->index(index);
             obj->tModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
-            obj->tModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
+            obj->tModel->setData(modelIndex,phase,TestPointModel::PhaseAngleRole);
         }else{
-            if(obj->projectTestPointModel==nullptr){
+
+            auto& pointModel=obj->projectTestPointModel;
+            if(pointModel==nullptr){
                 return;
             }
-            auto modelIndex=obj->projectTestPointModel->index(index);
-            obj->projectTestPointModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
-            obj->projectTestPointModel->setData(modelIndex,amp,TestPointModel::PhaseAngleRole);
+            auto modelIndex=pointModel->index(index);
+            pointModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
+            pointModel->setData(modelIndex,phase,TestPointModel::PhaseAngleRole);
+
+            auto [aD,bD,r2D,aW,bW,r2W]=emit obj->getModelArgWithId(obj->projectInfo->projectId);
+
+            auto density=obj->getFitValue(aD,bD,amp);
+            auto waterR=obj->getFitValue(aW,bW,phase);
+
+            pointModel->setData(modelIndex,density,TestPointModel::DensityRole);
+            pointModel->setData(modelIndex,waterR,TestPointModel::WaterRateRole);
+            auto dryness=obj->projectInfo->dryness;
+            pointModel->setData(modelIndex,density/dryness,TestPointModel::Solidity);
         }
     });
     connect(d,&ServiceProviderPrivate::temperatureValueReady,this,[obj=this](float temp,int index){
@@ -297,8 +318,8 @@ void ServiceProvider::initPrivateSignals(){
 
 }
 
-void ServiceProvider::addProject(QString name){
-    QMetaObject::invokeMethod(d,"addProject",Q_ARG(QString,name));
+void ServiceProvider::addProject(QString name,qreal dryness){
+    QMetaObject::invokeMethod(d,"addProject",Q_ARG(QString,name),Q_ARG(qreal,dryness));
 }
 
 void ServiceProvider::removeProject(int index){
@@ -371,7 +392,12 @@ void ServiceProvider::setPointToModel(int pointI,int modelI){
      if(iter!=pointIndexToModelIMap.end()){
          LOG(INFO)<<"setting point to model:"<<pointI<<" model:"<<modelI;
          pointIndexToModelIMap[pointI]=modelI;
+         auto ptr=this->projectInfo->points.value(pointI);
+         if(ptr!=nullptr){
+            ptr->modelIndex=modelI;//this might work
+         }
      }
+
 }
 
 void ServiceProvider::refreshTestPointDataWithModel(){
@@ -404,6 +430,9 @@ void ServiceProvider::refreshTestPointDataWithModel(){
          auto modelIndex=pointModel->index(pIndex);
          pointModel->setData(modelIndex,density,TestPointModel::DensityRole);
          pointModel->setData(modelIndex,waterR,TestPointModel::WaterRateRole);
+
+         auto dryness=this->projectInfo->dryness;
+         pointModel->setData(modelIndex,density/dryness,TestPointModel::Solidity);
      }
 
      disconnect(this,&ServiceProvider::getModelArgWithId,

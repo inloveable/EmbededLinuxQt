@@ -1,4 +1,4 @@
-import QtQuick 2.0
+﻿import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 Item {
@@ -107,6 +107,10 @@ Item {
                         if(text==="Delete"){
                             deleteSignal()
                             return;
+                        }
+
+                        if(text==="space "||text==="Space "){
+                            text=" "
                         }
 
                         keyboard.keyPressed(text)
