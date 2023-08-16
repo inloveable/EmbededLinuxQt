@@ -14,6 +14,7 @@ SOURCES += \
         DataManager/dataexporter.cpp \
         DataManager/datamanager.cpp \
         DataManager/instructgenerator.cpp \
+        DataManager/modelmanagemodel.cpp \
         devicemanager.cpp \
         main.cpp \
         modelinfo.cpp \
@@ -72,6 +73,7 @@ HEADERS += \
     DataManager/dataexporter.hpp \
     DataManager/datamanager.hpp \
     DataManager/instructgenerator.hpp \
+    DataManager/modelmanagemodel.hpp \
     PublicDefs.hpp \
     devicemanager.hpp \
     modelinfo.hpp \

@@ -3,6 +3,7 @@
 #include "ProjectInfoObject.hpp"
 #include "dataexporter.hpp"
 #include "modelinfo.hpp"
+#include "modelmanagemodel.hpp"
 #include "qdebug.h"
 #include <memory>
 #include <mutex>
@@ -372,6 +373,25 @@ void DataManager::addProject(QString project,QString createTime,QString gps,qrea
 
 }
 
+void DataManager::removeModel(int index){
+    QSqlQuery query;
+    QString deleteQuery = QString("DELETE FROM soilModel WHERE id = %1").arg(index);
+
+
+    if (!query.exec(deleteQuery)) {
+        return;
+    }
+
+    // 检查是否有行受到影响
+    if (query.numRowsAffected() > 0) {
+        // 删除成功
+        qDebug() << "Project removed successfully";
+    } else {
+        // 未找到匹配的项目
+        qDebug() << "No project found with index:" << index;
+    }
+}
+
 void DataManager::removeProject(int index){
 
     QSqlQuery query;
@@ -592,5 +612,42 @@ void DataManager::exportDataToUsb(int index,int type){
         return;
     }
 
+}
+
+void DataManager::onSentModelManageModelToInit(ModelManageModel* model){
+    QSqlDatabase database = QSqlDatabase::database();
+
+    // 打开数据库
+    if (!database.open()) {
+        qWarning() << "Failed to open database" << database.lastError();
+        return;
+    }
+
+    auto indices=this->getModels();
+    for(auto& index:indices){
+        auto ptr=this->getModelInfoWithId(index);
+        model->addModel(index,ptr);
+    }
+
+}
+
+std::vector<int> DataManager::getModels(){
+    std::vector<int> rec;
+
+
+
+    QSqlQuery query;
+    query.prepare("SELECT id FROM soilModel");
+
+    if (!query.exec()) {
+        qDebug() << "Failed to execute query, error:" << query.lastError().text();
+        return rec; // 默认返回模型类型
+    }
+
+    while(query.next()){
+        rec.push_back(query.value("id").toInt());
+    }
+
+    return rec;
 }
 

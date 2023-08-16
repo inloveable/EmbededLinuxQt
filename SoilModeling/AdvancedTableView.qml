@@ -1,5 +1,6 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
+import CppCore 1.0
 Rectangle {
 
     color:"transparent"
@@ -22,10 +23,12 @@ Rectangle {
         }
 
 
+
+
         header:ViewHeader{
             id:viewHeader
             width:parent.width
-            widthRate:[3,3,4,3,3]
+            widthRate:[1,3,4,4,3]
             height:40
             Component.onCompleted: {
                   console.log("width header:"+viewHeader.width+" view:"+listView.width)
@@ -53,28 +56,27 @@ Rectangle {
 
         }
         headerPositioning: ListView.InlineHeader
-        model: ListModel {
-            ListElement { name: "Bob Bobbleton";
-                          num:1
-                          time:"2021.8.13 18:00"
-                          rate:0.8
-                          source:"new"
-                 }
+        model: Service.getModelManagModel()
 
-            ListElement { name: "Bob Bobbleton";
-                          num:1
-                          time:"2021.8.13 18:00"
-                          rate:0.8
-                          source:"new"
+
+
+
+        function getWidth(cindex){
+            let count=0;
+
+            for(var i=0;i<widthRate.length;++i){
+                count+=widthRate[i];
             }
-
-
-
-
+            let totalWidth=listView.width
+            let slice=totalWidth/count
+            return slice*widthRate[cindex];
         }
+        property var widthRate:[1,3,4,4,3];
 
         delegate: SwipeDelegate {
             id: swipeDelegate
+
+
             width: parent.width
             height:70
             background:Rectangle{
@@ -103,14 +105,14 @@ Rectangle {
 
                 Rectangle{
                    height:parent.height
-                   width:row.leftWidth/(row.children.length-1)
+                   width:listView.getWidth(0)
                    color:"transparent"
 
 
 
                    Text{
                        anchors.fill:parent
-                       text:model.num
+                       text:model.index
                        verticalAlignment: Qt.AlignVCenter
                        horizontalAlignment: Qt.AlignHCenter
                    }
@@ -119,43 +121,43 @@ Rectangle {
                 Rectangle{
 
                    height:parent.height
-                   width:row.leftWidth/(row.children.length-1)
+width:listView.getWidth(1)
                    color:"transparent"
                    Text{
                        anchors.fill:parent
                        text:model.name
                        verticalAlignment: Qt.AlignVCenter
-                        horizontalAlignment: Qt.AlignHCenter
+                       horizontalAlignment: Qt.AlignHCenter
                    }
                 }
                 Rectangle{
 
                    height:parent.height
-                   width:parent.width/4
+width:listView.getWidth(2)
                    color:"transparent"
                    Text{
                        anchors.fill:parent
                        text:model.time
                        verticalAlignment: Qt.AlignVCenter
-                        horizontalAlignment: Qt.AlignHCenter
+                       horizontalAlignment: Qt.AlignHCenter
                    }
                 }
                 Rectangle{
 
                    height:parent.height
-                   width:row.leftWidth/(row.children.length-1)
+width:listView.getWidth(3)
                    color:"transparent"
                    Text{
                        anchors.fill:parent
                        text:model.rate
                        verticalAlignment: Qt.AlignVCenter
-                        horizontalAlignment: Qt.AlignHCenter
+                       horizontalAlignment: Qt.AlignHCenter
                    }
                 }
                 Rectangle{
 
                    height:parent.height
-                   width:row.leftWidth/(row.children.length-1)
+width:listView.getWidth(4)
                    color:"transparent"
                    Text{
                        anchors.fill:parent
@@ -195,7 +197,7 @@ Rectangle {
                 height: parent.height
                 anchors.right: parent.right
 
-                SwipeDelegate.onClicked: listView.model.remove(index)
+                SwipeDelegate.onClicked: listView.model.removeModel(index)
 
                 background: Rectangle {
                     color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"

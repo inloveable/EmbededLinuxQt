@@ -7,6 +7,8 @@
 #include<mutex>
 #include<memory>
 #include <optional>
+#include <vector>
+class ModelManageModel;
 class TestPointInfo;
 class ModelInfo;
 class ProjectInfo;
@@ -39,11 +41,13 @@ public:
     std::shared_ptr<TestPointInfo> getPointWithId(int id);
     Q_INVOKABLE void                           removePoint(std::shared_ptr<TestPointInfo> point);
 
+    void onSentModelManageModelToInit(ModelManageModel*);
 
-
+    Q_INVOKABLE std::vector<int> getModels();
     Q_INVOKABLE QList<QPair<QString,int>> getModelInfoFromDb();
-    std::shared_ptr<ModelInfo>  getModelInfoWithId(int id);
+    Q_INVOKABLE std::shared_ptr<ModelInfo>  getModelInfoWithId(int id);
     Q_INVOKABLE std::tuple<float,float,float,float,float,float> getModelArgWithId(int index);
+    Q_INVOKABLE void  removeModel(int index);
 
 
     //ProjectInfoObject*

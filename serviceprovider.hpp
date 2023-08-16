@@ -2,6 +2,7 @@
 #pragma once
 
 
+
 #include "qobjectdefs.h"
 #include "qqml.h"
 #include <QObject>
@@ -13,6 +14,7 @@ class ServiceProviderPrivate;
 class ModelInfo;
 class ProjectInfo;
 class TinyModelInfo;
+class ModelManageModel;
 class ServiceProvider : public QObject
 {
     Q_OBJECT
@@ -48,6 +50,8 @@ class ServiceProvider : public QObject
     Q_INVOKABLE void requestPointInfoUpdate(int index);//配对
     Q_INVOKABLE void requestPointTest();//测试
     Q_INVOKABLE void requestPointTest(int index);//测试(project)
+
+    Q_INVOKABLE ModelManageModel* getModelManagModel();
 
     //projectInfoApis
     Q_INVOKABLE void            requestProjectInfo();
@@ -124,6 +128,8 @@ signals:
 
     QString requestGps();
 
+    void sendModelManageModelToInit(ModelManageModel*);
+
 
 
 private:
@@ -157,6 +163,8 @@ private:
 
     QList<QObject*> tinyModelInfos;
 
+
+    ModelManageModel* manageModel=nullptr;
 
 
 

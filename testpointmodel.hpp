@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 
@@ -51,6 +51,8 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     QHash<int, QByteArray> roleNames() const override;
+
+
 
 
     bool add(const std::shared_ptr<TestPointInfo>& info);

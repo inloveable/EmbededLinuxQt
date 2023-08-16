@@ -2,6 +2,7 @@
 #include "serviceprovider.hpp"
 #include "modelinfo.hpp"
 
+#include "modelmanagemodel.hpp"
 #include "qmetaobject.h"
 #include "qnamespace.h"
 #include "qobjectdefs.h"
@@ -461,5 +462,25 @@ void ServiceProvider::exportData(int index,int type){
 
 QString ServiceProvider::getGps(){
      return emit requestGps();
+}
+
+ModelManageModel* ServiceProvider::getModelManagModel(){
+
+     if(this->manageModel==nullptr){
+         manageModel=new ModelManageModel(this);
+     }else{
+         manageModel->deleteLater();
+         manageModel=new ModelManageModel(this);
+     }
+     connect(this,&ServiceProvider::sendModelManageModelToInit,
+             &DataManager::getInstance(),&DataManager::onSentModelManageModelToInit,
+             Qt::BlockingQueuedConnection);
+
+     emit this->sendModelManageModelToInit(manageModel);
+
+     disconnect(this,&ServiceProvider::sendModelManageModelToInit,
+                &DataManager::getInstance(),&DataManager::onSentModelManageModelToInit
+                );
+     return manageModel;
 }
 

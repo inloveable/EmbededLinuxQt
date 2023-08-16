@@ -9,11 +9,11 @@
 #include <iostream>
 #include<QThread>
 
-#include "dataexporter.hpp"
+
 #include "seriespointswaper.hpp"
 #include"serviceprovider.hpp"
 #include "testpointmodel.hpp"
-
+#include"modelmanagemodel.hpp"
 #include"DataManager/datamanager.hpp"
 
 
@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 
     qRegisterMetaType<QList<QObject*>>();
     qmlRegisterType<TestPointModel>("CppCore",1,0,"TestPointModel");
+    qmlRegisterType<ModelManageModel>("CppCore",1,0,"ManageModel");
 
     qmlRegisterType<SeriesPointSwaper>("CppCore",1,0,"SeriesPointSwaper");
     QScopedPointer<ServiceProvider> privider{new ServiceProvider};
