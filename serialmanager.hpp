@@ -21,6 +21,8 @@ public:
 
     void setStatusCallback(std::function<void(bool,bool,bool)>);
 
+    bool checkSerialPort();
+
 signals:
     void sendTemperature(float);
     void sendBatteryVal(int);

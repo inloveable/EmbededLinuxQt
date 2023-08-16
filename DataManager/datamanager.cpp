@@ -245,8 +245,8 @@ void DataManager::saveModelInfo(const std::shared_ptr<ModelInfo>& model)
     int index=query.value(0).toInt()+1;
     qDebug()<<"model index:"<<index;
 
-    query.prepare("INSERT INTO soilModel (id,modelName,createTime,GPS,r,a,b,rW,aW,bW) "
-                  "VALUES (:modelName,:maximumDryness,:bestWaterRate,:gps,:argR2,:argA,:argB,:rW,:aW,bW)");
+    query.prepare("INSERT INTO soilModel (id,modelName,createTime,GPS,rD,aD,bD,rW,aW,bW) "
+                  "VALUES (:modelName,:maximumDryness,:bestWaterRate,:gps,:argR2,:argA,:argB,:rW,:aW,:bW)");
 
     query.bindValue(":modelName",index);
     query.bindValue(":maximumDryness", model->modelName);

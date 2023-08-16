@@ -13,6 +13,7 @@
 #include<QFile>
 #include <memory>
 #include <mutex>
+#include"serialmanager.hpp"
 #include"glog/logging.h"
 #include"datamanager.hpp"
 
@@ -279,6 +280,10 @@ void ServiceProviderPrivate::getModelInfoFromDb(){
 
 QString ServiceProviderPrivate::onRequestGps(){
     return devices->getGps();
+}
+
+void ServiceProviderPrivate::selfCheck(){
+    devices->serials->checkSerialPort();
 }
 
 

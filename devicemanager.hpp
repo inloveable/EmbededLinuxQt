@@ -36,7 +36,7 @@ public:
     bool temperature=false;
 
     QString getGps() const ;
-
+        SerialManager* serials=nullptr;
 
 signals:
     void detectedUsb(QString usb);
@@ -60,7 +60,7 @@ private:
     bool    usbDetected=false;
     QString usb;
 
-    SerialManager* serials=nullptr;
+
 
     QString longitudeSign{"--"};
     QString latitudeSign{"--"};

@@ -8,9 +8,9 @@ public:
 
     }
 
-    Q_PROPERTY(int index READ index WRITE setIndex NOTIFY indexChanged)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString createTime READ getTime WRITE setTime NOTIFY timeChanged)
+    Q_PROPERTY(int index READ index WRITE setIndex )
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString createTime READ getTime WRITE setTime)
 
 
     Q_INVOKABLE int index() const{return m_index;};

@@ -34,6 +34,8 @@ public:
 
     Q_INVOKABLE void exportData();
 
+    Q_INVOKABLE void selfCheck();
+
 
     Q_INVOKABLE void saveModelInfo(std::shared_ptr<ModelInfo>);
 

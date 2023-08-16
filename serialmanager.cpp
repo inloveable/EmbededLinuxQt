@@ -39,19 +39,24 @@ SerialManager::SerialManager(QObject *parent)
         emit obj->sendPosition(lo,la);
     };
 
+    auto argsCb=[obj=this](float amp,float phase){
+        emit obj->sendArgs(amp,phase);
+    };
+
 
     generator.batteryCb=batterCb;
     generator.temperatureCb=tempCb;
     generator.latitudeCb=latitudeCb;
     generator.positionCb=positionCb;
     generator.longitudeCb=longitudeCb;
+    generator.argCb=argsCb;
 
 
 
 }
 
 void SerialManager::recvData(){
-    LOG(INFO)<<"rs485 receiving data:"<<rs485->bytesAvailable();
+
     buffer.push_back(rs485->readAll());
     conductBuffer();
 }
@@ -61,6 +66,7 @@ void SerialManager::conductBuffer(){
         return;
     }
     while(buffer.size()>=8){
+        LOG(INFO)<<"parsing data";
         std::array<unsigned char,8> packet;
         for(int i=0;i<8;++i){
             packet[i]=buffer[i];
@@ -103,4 +109,22 @@ void SerialManager::printSerials(){
         qDebug()<<"serial:"<<l.portName();       
     }
 
+}
+
+bool SerialManager::checkSerialPort(){
+    if(!rs485){
+       LOG(INFO)<<"rs485 not exist";
+       return false;
+    }
+    if(!rs485->isOpen()){
+        rs485->open(QIODevice::ReadWrite);
+        this->buffer.clear();
+        if(rs485->isOpen()){
+            LOG(INFO)<<"485 reopen sucess";
+            return true;
+        }else{
+            LOG(INFO)<<"485 reopen failed";
+            return false;
+        }
+    }
 }
