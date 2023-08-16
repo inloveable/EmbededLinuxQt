@@ -1,6 +1,7 @@
 ﻿
 #pragma once
 
+#include "qobject.h"
 #include<QString>
 #include <memory>
 #include<array>
@@ -73,6 +74,23 @@ public:
     qreal   dryness;
     QList<std::shared_ptr<TestPointInfo>> points;
 };
+
+class ExportData:public QObject{
+    Q_OBJECT
+public:
+    ExportData(QObject *parent=nullptr):QObject{parent}{
+
+    }
+    Q_PROPERTY(QString label MEMBER label)
+    Q_PROPERTY(int     index MEMBER index)
+    Q_PROPERTY(int     type  MEMBER type)
+
+    QString label;
+    int     index;
+    int     type;//0 模型 1工程
+};
+
+
 Q_DECLARE_METATYPE(ProjectInfo);
 
 

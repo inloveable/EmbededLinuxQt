@@ -1,4 +1,4 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QDir>
 #include <QtQml>
@@ -78,6 +78,7 @@ void SinalHandle(const char* message,std::size_t len)
 
 void initGlog(int argc,char** argv){
 
+    Q_UNUSED(argc)
     QDir dir{"/usr"};
     dir.mkdir("log");
     google::InitGoogleLogging(argv[0]);

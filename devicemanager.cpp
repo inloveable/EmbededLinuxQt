@@ -64,7 +64,7 @@ SerialManager::printSerials();
     });
 }
 
-void DeviceManager::mountUsb(const QString& usb,const QString& dst){
+void DeviceManager::mountUsb(const QString& usb1,const QString& dst){
 
     QDir dir;
     dir.mkpath(dst);
@@ -75,6 +75,7 @@ void DeviceManager::mountUsb(const QString& usb,const QString& dst){
     process.waitForFinished();
 
     // 检查挂载是否成功
+    usbDetected=true;
     if (process.exitCode() == 0) {
         qDebug() << "USB device mounted successfully.";
     } else {
@@ -95,9 +96,11 @@ void DeviceManager::unmountUsb(const QString& ){
     // 检查卸载是否成功
     if (process.exitCode() == 0) {
         qDebug() << "USB device unmounted successfully.";
+
     } else {
         qDebug() << "Failed to unmount USB device.";
     }
+    usbDetected=false;
 }
 
 void DeviceManager::checkStatus(){
@@ -115,6 +118,28 @@ DeviceManager::~DeviceManager(){
 QString DeviceManager::getGps() const {
     QString format{"经度: %1 %2  纬度: %3 %4"};
 
-    return format.arg(longitudeSign).arg(longtitudeVal).arg(latitudeSign).arg(latitudeVal);
+    auto gps=format.arg(longitudeSign).arg(longtitudeVal).arg(latitudeSign).arg(latitudeVal);
+
+    LOG(INFO)<<gps.toStdString();
+    return gps;
 };
+
+void DeviceManager::exportFileToUsb(const QString& file){
+    QString usbPath = this->usb; // 假设你的USB设备在Linux上挂载的路径为/media/usb
+
+    // 检查USB设备是否已挂载
+    QDir usbDir(usbPath);
+    if (!usbDir.exists()) {
+        qDebug() << "USB设备未挂载";
+        return;
+    }
+
+    // 拷贝文件到USB设备
+    QString destinationPath = usbPath + "/" + QFileInfo(file).fileName();
+    if (QFile::copy(file, destinationPath)) {
+        qDebug() << "文件成功导出到USB设备";
+    } else {
+        qDebug() << "文件导出失败";
+    }
+}
 

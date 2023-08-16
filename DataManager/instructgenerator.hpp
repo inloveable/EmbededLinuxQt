@@ -1,6 +1,7 @@
 ﻿
 #pragma once
 
+#include "qglobal.h"
 #include "qmath.h"
 #include<array>
 #include <complex>
@@ -109,6 +110,7 @@ inline void InstructGenerator::read<0x02>(std::array<unsigned char, 8>& data) {
     try{
         argCb(mag,alpha,Amp);
     }catch(std::exception& ex){
+        Q_UNUSED(ex)
         LOG(WARNING)<<"arg cb not set";
     }
 }
@@ -134,6 +136,7 @@ inline void InstructGenerator::read<0x03>(std::array<unsigned char, 8>& data) {
     try{
         temperatureCb(tj);
     }catch(std::exception& ex){
+        Q_UNUSED(ex)
         LOG(WARNING)<<"temperature cb not set";
     }
 }
@@ -148,6 +151,7 @@ inline void InstructGenerator::read<0x04>(std::array<unsigned char, 8>& data) {
     try{
         batteryCb(val);
     }catch(std::exception& ex){
+        Q_UNUSED(ex)
         LOG(WARNING)<<"battery cb not set";
     }
 
@@ -167,6 +171,7 @@ inline void InstructGenerator::read<0x05>(std::array<unsigned char, 8>& data) {
     try{
         longitudeCb(val);
     }catch(std::exception& ex){
+        Q_UNUSED(ex)
         LOG(INFO)<<"longitude callback not set";
     }
 }
@@ -184,6 +189,7 @@ inline void InstructGenerator::read<0x06>(std::array<unsigned char, 8>& data) {
     try{
         latitudeCb(val);
     }catch(std::exception& ex){
+        Q_UNUSED(ex)
         LOG(INFO)<<"latitude callback not set";
     }
 }
@@ -197,6 +203,7 @@ inline void InstructGenerator::read<0x07>(std::array<unsigned char, 8>& data) {
     try{
         positionCb(A31to24,A23to16);
     }catch(std::exception& ex){
+        Q_UNUSED(ex)
         LOG(INFO)<<"latitude callback not set";
     }
 

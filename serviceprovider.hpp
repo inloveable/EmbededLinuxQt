@@ -19,7 +19,7 @@ class ServiceProvider : public QObject
     QML_ELEMENT//D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/config.json
 
     Q_PROPERTY(bool usbOnline READ usbOnline NOTIFY usbOnlineChanged)
-        Q_PROPERTY(int batteryVal READ getCurrentBattery NOTIFY batteryChanged);
+    Q_PROPERTY(int batteryVal READ getCurrentBattery NOTIFY batteryChanged);
 
         public:
                  explicit ServiceProvider(QObject *parent = nullptr);
@@ -27,6 +27,7 @@ class ServiceProvider : public QObject
 
 
     Q_INVOKABLE void getTime();
+    Q_INVOKABLE QString getGps();
     Q_INVOKABLE void messageBox(QString text);
     Q_INVOKABLE TestPointModel* getTestPointModel();
 
@@ -59,15 +60,20 @@ class ServiceProvider : public QObject
     Q_INVOKABLE void            projectInfoExit();
     Q_INVOKABLE void            addProjectTestPoint();
     Q_INVOKABLE void            removeProjectTestPoint(int index);
+
     Q_INVOKABLE void            requestTinyModelInfo();
+    Q_INVOKABLE QList<QObject*> getTinyModelInfos(){
+        return tinyModelInfos;
+    }
 
     Q_INVOKABLE void            refreshTestPointDataWithModel();
 
     Q_INVOKABLE void            setPointToModel(int pointI,int modelI);
 
-    Q_INVOKABLE QList<QObject*> getTinyModelInfos(){
-        return tinyModelInfos;
-    }
+    Q_INVOKABLE QList<QObject*> getExportInfos();
+    Q_INVOKABLE void exportData(int index,int type);
+
+
     /*------------------------------------------------------------*/
 
     bool  usbOnline()const{return hasUsb;};
@@ -84,6 +90,8 @@ class ServiceProvider : public QObject
 signals:
 
     void sendTime(QString,bool);
+
+    void exportInfoReady();
 
 
 
@@ -110,7 +118,11 @@ signals:
     std::tuple<float,float,float,float,float,float> getModelArgWithId(int index);
 
 
+    QList<QObject*>  requestExportData();
 
+
+
+    QString requestGps();
 
 
 
@@ -143,8 +155,9 @@ private:
 
     int batteryValue=100;
 
-
     QList<QObject*> tinyModelInfos;
+
+
 
 
     bool isProject;

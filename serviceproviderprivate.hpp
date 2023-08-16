@@ -40,15 +40,16 @@ public:
 
 
     Q_INVOKABLE void getModelInfoFromDb();
-    Q_INVOKABLE void requestModelInfo(int id);
 
 
 
+    QString onRequestGps();
 
     //data conduct
     void onTemperature(float temp);
     void onBatterySent(int battery);
     void onArgsSent(float amp,float phaseAngle);
+
 
     class DataField{
     public:

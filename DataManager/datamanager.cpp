@@ -11,6 +11,7 @@
 #include<QSqlRecord>
 #include<QSqlError>
 #include<glog/logging.h>
+#include"PublicDefs.hpp"
 
 #include<QDateTime>
 #include <tuple>
@@ -185,8 +186,8 @@ std::shared_ptr<TestPointInfo> DataManager::getPointWithId(int id)
 
 void DataManager::init(){
      initializeDatabase();
-    DataExporter().exportModel(4,"./testModel.txt");
-    DataExporter().exportProject(1,"./testProject.txt");
+//DataExporter().exportModel(4);
+    //DataExporter().exportProject(1);
 }
 
 void DataManager::Destory(){
@@ -532,4 +533,64 @@ std::tuple<float,float,float,float,float,float> DataManager::getModelArgWithId(i
     return {};
 }
 
+QList<QObject*> DataManager::getExportData(){
+    if(exportData.size()!=0){
+        for(auto&& e:exportData){
+            e->deleteLater();
+        }
+        exportData.clear();
+    }
+    auto models=getModelInfoFromDb();
+    if(models.size()!=0){
+        for(auto&& info:models){
+            QObject* m=new ExportData{};
+            static_cast<ExportData*>(m)->index=info.second;
+            static_cast<ExportData*>(m)->type=0;
+            static_cast<ExportData*>(m)->label=QString{QStringLiteral("名称: %1 -%2")}.arg(info.first).arg(QStringLiteral("模型"));
+            exportData.push_back(m);
+        }
+    }
+
+    auto projects=getAllProjectInfo();
+    if(projects.size()!=0){
+        for(auto&& info:projects){
+            QObject* m=new ExportData{};
+            auto p=static_cast<ProjectInfoObject*>(info);
+            static_cast<ExportData*>(m)->index=p->index();
+            static_cast<ExportData*>(m)->type=1;
+            static_cast<ExportData*>(m)->label=QString{QStringLiteral("名称: %1 -%2")}.arg(p->name()).arg(QStringLiteral("工程"));
+            exportData.push_back(m);
+        }
+    }
+
+
+    return exportData;
+}
+
+
+void DataManager::exportDataToUsb(int index,int type){
+
+
+    QString fileName;
+    if(type==0){
+        fileName=DataExporter().exportModel(index);
+    }else if(type==1){
+        fileName=DataExporter().exportProject(index);
+    }
+
+    if(fileName==""){
+        LOG(WARNING)<<"export failed index:"<<index<<" type:"<<type;
+        return;
+    }
+
+    if(emit this->isUsbOnline()==true){
+
+        LOG(INFO)<<"usb online moving to usb:"<<fileName.toStdString();
+        emit this->exportToUsb(fileName);
+    }else{
+        LOG(INFO)<<"usb offline,not moving return";
+        return;
+    }
+
+}
 

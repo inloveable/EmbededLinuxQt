@@ -19,6 +19,10 @@ public:
     void mountUsb(const QString& usbPath,const QString& dstPath);
     void unmountUsb(const QString& usbPath);
 
+    bool hasUsb() const{
+        return usbDetected;
+    }
+
     void exportFileToUsb(const QString& file);
 
     void checkSerialIsOnline(std::function<void(bool,void*)> func);

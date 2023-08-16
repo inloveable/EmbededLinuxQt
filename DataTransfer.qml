@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.0
 
@@ -7,6 +7,8 @@ Rectangle {
     id: rectangle
 
     color:"#3F51B5"
+
+    property string transmitType:"USB"
 
 
     Rectangle{
@@ -90,6 +92,7 @@ Rectangle {
                 originColor: "#448AFF"
 
                 onClicked:{
+                    transmitType="USB"
                     loader.sourceComponent=usb
                 }
 
@@ -107,6 +110,7 @@ Rectangle {
                 originColor: "#448AFF"
                 Layout.fillHeight: true
                 onClicked:{
+                    transmitType="WIFI"
                     loader.sourceComponent=wifi
                 }
 
@@ -152,6 +156,10 @@ Rectangle {
                     text:qsTr("传输")
                     anchors.right: parent.right
                     anchors.top: parent.top
+
+                    onClicked: {
+                        Service.exportData(modelCombo.currentValue,modelCombo.currentFileType);
+                    }
                 }
 
 
@@ -220,16 +228,55 @@ Rectangle {
                             height:parent.height
                             color:"#ffffff"
                         }
-                        Text{
-                            text:"土壤无核密度仪"
-                            horizontalAlignment: Text.AlignLeft
-                            verticalAlignment: Text.AlignVCenter
-                            font.pointSize: 15
-                            font.bold: true
-                            color:"#ffffff"
+                        Rectangle{
                             width:parent.width/2
                             height:parent.height
+                            color:"transparent"
+                            ComboBox{
+                                id:modelCombo
+                                background:Rectangle{
+                                    color:"transparent"
+                                    anchors.fill: parent
+                                }
+
+                                property int currentFileIndex:-1
+                                property int currentFileType:0
+
+                                model:Service.getExportInfos()
+                                font.pixelSize: 20
+                                font.bold:true
+                                contentItem:Text {
+                                       //anchors.fill: parent
+
+                                       text: parent.displayText
+                                       font: parent.font
+                                       color:"white"
+                                       verticalAlignment: Text.AlignVCenter
+                                       horizontalAlignment: Text.AlignLeft
+                                       elide: Text.ElideRight
+
+                                  }
+
+
+
+                                onCurrentValueChanged: {
+                                    //comboBoxIndexChanged(root.index,currentValue)
+                                    ///currentFileType=model.data(modelCombo.currentIndex,type)
+                                    //currentFileIndex=model.data(modelCombo.currentIndex,index)
+
+                                    if(currentText.slice(-2)===qsTr("工程")){
+                                        currentFileType=1;
+                                    }else if(currentText.slice(-1)===qsTr("模型")){
+                                        currentFileType=0;
+                                    }
+                                }
+
+                                textRole: "label"
+                                valueRole:"index"
+                                anchors.fill:parent
+                            }
                         }
+
                     }
                 }
 
@@ -275,6 +322,14 @@ Rectangle {
                     text:qsTr("传输")
                     anchors.right: parent.right
                     anchors.top: parent.top
+
+                    onClicked:{
+                        if(transmitType==="USB"){
+
+                        }
+
+
+                    }
                 }
 
 

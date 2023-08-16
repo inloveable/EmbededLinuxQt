@@ -6,6 +6,8 @@ QT += quick widgets network serialport  charts sql
 
 CONFIG+=c++17
 
+
+
 INCLUDEPATH+=./DataManager#subdirs
 
 SOURCES += \

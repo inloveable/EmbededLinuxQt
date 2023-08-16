@@ -54,7 +54,16 @@ public:
 
     std::tuple<QString,QString,QString,QString> getProjectInfo(int index);
 
+
+    Q_INVOKABLE void exportDataToUsb(int index,int type);
+
+
+    Q_INVOKABLE QList<QObject*> getExportData();
+
 signals:
+
+    bool isUsbOnline();
+    void exportToUsb(const QString& fileName);
 
 private:
     explicit DataManager(QObject *parent = nullptr);
@@ -71,6 +80,8 @@ private:
 
 
     BelongType getBelongType(int id);
+
+    QList<QObject*> exportData;
 
 };
 

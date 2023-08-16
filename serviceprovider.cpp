@@ -4,6 +4,7 @@
 
 #include "qmetaobject.h"
 #include "qnamespace.h"
+#include "qobjectdefs.h"
 #include "qthread.h"
 #include "serviceproviderprivate.hpp"
 #include "testpointmodel.hpp"
@@ -213,7 +214,9 @@ void ServiceProvider::setModelName(QString name){
 
 void ServiceProvider::initPrivateSignals(){
     connect(d,&ServiceProviderPrivate::sendTime,this,&ServiceProvider::sendTime);
-    connect(d,&ServiceProviderPrivate::sendProjectInfo,this,&ServiceProvider::sendProjectInfo);
+    connect(d,&ServiceProviderPrivate::sendProjectInfo,this,[obj=this](QList<QObject*> info){
+        emit obj->sendProjectInfo(info);
+    });
     connect(d,&ServiceProviderPrivate::projectInfoNeedsUpdate,this,&ServiceProvider::projectInfoNeedsUpdate);
     connect(d,&ServiceProviderPrivate::usbLoaded,this,[this](){
         this->hasUsb=true;
@@ -278,13 +281,6 @@ void ServiceProvider::initPrivateSignals(){
     connect(this,&ServiceProvider::sendProjectInfoToInit,d,&ServiceProviderPrivate::onSentProjectInfo
             ,Qt::BlockingQueuedConnection);//for sync
     connect(this,&ServiceProvider::saveProjectInfo,d,&ServiceProviderPrivate::onSaveProjectInfo);
-    connect(d,&ServiceProviderPrivate::sendModelInfoForTestPoint,this,[](std::shared_ptr<ModelInfo> info){
-        if(info==nullptr){
-            LOG(INFO)<<"modelInfo not found";
-            return;
-        }
-        LOG(INFO)<<"recv modelInfo,generating data";
-    });
     connect(d,&ServiceProviderPrivate::sendModelListForTestPoint,this,[obj=this, this](QList<QPair<QString,int>> info){
         if(tinyModelInfos.size()>0){
             for(auto&& t:tinyModelInfos){
@@ -311,10 +307,12 @@ void ServiceProvider::initPrivateSignals(){
             }
         }
 
+
         emit this->tinyModelInfoUpdated();
+
     });
-
-
+    connect(this,&ServiceProvider::requestGps,
+            d,&ServiceProviderPrivate::onRequestGps,Qt::BlockingQueuedConnection);
 
 }
 
@@ -438,5 +436,28 @@ void ServiceProvider::refreshTestPointDataWithModel(){
      disconnect(this,&ServiceProvider::getModelArgWithId,
              &DataManager::getInstance(),&DataManager::getModelArgWithId
              );
+}
+
+QList<QObject*> ServiceProvider::getExportInfos(){
+
+     connect(this,&ServiceProvider::requestExportData,
+             &DataManager::getInstance(),&DataManager::getExportData,
+             Qt::BlockingQueuedConnection);
+
+     auto list=emit this->requestExportData();
+
+     disconnect(this,&ServiceProvider::requestExportData,
+                &DataManager::getInstance(),&DataManager::getExportData
+                );
+     return list;
+}
+
+void ServiceProvider::exportData(int index,int type){
+     QMetaObject::invokeMethod(&DataManager::getInstance(),
+                               "exportDataToUsb",Q_ARG(int,index),Q_ARG(int,type));
+}
+
+QString ServiceProvider::getGps(){
+     return emit requestGps();
 }
 

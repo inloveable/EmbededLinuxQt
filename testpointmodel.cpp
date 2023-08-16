@@ -1,13 +1,13 @@
-
+﻿
 #include "testpointmodel.hpp"
 
 #include"PublicDefs.hpp"
-#include "qabstractseries.h"
+
 #include "qnamespace.h"
 #include "qxyseries.h"
 #include "seriespointswaper.hpp"
 #include "serviceprovider.hpp"
-#include "serviceproviderprivate.hpp"
+
 #include <algorithm>
 #include <memory>
 #include<glog/logging.h>
@@ -22,6 +22,7 @@ TestPointModel::TestPointModel(QObject *parent)
 }
 
 Qt::ItemFlags TestPointModel::flags(const QModelIndex &index) const{
+    Q_UNUSED(index)
     return Qt::ItemIsEditable|Qt::ItemIsSelectable;
 }
 
@@ -142,6 +143,9 @@ void TestPointModel::swapSeriesPoint(QtCharts::QXYSeries* from,QtCharts::QXYSeri
 
 QVariant TestPointModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+    Q_UNUSED(section)
+    Q_UNUSED(orientation)
+    Q_UNUSED(role)
     // FIXME: Implement me!
     return QVariant{};
 }

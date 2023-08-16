@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 
@@ -11,8 +11,8 @@ class DataExporter : public QObject
 public:
     explicit DataExporter(QObject *parent = nullptr);
 
-    void exportProject(int index,std::string fileName);
-    void exportModel(int index,std::string fileName);
+    QString exportProject(int index);
+    QString exportModel(int index);
 
 signals:
 

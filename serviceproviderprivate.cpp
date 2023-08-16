@@ -68,6 +68,7 @@ void ServiceProviderPrivate::getTime(){
             (QNetworkReply::NetworkError error){
         emit sendTime(reply->errorString(),false);
                 reply->deleteLater();
+        Q_UNUSED(error)
     });
 
 }
@@ -100,6 +101,8 @@ void ServiceProviderPrivate::init(){
                                           &&obj->devices->batterry,obj->currentRequestPointIndex
                                       ,obj->devices->getGps());
     });
+    connect(&DataManager::getInstance(),&DataManager::isUsbOnline,devices,&DeviceManager::hasUsb);
+    connect(&DataManager::getInstance(),&DataManager::exportToUsb,devices,&DeviceManager::exportFileToUsb);
 }
 
 TestPointModel* ServiceProviderPrivate::getPreparedModel(){
@@ -274,10 +277,10 @@ void ServiceProviderPrivate::getModelInfoFromDb(){
     emit this->sendModelListForTestPoint(data);
 }
 
-void ServiceProviderPrivate::requestModelInfo(int id){
-    auto data=DataManager::getInstance().getModelInfoWithId(id);
-    emit this->sendModelInfoForTestPoint(data);
+QString ServiceProviderPrivate::onRequestGps(){
+    return devices->getGps();
 }
+
 
 
 

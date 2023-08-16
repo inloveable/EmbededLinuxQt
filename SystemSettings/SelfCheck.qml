@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.0
 import CppCore 1.0
 import "../"
@@ -42,6 +42,7 @@ Rectangle {
 
             Service.messageBox(qsTr("自检成功"));
             sensorState.text=sucess?qsTr("在线"):qsTr("断线")
+
 
         }
     }

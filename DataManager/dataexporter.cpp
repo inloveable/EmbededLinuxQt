@@ -7,7 +7,7 @@
 #include "qstringliteral.h"
 #include<iostream>
 #include<fstream>
-
+#include<QDateTime>
 #if QT_VERSION_MAJOR<6
    #pragma execution_character_set("utf-8")
 #endif
@@ -24,19 +24,21 @@ DataExporter::DataExporter(QObject *parent)
 #include <QTextStream>
 #include <QDebug>
 
-void DataExporter::exportModel(int index, std::string fileName) {
+QString DataExporter::exportModel(int index) {
     auto& data = DataManager::getInstance();
     auto model = data.getModelInfoWithId(index);
     auto& modelInfo = *model;
     if (model == nullptr) {
         qDebug() << "nullptr model when export";
-        return;
+        return "";
     }
 
-    QFile file(QString::fromStdString(fileName));
+    QString fileName=QString{"model-%1-%2.txt"}.arg(model->modelName).arg(QDateTime::currentDateTime().toString());
+
+    QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qDebug() << "Failed to open file: " << &fileName;
-        return;
+        return "";
     }
 
     if(modelInfo.gps==""){
@@ -68,18 +70,20 @@ void DataExporter::exportModel(int index, std::string fileName) {
     }
 
     file.close();
+
+    return fileName;
 }
 
-void DataExporter::exportProject(int index,std::string fileName){
+QString DataExporter::exportProject(int index){
     auto& data = DataManager::getInstance();
     auto [name,createTime,gps,dryness]=data.getProjectInfo(index);
 
+    QString fileName=QString{"project-%1-%2.txt"}.arg(name).arg(QDateTime::currentDateTime().toString());
 
-
-    QFile file(QString::fromStdString(fileName));
+    QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qDebug() << "Failed to open file: " << &fileName;
-        return;
+        qDebug() << "Failed to open file: " << fileName;
+        return "";
     }
 
 
@@ -104,7 +108,7 @@ void DataExporter::exportProject(int index,std::string fileName){
     for (auto&& id : pointIds) {
         auto ptr = data.getPointWithId(id);
         if(ptr==nullptr){
-            return;
+            return "";
         }
 
         out << QString("数据点数据:\t") << ptr->index << "\t" << ptr->modelIndex << "\t"
@@ -115,4 +119,6 @@ void DataExporter::exportProject(int index,std::string fileName){
     }
 
     file.close();
+
+    return fileName;
 }

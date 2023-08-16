@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 #include<QObject>
 class ProjectInfoObject:public QObject{
@@ -8,9 +8,9 @@ public:
 
     }
 
-    Q_PROPERTY(int index READ index WRITE setIndex CONSTANT)
-    Q_PROPERTY(QString name READ name WRITE setName CONSTANT)
-    Q_PROPERTY(QString createTime READ getTime WRITE setTime CONSTANT)
+    Q_PROPERTY(int index READ index WRITE setIndex NOTIFY indexChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString createTime READ getTime WRITE setTime NOTIFY timeChanged)
 
 
     Q_INVOKABLE int index() const{return m_index;};
