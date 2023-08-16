@@ -125,7 +125,7 @@ QString DeviceManager::getGps() const {
 };
 
 void DeviceManager::exportFileToUsb(const QString& file){
-    QString usbPath = this->usb; // 假设你的USB设备在Linux上挂载的路径为/media/usb
+    QString usbPath = "/mnt";
 
     // 检查USB设备是否已挂载
     QDir usbDir(usbPath);

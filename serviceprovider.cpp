@@ -128,6 +128,7 @@ void ServiceProvider::callBackend(const QString& funct){
 
 void ServiceProvider::selfCheck(){
     LOG(INFO)<<"self checking";
+    callBackend("selfCheck");
 }
 
 void ServiceProvider::prepareCreateNewModel(){
@@ -190,6 +191,7 @@ void  ServiceProvider::createNewModelExit(){
     modelInfo=nullptr;
     tModel->deleteLater();
     tModel=nullptr;
+    modelSaved=false;
 }
 
 void ServiceProvider::requestPointInfoUpdate(int index){

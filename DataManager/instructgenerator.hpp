@@ -35,7 +35,7 @@ public:
 
     std::function<void(int)>                  batteryCb;
     std::function<void(float)>                temperatureCb;
-    std::function<void(float,float,float)>    argCb;
+    std::function<void(float,float)>    argCb;
     std::function<void(bool,bool,bool)>       statusCb;
 
     std::function<void(float)>                longitudeCb;
@@ -108,7 +108,7 @@ inline void InstructGenerator::read<0x02>(std::array<unsigned char, 8>& data) {
     auto Amp =1/ mag* 10000;
 
     try{
-        argCb(mag,alpha,Amp);
+        argCb(Amp,alpha);
     }catch(std::exception& ex){
         Q_UNUSED(ex)
         LOG(WARNING)<<"arg cb not set";
