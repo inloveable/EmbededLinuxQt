@@ -66,11 +66,13 @@ SerialManager::printSerials();
 
 void DeviceManager::mountUsb(const QString& usb1,const QString& dst){
 
+
+    return;
     QDir dir;
     dir.mkpath(dst);
     QProcess process;
     QStringList args;
-    args<<usb<<dst;
+    args<<usb1<<dst;
     process.start("mount",args);
     process.waitForFinished();
 
@@ -81,10 +83,14 @@ void DeviceManager::mountUsb(const QString& usb1,const QString& dst){
     } else {
         qDebug() << "Failed to mount USB device.";
     }
+
+    this->usb=usb1;
 }
 
 void DeviceManager::unmountUsb(const QString& ){
 
+
+    return;
     // 执行卸载命令
     QProcess process;
     QStringList args;
@@ -125,7 +131,7 @@ QString DeviceManager::getGps() const {
 };
 
 void DeviceManager::exportFileToUsb(const QString& file){
-    QString usbPath = "/mnt";
+    QString usbPath ="/mnt";
 
     // 检查USB设备是否已挂载
     QDir usbDir(usbPath);
