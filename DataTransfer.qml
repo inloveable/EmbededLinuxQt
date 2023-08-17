@@ -107,11 +107,12 @@ Rectangle {
                 Layout.topMargin: 15
                 fontColor:"#ffffff"
                 hoverColor: "#448AE0"
-                originColor: "#448AFF"
+                originColor: Qt.darker("#448AFF",1.5)
                 Layout.fillHeight: true
                 onClicked:{
-                    transmitType="WIFI"
-                    loader.sourceComponent=wifi
+
+                    //transmitType="WIFI"
+                    //loader.sourceComponent=wifi
                 }
 
             }
@@ -141,9 +142,9 @@ Rectangle {
                       color:"#212121"
                       width:parent.width-transferButton.width
                       height:infoArea.height
-                      font.pixelSize: 30
+                      font.pointSize: 15
                       font.bold: true
-                      text:"结果：已完成文件传输\n      未成功导出文件,请检查WIFI连接是否异常\n      未成功导出文件,请检查文件是否存在";
+                      text:qsTr("结果：已完成文件传输\n      未成功导出文件,请检查WIFI连接是否异常\n      未成功导出文件,请检查文件是否存在");
                   }
 
                 MyButton{
@@ -156,6 +157,8 @@ Rectangle {
                     text:qsTr("传输")
                     anchors.right: parent.right
                     anchors.top: parent.top
+
+                    fontSize:14
 
                     onClicked: {
                         Service.exportData(modelCombo.currentValue,modelCombo.currentFileType);
@@ -195,7 +198,7 @@ Rectangle {
                         width:parent.width
                         height:column.height/column.children.length
                         Text{
-                            text:"U盘状态:"
+                            text:qsTr("U盘状态:")
                             horizontalAlignment: Text.AlignRight
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 15
@@ -264,11 +267,11 @@ Rectangle {
                                     ///currentFileType=model.data(modelCombo.currentIndex,type)
                                     //currentFileIndex=model.data(modelCombo.currentIndex,index)
 
-                                    if(currentText.slice(-2)===qsTr("工程")){
-                                        currentFileType=1;
-                                    }else if(currentText.slice(-1)===qsTr("模型")){
-                                        currentFileType=0;
-                                    }
+                                    //project----model
+                                    console.log(model[currentIndex].label)
+
+
+                                    currentFileType=model[currentIndex].type
                                 }
 
                                 textRole: "label"
@@ -466,5 +469,32 @@ Rectangle {
         }
     }
 
+    Rectangle{
+        width:300
+        height:50
 
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.bottom: parent.bottom
+
+        color:"transparent"
+        Text{
+
+            id:timeLabel
+            anchors.fill: parent
+            font.pointSize: 13
+            color:"white"
+
+            verticalAlignment:Text.AlignBottom
+
+        }
+
+        Connections{
+            target:Service
+
+            function onSendTime(time,val){
+                timeLabel.text=time;
+            }
+        }
+    }
 }

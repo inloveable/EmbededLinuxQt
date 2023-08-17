@@ -116,7 +116,7 @@ DeviceManager::~DeviceManager(){
 }
 
 QString DeviceManager::getGps() const {
-    QString format{"经度: %1 %2  纬度: %3 %4"};
+    QString format{tr("经度: %1 %2  纬度: %3 %4")};
 
     auto gps=format.arg(longitudeSign).arg(longtitudeVal).arg(latitudeSign).arg(latitudeVal);
 

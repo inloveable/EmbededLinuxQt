@@ -35,6 +35,9 @@ Rectangle {
 
            }
 
+
+   property int buttonFontSize:13
+
    MyButton{
        id:saveProjectButton
 
@@ -54,6 +57,8 @@ Rectangle {
        onClicked: {
            Service.projectInfoSave();
        }
+
+       fontSize:buttonFontSize
    }
 
    MyButton{
@@ -77,6 +82,7 @@ Rectangle {
        onClicked: {
            Service.addProjectTestPoint()
        }
+              fontSize:buttonFontSize
    }
    MyButton{
        id:removePointButton
@@ -92,11 +98,12 @@ Rectangle {
        originColor: buttonOriginColor
        hoverColor:buttonHoverColor
 
-       text:"删除"
+       text:qsTr("删除")
 
        onClicked: {
            Service.removeProjectTestPoint(listView.count-1)
        }
+              fontSize:buttonFontSize
    }
 
    MyButton{
@@ -118,6 +125,7 @@ Rectangle {
        onClicked: {
            Service.refreshTestPointDataWithModel()
        }
+              fontSize:buttonFontSize
    }
 
 
@@ -209,25 +217,25 @@ Rectangle {
 
                itemInfo:ListModel{
                    ListElement{
-                       label:"测点"
+                       label:qsTr("测点")
                    }
                    ListElement{
-                       label:"土壤模型"
+                       label:qsTr("土壤模型")
                    }
                    ListElement{
-                       label:"湿密度(g/cm^3)"
+                       label:qsTr("湿密度(g/cm^3)")
                    }
                    ListElement{
-                       label:"含水率(%)"
+                       label:qsTr("含水率(%)")
                    }
                    ListElement{
-                       label:"相角"
+                       label:qsTr("相角")
                    }
                    ListElement{
-                       label:"幅值"
+                       label:qsTr("幅值")
                    }
                    ListElement{
-                       label:"压实度"
+                       label:qsTr("压实度")
                    }
 
                }
@@ -317,31 +325,68 @@ Rectangle {
        anchors.topMargin: 18
        anchors.horizontalCenter: parent.horizontalCenter
 
+
+       Connections{
+           target:Service
+
+
+           function onPointTestCompelete(i){
+               rectangle.resetTestStatus()
+           }
+       }
+
+       function resetTestStatus(){
+
+           console.log("reseting test status")
+           testAclicked=false
+           testBclicked=false
+       }
+
+       property bool testAclicked:false
+       property bool testBclicked:false
+
        RoundButton {
            id: roundButton
            x: 103
            width: 75
            height: 75
-           text: "测试A"
+           text: qsTr("测试A")
            anchors.verticalCenter: parent.verticalCenter
            anchors.right: toolSeparator.left
            anchors.rightMargin:width
 
            onClicked: {
+               if(rectangle.testAclicked){
+                   console.log("a tested blocking")
+                   return;
+               }
+
                Service.requestPointTest(listView.count-1)
+               rectangle.testAclicked=true
            }
        }
 
        RoundButton {
            id: roundButton1
-           text: "测试B"
+           text:qsTr( "测试B")
            anchors.verticalCenter: parent.verticalCenter
            anchors.left: toolSeparator.right
            anchors.leftMargin: width
            width: 75
            height: 75
            onClicked: {
+               if(!parent.testAclicked){
+                   console.log("a has not been tested,blocking")
+                   return;
+               }
+               if(parent.testBclicked){
+                   console.log("b has been tested blocking")
+                   return;
+               }
+
                Service.requestPointTest(listView.count-1)
+
+               parent.testBclicked
            }
        }
 
@@ -361,11 +406,11 @@ Rectangle {
        width: 75
        height: 75
        opacity:0.5
-       text: "返回"
+       text: qsTr("返回")
        anchors.right: parent.right
        anchors.bottom: parent.bottom
        font.bold: true
-       font.pointSize: 17
+       font.pointSize: 13
        anchors.bottomMargin: 40
        anchors.rightMargin: 40
 
@@ -373,4 +418,6 @@ Rectangle {
            returnSignal()
        }
    }
+
+
 }

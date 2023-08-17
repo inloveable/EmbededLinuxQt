@@ -27,51 +27,53 @@ void ServiceProviderPrivate::getTime(){
 
 
 
-    QFile file{"/root/config.json"};
+    //    QFile file{"/root/config.json"};
 
-    file.open(QIODevice::ReadOnly);
-    QJsonDocument doc;
-    QString website;
-    if(!file.isOpen()){
-        //emit sendTime(QString(tr("config file not found")),false);
+    //    file.open(QIODevice::ReadOnly);
+    //    QJsonDocument doc;
+    //    QString website;
+    //    if(!file.isOpen()){
+    //        //emit sendTime(QString(tr("config file not found")),false);
 
-        website="http://quan.suning.com/getSysTime.do";
-    }else{
-        doc =QJsonDocument::fromJson(file.readAll());
-        file.close();
-        auto obj=doc.object();
-        qDebug()<<obj;
-        website=obj["timeApi"].toString();
-    }
-
-
-
-    qDebug()<<"website:"<<website;
-
-    QNetworkRequest request;
-    request.setUrl(website);
+    //        website="http://quan.suning.com/getSysTime.do";
+    //    }else{
+    //        doc =QJsonDocument::fromJson(file.readAll());
+    //        file.close();
+    //        auto obj=doc.object();
+    //        qDebug()<<obj;
+    //        website=obj["timeApi"].toString();
+    //    }
 
 
-    auto reply=manager->get(request);
-    connect(reply,&QNetworkReply::readyRead,this,[=](){
-        auto json=QJsonDocument::fromJson(reply->readAll());
-        if(json.isNull()){
-            emit sendTime(tr("errorRespond"),false);
-            reply->deleteLater();
-            return;
-        }
-        auto str=json.object()["sysTime2"].toString();
 
-        emit sendTime(str,true);
-        reply->deleteLater();
-    });
-    connect(reply,&QNetworkReply::errorOccurred,this,[=]
-            (QNetworkReply::NetworkError error){
-        emit sendTime(reply->errorString(),false);
-                reply->deleteLater();
-        Q_UNUSED(error)
-    });
+    //    qDebug()<<"website:"<<website;
 
+    //    QNetworkRequest request;
+    //    request.setUrl(website);
+
+
+    //    auto reply=manager->get(request);
+    //    connect(reply,&QNetworkReply::readyRead,this,[=](){
+    //        auto json=QJsonDocument::fromJson(reply->readAll());
+    //        if(json.isNull()){
+    //            emit sendTime(tr("errorRespond"),false);
+    //            reply->deleteLater();
+    //            return;
+    //        }
+    //        auto str=json.object()["sysTime2"].toString();
+
+    //        emit sendTime(str,true);
+    //        reply->deleteLater();
+    //    });
+    //    connect(reply,&QNetworkReply::errorOccurred,this,[=]
+    //            (QNetworkReply::NetworkError error){
+    //        emit sendTime(reply->errorString(),false);
+    //                reply->deleteLater();
+    //        Q_UNUSED(error)
+    //    });
+
+
+    emit sendTime(DataManager::getInstance().getTime(),true);
 }
 
 void ServiceProviderPrivate::init(){
@@ -222,7 +224,7 @@ void ServiceProviderPrivate::requestPointTest(int index){
 
 void ServiceProviderPrivate::addProject(QString project,qreal dryness){
     DataManager::getInstance().addProject(project,
-                                          QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")
+                                          DataManager::getInstance().getTime()
                                           ,devices->getGps(),dryness);
     emit this->projectInfoNeedsUpdate();
 }

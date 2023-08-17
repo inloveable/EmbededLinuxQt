@@ -105,7 +105,7 @@ Rectangle {
 
 
 
-                text:"工程表单"
+                text:qsTr("工程表单")
             }
 
 
@@ -129,13 +129,13 @@ Rectangle {
 
                     itemInfo:ListModel{
                         ListElement{
-                            label:"编号"
+                            label:qsTr("编号")
                         }
                         ListElement{
-                            label:"名称"
+                            label:qsTr("名称")
                         }
                         ListElement{
-                            label:"创建时间"
+                            label:qsTr("创建时间")
                         }
                     }
 
@@ -272,6 +272,33 @@ Rectangle {
                     }
                 }
 
+            }
+        }
+    }
+
+
+    Rectangle{
+        width:300
+        height:50
+
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+        color:"transparent"
+        Text{
+
+            id:timeLabel
+            anchors.fill: parent
+            font.pointSize: 13
+            color:"white"
+
+        }
+
+        Connections{
+            target:Service
+
+            function onSendTime(time,val){
+                timeLabel.text=time;
             }
         }
     }

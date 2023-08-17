@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 
@@ -53,6 +53,8 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
 
+
+
     bool add(const std::shared_ptr<TestPointInfo>& info);
 
 
@@ -84,6 +86,9 @@ signals:
 
 
     void sendFitArgs(qreal a,qreal b,qreal r2,int type);
+
+
+
 
 
     //project signals

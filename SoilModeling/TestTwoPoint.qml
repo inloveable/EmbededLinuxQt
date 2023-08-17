@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Rectangle {
@@ -6,6 +6,16 @@ Rectangle {
 
     signal testA();
     signal testB();
+
+    function resetTestStatus(){
+
+        console.log("reseting test status")
+        testAclicked=false
+        testBclicked=false
+    }
+
+    property bool testAclicked:false
+    property bool testBclicked:false
 
      Rectangle {
          id: rectangle
@@ -90,6 +100,11 @@ Rectangle {
          anchors.horizontalCenter: rectangle.horizontalCenter
 
          onClicked: {
+             if(testAclicked){
+                 console.log("test A running,returning")
+                 return;
+             }
+
              testA()
          }
      }
@@ -136,7 +151,17 @@ Rectangle {
          anchors.horizontalCenter: rectangleB.horizontalCenter
 
          onClicked: {
+             if(!testAclicked){
+                 console.log("a not tested blocking")
+                 return;
+             }
+             if(testBclicked){
+                 console.log("b not tested blocking")
+                 return
+             }
+
              testB();
+             testBclicked=true;
          }
      }
 }

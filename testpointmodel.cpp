@@ -183,8 +183,12 @@ QVariant TestPointModel::data(const QModelIndex &index, int role) const
         QString result = QString::number(t, 'f', 4);
         return result;
     }
-    case WaterRateRole:
-        return ptr->waterRate;
+    case WaterRateRole:{
+        auto t=ptr->waterRate;
+        QString result = QString::number(t, 'f', 3);
+        return result;
+    }
+        ;
     case AmpitudeRole:
         return ptr->ampitude;
     case PhaseAngleRole:

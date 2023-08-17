@@ -3,6 +3,7 @@
 #include "ProjectInfoObject.hpp"
 #include "dataexporter.hpp"
 #include "modelinfo.hpp"
+#include "modelmanagemodel.hpp"
 #include "qdebug.h"
 #include <memory>
 #include <mutex>
@@ -250,7 +251,7 @@ void DataManager::saveModelInfo(const std::shared_ptr<ModelInfo>& model)
 
     query.bindValue(":modelName",index);
     query.bindValue(":maximumDryness", model->modelName);
-    query.bindValue(":bestWaterRate", QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+    query.bindValue(":bestWaterRate", this->getTime());
     query.bindValue(":gps",model->gps);
     query.bindValue(":argA", model->argA);
     query.bindValue(":argB", model->argB);
@@ -370,6 +371,25 @@ void DataManager::addProject(QString project,QString createTime,QString gps,qrea
     qDebug() << "Project added successfully";
     // 可以进行其他操作或返回适当的成功标识
 
+}
+
+void DataManager::removeModel(int index){
+    QSqlQuery query;
+    QString deleteQuery = QString("DELETE FROM soilModel WHERE id = %1").arg(index);
+
+
+    if (!query.exec(deleteQuery)) {
+        return;
+    }
+
+    // 检查是否有行受到影响
+    if (query.numRowsAffected() > 0) {
+        // 删除成功
+        qDebug() << "Project removed successfully";
+    } else {
+        // 未找到匹配的项目
+        qDebug() << "No project found with index:" << index;
+    }
 }
 
 void DataManager::removeProject(int index){
@@ -546,7 +566,7 @@ QList<QObject*> DataManager::getExportData(){
             QObject* m=new ExportData{};
             static_cast<ExportData*>(m)->index=info.second;
             static_cast<ExportData*>(m)->type=0;
-            static_cast<ExportData*>(m)->label=QString{QStringLiteral("名称: %1 -%2")}.arg(info.first).arg(QStringLiteral("模型"));
+            static_cast<ExportData*>(m)->label=QString{"name: %1 -%2"}.arg(info.first).arg(QString(tr("model")));
             exportData.push_back(m);
         }
     }
@@ -558,7 +578,7 @@ QList<QObject*> DataManager::getExportData(){
             auto p=static_cast<ProjectInfoObject*>(info);
             static_cast<ExportData*>(m)->index=p->index();
             static_cast<ExportData*>(m)->type=1;
-            static_cast<ExportData*>(m)->label=QString{QStringLiteral("名称: %1 -%2")}.arg(p->name()).arg(QStringLiteral("工程"));
+            static_cast<ExportData*>(m)->label=QString{"name: %1 -%2"}.arg(p->name()).arg(QString("project"));
             exportData.push_back(m);
         }
     }
@@ -592,5 +612,49 @@ void DataManager::exportDataToUsb(int index,int type){
         return;
     }
 
+}
+
+void DataManager::onSentModelManageModelToInit(ModelManageModel* model){
+    QSqlDatabase database = QSqlDatabase::database();
+
+    // 打开数据库
+    if (!database.open()) {
+        qWarning() << "Failed to open database" << database.lastError();
+        return;
+    }
+
+    auto indices=this->getModels();
+    for(auto& index:indices){
+        auto ptr=this->getModelInfoWithId(index);
+        model->addModel(index,ptr);
+    }
+
+}
+
+std::vector<int> DataManager::getModels(){
+    std::vector<int> rec;
+
+
+
+    QSqlQuery query;
+    query.prepare("SELECT id FROM soilModel");
+
+    if (!query.exec()) {
+        qDebug() << "Failed to execute query, error:" << query.lastError().text();
+        return rec; // 默认返回模型类型
+    }
+
+    while(query.next()){
+        rec.push_back(query.value("id").toInt());
+    }
+
+    return rec;
+}
+
+
+QString DataManager::getTime() const{
+    QString format{"yyyy-MM-dd hh:mm:ss"};
+
+    return QDateTime::currentDateTime().toString(format);
 }
 

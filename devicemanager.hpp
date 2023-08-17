@@ -9,6 +9,7 @@
 
 class QProcess;
 class SerialManager;
+class ModelManageModel;
 class DeviceManager : public QObject
 {
     Q_OBJECT
@@ -29,6 +30,8 @@ public:
 
     void checkStatus();
     void checkAllArgs();
+
+
 
     //status
     bool impedence=false;

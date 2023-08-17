@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
 Rectangle {
 
@@ -125,7 +125,7 @@ Rectangle {
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                    font.pointSize: 13
                     font.bold: true
                     text:density
                     inputMethodHints: Qt.ImhDigitsOnly
@@ -167,7 +167,7 @@ Rectangle {
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                    font.pointSize: 13
                     font.bold: true
                     text:waterRate
 
