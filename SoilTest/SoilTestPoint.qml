@@ -387,7 +387,7 @@ Rectangle {
 
                Service.requestPointTest(listView.count-1)
 
-               parent.testBclicked
+               parent.testBclicked=true
            }
        }
 
