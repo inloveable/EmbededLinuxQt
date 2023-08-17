@@ -107,7 +107,7 @@ Dialog {
                     width:parent.width
                     height:parent.height/2-spacing
                     Text{
-                        text:"工程名称:"
+                        text:qsTr("工程名称:")
                         height:parent.height
                         width:parent.width/2
                         font.pixelSize: 20
@@ -157,7 +157,7 @@ Dialog {
                     width:parent.width
                     height:parent.height/2-spacing
                     Text{
-                        text:"干密度:"
+                        text:qsTr("干密度:")
                         height:parent.height
                         width:parent.width/2
 
@@ -212,7 +212,7 @@ Dialog {
             MyButton{
                 width:parent.width/2
                 height:50
-                text:"确定"
+                text:qsTr("确定")
 
                 onClicked: {
                     dryness=drynessEdit.text
@@ -223,7 +223,7 @@ Dialog {
             MyButton{
                 width:parent.width/2
                 height:50
-                text:"取消"
+                text:qsTr("取消")
                 onClicked: {
                     root.reject()
                 }

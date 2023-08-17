@@ -45,5 +45,8 @@
         <file>SoilTest/SoilTestPoint.qml</file>
         <file>SoilTest/SoilTestPointDelegate.qml</file>
         <file>SoilTest/AddProjectDialog.qml</file>
+        <file>En_Us.ts</file>
+        <file>En_Us.qm</file>
+        <file>Zh_CN.qm</file>
     </qresource>
 </RCC>

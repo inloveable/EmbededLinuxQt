@@ -52,7 +52,7 @@ QVariant ModelManageModel::data(const QModelIndex &index, int role) const
         return sequence[index.row()+1]->createTime;
     }
     if(role==SourceRole){
-        return QString{QStringLiteral("手动")};
+        return QString{tr("手动")};
     }
     if(role==relateRole){
         return QString{"r2D:%1 r2W:%2"}.

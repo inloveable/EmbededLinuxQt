@@ -88,6 +88,9 @@ signals:
     void sendFitArgs(qreal a,qreal b,qreal r2,int type);
 
 
+
+
+
     //project signals
     //void pointModelUpdated(int pointIndex,int modelIndex);
 

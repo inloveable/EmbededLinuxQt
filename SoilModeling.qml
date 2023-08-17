@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.0
 import CppCore 1.0
 Item {
@@ -37,7 +37,7 @@ Item {
             color: "#D77EFC"
             collapsed: cl.collapsed
             index: 0
-            title: "模型管理"
+            title: qsTr("模型管理")
             icon: "qrc:/images/icons/settings.png"
 
             onItemSelected:function(str) {
@@ -50,7 +50,7 @@ Item {
             color: "#FC6F61"
             collapsed: cl.collapsed
             index: 1
-            title: "新建模型"
+            title: qsTr("新建模型")
             icon: "qrc:/images/icons/refresh.png"
             onItemSelected:function(str) {
                contented.change(str)
@@ -70,7 +70,7 @@ Item {
             color: "#2b4f99"
             collapsed: cl.collapsed
             index: 5
-            title: "返回"
+            title: qsTr("返回")
             icon: "qrc:/images/icons/return.png"
             onItemSelected:function(str) {
                 contented.active=false;

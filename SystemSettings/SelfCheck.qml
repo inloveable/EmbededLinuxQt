@@ -11,8 +11,8 @@ Rectangle {
 
     MyButton {
         id: button
-        width: 100
-        height: 30
+        width: 200
+        height: 60
 
         originColor:"#9FA9FA"
         hoverColor:"#6E7BFA"
@@ -20,11 +20,14 @@ Rectangle {
         text: qsTr("自检")
         anchors.left: groupBox.left
         anchors.bottom: groupBox.top
+        anchors.bottomMargin:15
 
         onClicked:{
             Service.selfCheck();
             selfCheckTimer.start()
         }
+
+        fontSize:15
 
     }
 
@@ -66,7 +69,7 @@ Rectangle {
         height: 30
         anchors.left: button.right
         anchors.top: button.top
-        anchors.topMargin: 0
+        anchors.topMargin: button.height/2-height/2
         anchors.leftMargin: 14
         value: 0
 
@@ -79,12 +82,18 @@ Rectangle {
     GroupBox {
         id: groupBox
         width: parent.width/3*2
-        height: parent.height/4*3
+        height: parent.height/5*4
 
-        anchors.centerIn: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin:10
         label:Rectangle{
             width:groupBox.width/7
             height:groupBox.height/9
+
+            x: 50
+
+
             color:"transparent"
             Text{
                 color: "#ffffff"
@@ -93,7 +102,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
                 font.pointSize: 13
                 font.bold: true
-              text:groupBox.title
+                text:groupBox.title
             }
         }
         title: qsTr("自检结果")
@@ -101,25 +110,28 @@ Rectangle {
         Column {
             id: column
             anchors.fill: parent
-            spacing:10
+
+
+            property int fontSize:13
+
             Row{
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"温度传感器:"
+                    text:qsTr("温度传感器:")
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                    font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
                 }
                 Text{
                     id:sensorState
-                    text:"土壤无核密度仪"
+                    text:qsTr("土壤无核密度仪")
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                     font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
@@ -129,10 +141,10 @@ Rectangle {
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"产品型号:"
+                    text:qsTr("产品型号:")
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                     font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
 
@@ -141,7 +153,7 @@ Rectangle {
                 Text{
                     text:"EDG-25"
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                    font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
@@ -151,10 +163,10 @@ Rectangle {
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"版本编号:"
+                    text:qsTr("版本编号:")
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                          font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
@@ -162,7 +174,7 @@ Rectangle {
                 Text{
                     text:"土壤无核密度仪"
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                             font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
@@ -173,10 +185,10 @@ Rectangle {
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"生产厂家:"
+                    text:qsTr("生产厂家:")
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                              font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                    height:parent.height
@@ -184,7 +196,7 @@ Rectangle {
                 Text{
                     text:"土壤无核密度仪"
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                           font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
@@ -194,10 +206,10 @@ Rectangle {
                 width:parent.width
                 height:column.height/column.children.length
                 Text{
-                    text:"咨询电话:"
+                    text:qsTr("咨询电话:")
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                                        font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height
@@ -205,7 +217,7 @@ Rectangle {
                 Text{
                     text:"土壤无核密度仪"
                     verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 15
+                                        font.pointSize: column.fontSize
                     font.bold: true
                     width:parent.width/2
                     height:parent.height

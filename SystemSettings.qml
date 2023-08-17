@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Item {
@@ -23,7 +23,7 @@ Item {
             color: "#D77EFC"
             collapsed: cl.collapsed
             index: 0
-            title: "系统设置"
+            title: qsTr("系统设置")
             icon: "qrc:/images/icons/settings.png"
 
             onItemSelected:function(str) {
@@ -35,7 +35,7 @@ Item {
             color: "#FC6F61"
             collapsed: cl.collapsed
             index: 1
-            title: "基本信息"
+            title: qsTr("基本信息")
             icon: "qrc:/images/icons/refresh.png"
             onItemSelected:function(str) {
                contented.change(str)
@@ -46,7 +46,7 @@ Item {
             color: "#18A0FA"
             collapsed: cl.collapsed
             index: 2
-            title: "状态检查"
+            title: qsTr("状态检查")
             icon: "qrc:/images/icons/status.png"
             onItemSelected:function(str) {
               contented.change(str)
@@ -57,7 +57,7 @@ Item {
             color: "#94C325"
             collapsed: cl.collapsed
             index: 3
-            title: "GPS定位"
+            title: qsTr("GPS定位")
             icon: "qrc:/images/icons/gps.png"
             onItemSelected:function(str) {
                contented.change(str)
@@ -67,7 +67,7 @@ Item {
             color: "#1b3999"
             collapsed: cl.collapsed
             index: 4
-            title: "实时参数"
+            title: qsTr("实时参数")
             icon: "qrc:/images/icons/realTime.png"
             onItemSelected:function(str) {
                contented.change(str)
@@ -77,7 +77,7 @@ Item {
             color: "#2b4f99"
             collapsed: cl.collapsed
             index: 5
-            title: "返回"
+            title: qsTr("返回")
             icon: "qrc:/images/icons/return.png"
             onItemSelected:function(str) {
                 contented.active=false;

@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.7
 
 
@@ -111,7 +111,7 @@ Item {
                             id: rectangle2
                             width:parent.width/3
                             height:parent.height
-                            tipText:"模型名称"
+                            tipText:qsTr("模型名称")
                             inputText: "ABC"
 
                             onTextFocusChanged:function(fo){
@@ -136,7 +136,7 @@ Item {
                             width:parent.width/3
                             height:parent.height
 
-                            tipText:"最大干密度(g/cm^3)"
+                            tipText:qsTr("最大干密度(g/cm^3)")
                             inputText: "ABC"
                             onTextFocusChanged:function(fo){
 
@@ -157,7 +157,7 @@ Item {
                             width:parent.width/3
                             height:parent.height
 
-                            tipText:"最佳含水率(%)"
+                            tipText:qsTr("最佳含水率(%)")
                             inputText: "ABC"
                             onTextFocusChanged:function(fo){
 
@@ -237,24 +237,7 @@ Item {
                 }
 
 
-                MyButton {
-                    id: button4
-                    text: qsTr("模型优化")
-                    width:100
-                    height:30
-                    anchors.left: testArea.right
-                    anchors.top: testArea.top
-                    anchors.topMargin: 0
-                    anchors.leftMargin: 50
 
-                    originColor: "#110F22"
-                    hoverColor: Qt.lighter(originColor,1.5)
-                    fontColor:"white"
-
-                    onClicked:{
-                        button3.focus=true
-                    }
-                }
 
                 Rectangle{
                     id:testArea
@@ -356,6 +339,9 @@ Item {
                                     item.paringStatus="ERROR"
                                 }
                             }
+                            function onPointTestCompelete(i){
+                                testArea.resetTestStatus()
+                            }
                         }
 
                         header:ViewHeader{
@@ -367,25 +353,25 @@ Item {
                                itemInfo:ListModel{
 
                                    ListElement{
-                                       label:"测点"
+                                       label:qsTr("测点")
                                    }
                                    ListElement{
-                                       label:"湿密度"
+                                       label:qsTr("湿密度")
                                    }
                                    ListElement{
-                                       label:"含水率"
+                                       label:qsTr("含水率")
                                    }
                                    ListElement{
-                                       label:"幅值"
+                                       label:qsTr("幅值")
                                    }
                                    ListElement{
-                                       label:"相角"
+                                       label:qsTr("相角")
                                    }
                                    ListElement{
-                                       label:"温度"
+                                       label:qsTr("温度")
                                    }
                                    ListElement{
-                                       label:"GPS"
+                                       label:qsTr("GPS")
                                    }
                                    ListElement{
                                        label:""
@@ -447,6 +433,7 @@ Item {
 
                     originColor: "#8e0e00"
                     hoverColor: Qt.lighter(originColor,1.2)
+                    fontSize:13
 
                     onClicked: {
                         Service.addNewModelTestPoint()
@@ -462,6 +449,7 @@ Item {
                     anchors.top: button.top
                     anchors.topMargin: 0
                     anchors.leftMargin: 20
+                    fontSize:13
 
                     originColor: "#8e0e00"
                     hoverColor: Qt.lighter(originColor,1.2)
@@ -482,6 +470,7 @@ Item {
                     anchors.top: button1.top
                     anchors.topMargin: 0
                     anchors.leftMargin: 20
+                    fontSize:13
 
                     originColor: "#8e0e00"
                     hoverColor: Qt.lighter(originColor,1.2)
@@ -538,6 +527,34 @@ Item {
         }
 
 
+    }
+
+
+    Rectangle{
+        width:300
+        height:50
+
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.bottom: parent.bottom
+
+        color:"transparent"
+        Text{
+
+            id:timeLabel
+            anchors.fill: parent
+            font.pointSize: 13
+            color:"white"
+
+        }
+
+        Connections{
+            target:Service
+
+            function onSendTime(time,val){
+                timeLabel.text=time;
+            }
+        }
     }
 }
 

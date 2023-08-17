@@ -121,7 +121,7 @@ Rectangle {
                 Rectangle{
 
                    height:parent.height
-width:listView.getWidth(1)
+                   width:listView.getWidth(1)
                    color:"transparent"
                    Text{
                        anchors.fill:parent
@@ -133,7 +133,7 @@ width:listView.getWidth(1)
                 Rectangle{
 
                    height:parent.height
-width:listView.getWidth(2)
+                   width:listView.getWidth(2)
                    color:"transparent"
                    Text{
                        anchors.fill:parent
@@ -145,7 +145,7 @@ width:listView.getWidth(2)
                 Rectangle{
 
                    height:parent.height
-width:listView.getWidth(3)
+                   width:listView.getWidth(3)
                    color:"transparent"
                    Text{
                        anchors.fill:parent
@@ -157,7 +157,7 @@ width:listView.getWidth(3)
                 Rectangle{
 
                    height:parent.height
-width:listView.getWidth(4)
+                   width:listView.getWidth(4)
                    color:"transparent"
                    Text{
                        anchors.fill:parent

@@ -1,4 +1,4 @@
-
+﻿
 
 /*
 This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
@@ -12,7 +12,7 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 import QtQuick 2.7
 import QtQuick.Controls 2.15
 
-
+import CppCore 1.0
 Rectangle {
     id:root
     width: 1920
@@ -136,7 +136,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.bold: true
-                font.pointSize: 16
+                font.pointSize: 14
                 width:parent.width
                 height:parent.height
                 color: "#5d4707"
@@ -152,37 +152,37 @@ Rectangle {
 
 
         ListElement {
-            name: "系统设置"
+            name: qsTr("土壤建模")
             color:"#287362"
             expandXoffset:-200
             borderColor: "#288B62"
         }
 
         ListElement {
-            name: "数据传输"
+            name: qsTr("工程测试")
             color:"#287362"
             borderColor: "#288B62"
             expandXoffset:-400
         }
 
         ListElement {
-            name: "土壤建模"
+            name: qsTr("系统设置")
             color:"#287362"
             borderColor: "#288B62"
             expandXoffset:200
         }
 
         ListElement {
-            name: "工程测试"
+            name: qsTr("数据传输")
             color:"#287362"
             expandXoffset:400
             borderColor: "#288B62"
         }
 
         ListElement {
-            name: "开始"
+            name: qsTr("开始")
             color:"#287362"
-            expandText:"返回"
+            expandText:qsTr("返回")
             borderColor: "#288B62"
             expandXoffset:0
         }
@@ -190,6 +190,30 @@ Rectangle {
 
 
 
+    Rectangle{
+        width:300
+        height:50
 
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+        color:"transparent"
+        Text{
+
+            id:timeLabel
+            anchors.fill: parent
+            font.pointSize: 13
+            color:"white"
+
+        }
+
+        Connections{
+            target:Service
+
+            function onSendTime(time,val){
+                timeLabel.text=time;
+            }
+        }
+    }
 
 }

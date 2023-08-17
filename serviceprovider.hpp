@@ -21,9 +21,11 @@ class ServiceProvider : public QObject
     QML_ELEMENT//D:/QtCodes/TouchScreen0/qtquicktest/qtquicktest/config.json
 
     Q_PROPERTY(bool usbOnline READ usbOnline NOTIFY usbOnlineChanged)
-    Q_PROPERTY(int batteryVal READ getCurrentBattery NOTIFY batteryChanged);
+    Q_PROPERTY(int batteryVal READ getCurrentBattery NOTIFY batteryChanged)
+    Q_PROPERTY(QString currentLanguage MEMBER currentLanguage)
 
         public:
+    QString currentLanguage="ZH";
                  explicit ServiceProvider(QObject *parent = nullptr);
     ~ServiceProvider();
 
@@ -34,6 +36,8 @@ class ServiceProvider : public QObject
     Q_INVOKABLE TestPointModel* getTestPointModel();
 
     Q_INVOKABLE void selfCheck();
+
+    Q_INVOKABLE void requestRetranslate(QString language);
 
 
     //create new model apis
@@ -97,6 +101,10 @@ signals:
 
     void exportInfoReady();
 
+    void requsetTranslate(QString language);
+
+    void currentLanguageChanged();
+
 
 
     //projectInfo apis
@@ -129,6 +137,9 @@ signals:
     QString requestGps();
 
     void sendModelManageModelToInit(ModelManageModel*);
+
+
+    void pointTestCompelete(int index);
 
 
 
@@ -169,6 +180,9 @@ private:
 
 
     bool isProject;
+
+    QTimer* clockSyncronizer=nullptr;
+
 
 
 

@@ -3,10 +3,13 @@
 #include "modelinfo.hpp"
 
 #include "modelmanagemodel.hpp"
+#include "qjsondocument.h"
+#include "qjsonobject.h"
 #include "qmetaobject.h"
 #include "qnamespace.h"
 #include "qobjectdefs.h"
 #include "qthread.h"
+#include "qtimer.h"
 #include "serviceproviderprivate.hpp"
 #include "testpointmodel.hpp"
 
@@ -17,6 +20,7 @@
 #include"datamanager.hpp"
 #include<glog/logging.h>
 #include <memory>
+#include<QFile>
 
 Q_DECLARE_METATYPE(std::shared_ptr<ModelInfo>);
 Q_DECLARE_METATYPE(std::shared_ptr<ProjectInfo>);
@@ -54,6 +58,14 @@ ServiceProvider::ServiceProvider(QObject *parent)
 
     //tModel=new TestPointModel(this);
 
+
+    clockSyncronizer=new QTimer{this};
+    clockSyncronizer->setInterval(500);
+    connect(clockSyncronizer,&QTimer::timeout,this,[this](){
+        emit this->sendTime(DataManager::getInstance().getTime(),true);
+    });
+    clockSyncronizer->start();
+
 }
 
 
@@ -72,6 +84,27 @@ ServiceProvider::~ServiceProvider(){
         this->serviceThread->deleteLater();
     });
     serviceThread->quit();
+
+    QFile file{"/root/config.json"};
+    file.open(QIODevice::ReadOnly);
+    if(file.isOpen()){
+        auto bytes=file.readAll();
+        file.close();
+        file.remove();
+
+        auto doc=QJsonDocument::fromJson(bytes);
+        auto obj=doc.object();
+        obj["language"]=currentLanguage;
+        doc.setObject(obj);
+
+        file.open(QIODevice::WriteOnly);
+        file.write(doc.toJson());
+        file.close();
+
+    }
+
+
+
 }
 
 void ServiceProvider::getTime(){
@@ -79,7 +112,7 @@ void ServiceProvider::getTime(){
 }
 
 void ServiceProvider::messageBox(QString text){
-    QMessageBox::information(nullptr,"提示",text);
+    QMessageBox::information(nullptr,tr("提示"),text);
 }
 
 TestPointModel* ServiceProvider::getTestPointModel_Project(){
@@ -253,6 +286,8 @@ void ServiceProvider::initPrivateSignals(){
             auto modelIndex=obj->tModel->index(index);
             obj->tModel->setData(modelIndex,amp,TestPointModel::AmpitudeRole);
             obj->tModel->setData(modelIndex,phase,TestPointModel::PhaseAngleRole);
+
+            emit obj->pointTestCompelete(index);
         }else{
 
             auto& pointModel=obj->projectTestPointModel;
@@ -482,5 +517,10 @@ ModelManageModel* ServiceProvider::getModelManagModel(){
                 &DataManager::getInstance(),&DataManager::onSentModelManageModelToInit
                 );
      return manageModel;
+}
+
+void ServiceProvider::requestRetranslate(QString l){
+     emit this->requsetTranslate(l);
+     currentLanguage=l;
 }
 

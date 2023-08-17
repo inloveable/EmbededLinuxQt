@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.0
 import CppCore 1.0
 Rectangle{
@@ -160,6 +160,32 @@ Rectangle{
                 }
             }
 
+        }
+    }
+    Rectangle{
+        width:300
+        height:50
+
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.bottom: parent.bottom
+
+        color:"transparent"
+        Text{
+
+            id:timeLabel
+            anchors.fill: parent
+            font.pointSize: 13
+            color:"white"
+
+        }
+
+        Connections{
+            target:Service
+
+            function onSendTime(time,val){
+                timeLabel.text=time;
+            }
         }
     }
 }

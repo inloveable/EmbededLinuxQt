@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 import "../"
@@ -25,46 +25,60 @@ Rectangle {
 
         Switch {
             id: switch1
+
+            Component.onCompleted: {
+                console.log("current language:"+Service.currentLanguage)
+                checked=(Service.currentLanguage==="ZH")
+            }
   
-            width: 163
-            height: 43
-            text: qsTr("中文")
+            width: 200
+            height: 50
+            text: checked?qsTr("中文"):qsTr("英文")
+
             anchors.left: text1.right
-            anchors.top: text1.top
-            anchors.topMargin: 21
+            anchors.top: text1.bottom
+
             anchors.leftMargin: 23
+
+            onCheckedChanged: {
+                if(!checked){
+                    Service.requestRetranslate("EN")
+                }else{
+                    Service.requestRetranslate("ZH")
+                }
+            }
         }
 
         Text {
             id: text1
 
-            width: 74
-            height: 28
+            width: 200
+            height: 50
             text: qsTr("系统语言")
             anchors.left: parent.left
             anchors.top: parent.top
             font.pixelSize: 20
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
-            anchors.leftMargin: 18
-            anchors.topMargin: 28
+
+            anchors.leftMargin: 10
+
             font.bold: true
         }
 
         Text {
             id: text2
-            x: 14
-            y: 103
-            width: 74
-            height: 28
+
+            width: 150
+            height: 40
             text: qsTr("系统时间")
-            anchors.left: text1.right
+            anchors.left: text1.left
             anchors.top: text1.bottom
             font.pixelSize: 15
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
-            anchors.leftMargin: -74
-            anchors.topMargin: 46
+
+            anchors.topMargin: 70
             font.bold: true
         }
 
@@ -74,12 +88,12 @@ Rectangle {
             height: 39
             text: Service.getTime()
             anchors.left: text2.right
-            anchors.top: text2.bottom
+            anchors.top: text2.top
             font.pixelSize: 17
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
-            anchors.topMargin: -34
-            anchors.leftMargin: 6
+
+            anchors.leftMargin: 10
             font.bold: true
         }
     }

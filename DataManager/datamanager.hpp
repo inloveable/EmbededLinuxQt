@@ -56,6 +56,9 @@ public:
     void            removeProject(int index);
 
 
+    QString getTime() const;
+
+
     std::tuple<QString,QString,QString,QString> getProjectInfo(int index);
 
 

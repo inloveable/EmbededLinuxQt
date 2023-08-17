@@ -42,14 +42,43 @@ int main(int argc, char *argv[])
 
 
 
+    QTranslator transZH;
+    QTranslator transEN;
+
+
+
+
+    transEN.load(":/En_Us.qm");
+    transZH.load(":/Zh_CN.qm");
+
+    QFile file{"/root/config.json"};
+    if(file.open(QIODevice::ReadOnly)){
+        qDebug()<<"config file exists";
+        QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
+        auto obj=doc.object();
+        auto lang=obj["language"].toString();
+        if(lang!=""){
+            if(lang=="ZH"){
+                app.installTranslator(&transZH);
+            }else if(lang=="EN"){
+                app.installTranslator(&transEN);
+            }
+        }
+    }else{
+        app.installTranslator(&transZH);
+    }
+
+
+
+
     qRegisterMetaType<QList<QObject*>>();
     qmlRegisterType<TestPointModel>("CppCore",1,0,"TestPointModel");
     qmlRegisterType<ModelManageModel>("CppCore",1,0,"ManageModel");
 
     qmlRegisterType<SeriesPointSwaper>("CppCore",1,0,"SeriesPointSwaper");
-    QScopedPointer<ServiceProvider> privider{new ServiceProvider};
-    DataManager::getInstance();//init datamanager
 
+    DataManager::getInstance();//init datamanager
+    QScopedPointer<ServiceProvider> privider{new ServiceProvider};
 
     qmlRegisterSingletonInstance("CppCore",1,0,"Service",privider.get());
 
@@ -65,6 +94,24 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     //engine.addImageProvider(QLatin1String("Uis"), new UIImageProvider);
     engine.load(url);
+
+    QObject::connect( privider.get(),&ServiceProvider::requsetTranslate,&transZH,[&transZH,&engine,&app,&transEN](QString lan){
+
+        qDebug()<<"translating:"<<lan;
+        if(lan=="ZH"){
+            qApp->removeTranslator(&transEN);
+           qDebug()<<qApp->installTranslator(&transZH);
+
+        }else if(lan=="EN"){
+           qApp->removeTranslator(&transZH);
+           qDebug()<<qApp->installTranslator(&transEN);
+        }
+
+
+        engine.retranslate();
+
+    });
+
     auto rec=app.exec();
 
     DataManager::getInstance().Destory();

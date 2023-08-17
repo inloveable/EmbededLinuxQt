@@ -6,7 +6,12 @@ QT += quick widgets network serialport  charts sql
 
 CONFIG+=c++17
 
-
+#1:字号
+#2：时间到每个页面上
+#3：左右顺序交换
+#4：中英文热切换
+#5：确认流程
+#6 对齐
 
 INCLUDEPATH+=./DataManager#subdirs
 
@@ -27,19 +32,23 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
-DESTDIR=./build
 
+
+
+##in order to build:glog, boost(VERSION>=1.82)
 
 unix: {
     INCLUDEPATH += /usr/local/include
     LIBS += -L/usr/local/lib -lglog
 
     INCLUDEPATH+=/home/h/privateDev/boost1.82
+    TR_EXCLUDE +=  /home/h/privateDev/boost1.82/*
 }
 
 win32: {
     INCLUDEPATH += $$PWD/lib/glog/win32/include
     INCLUDEPATH += D:/LIBARAY/boost_1_82_0
+    TR_EXCLUDE +=  D:/LIBARAY/boost_1_82_0/*
     LIBS += -L$$PWD/lib/glog/win32/lib -lglog
     LIBS += -L$$PWD/lib/glog/win32/bin -lglog
 }
@@ -62,6 +71,12 @@ CONFIG += qmltypes
 QML_IMPORT_NAME = CppCore
 QML_IMPORT_MAJOR_VERSION = 1
 
+
+
+TRANSLATIONS += En_Us.ts
+TRANSLATIONS += Zh_CN.ts
+CONFIG += lrelease
+CONFIG += embed_translations
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
@@ -83,3 +98,7 @@ HEADERS += \
     serviceproviderprivate.hpp \
     testpointmodel.hpp \
     timeprovider.hpp
+
+DISTFILES += \
+    En_Us.ts \
+    Zh_CN.ts

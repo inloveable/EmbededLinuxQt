@@ -79,4 +79,30 @@ Rectangle {
         anchors.bottomMargin: 25
         anchors.leftMargin: 0
     }
+
+    Rectangle{
+        width:300
+        height:50
+
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+        color:"transparent"
+        Text{
+
+            id:timeLabel
+            anchors.fill: parent
+            font.pointSize: 13
+            color:"white"
+
+        }
+
+        Connections{
+            target:Service
+
+            function onSendTime(time,val){
+                timeLabel.text=time;
+            }
+        }
+    }
 }

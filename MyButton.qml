@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.0
 
 Button {
@@ -9,6 +9,7 @@ Button {
     property color originColor;
 
     property alias fontColor:mainText.color
+    property alias fontSize:mainText.font.pointSize
     background: Rectangle{
         id:background
         color: mouse.containsMouse?hoverColor:originColor

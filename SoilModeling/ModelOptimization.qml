@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtCharts 2.3
 
@@ -91,7 +91,7 @@ Item {
 
             LineSeries{
                 id:fitLineSeries
-                name:"拟合曲线"
+                name:qsTr("拟合曲线")
                 color:"blue"
                 axisX: xAxis
                 axisY:yAxis
@@ -117,7 +117,7 @@ Item {
 
             ScatterSeries {
                 id: testPointSeries
-                name: "LineSeries"
+                name: qsTr("LineSeries")
                 axisX: xAxis
                 axisY:yAxis
                 pointsVisible: true
@@ -129,7 +129,7 @@ Item {
                 }
 
                 markerShape: ScatterSeries.MarkerShapeCircle
-                color:"lightgreen"
+                color:qsTr("lightgreen")
 
                 pointLabelsVisible: true
 
@@ -167,10 +167,10 @@ Item {
 
                 itemInfo: ListModel{
                     ListElement{
-                        label:"选定"
+                        label:qsTr("选定")
                     }
                     ListElement{
-                        label:"测点"
+                        label:qsTr("测点")
                     }
                 }
 
@@ -224,6 +224,8 @@ Item {
         }
 
         Column{
+
+            id:column
             anchors.left: parent.left
             anchors.top: parent.top
             width:parent.width
@@ -248,7 +250,7 @@ Item {
                 target:listView.model
 
                 function onSendFitArgs(a,b,r2){
-                     text2.text="参数:a:"+a.toFixed(4)+" b:"+b.toFixed(4)+" r^2:"+r2.toFixed(4);
+                     text2.text=qsTr("参数:a:")+a.toFixed(4)+" b:"+b.toFixed(4)+" r^2:"+r2.toFixed(4);
                 }
             }
 
@@ -265,6 +267,8 @@ Item {
                 font.bold: true
 
             }
+
+            property int buttonFontSize:16
 
             MyButton {
                 id: button
@@ -285,6 +289,7 @@ Item {
                 }
                 originColor:"#0C5917"
                 hoverColor:Qt.lighter(originColor,1.5)
+                fontSize:column.buttonFontSize
             }
 
             MyButton {
@@ -300,6 +305,7 @@ Item {
                     let val=item1.state==="wetDensity"?0:1
                     listView.model.getFitSequence(fitLineSeries,val)
                 }
+                fontSize:column.buttonFontSize
             }
             MyButton {
                 id: button2
@@ -314,6 +320,8 @@ Item {
                     console.log("saving model")
                     Service.saveNewModel()
                 }
+
+                fontSize:column.buttonFontSize
             }
         }
 
@@ -328,10 +336,10 @@ Item {
                 y: 26
                 width: 396
                 height: 390
-                title: "含水率"
+                title: qsTr("含水率")
             }
             PropertyChanges {
-                name: "含水率"
+                name: qsTr("含水率")
                 target: testPointSeries
 
             }
@@ -342,11 +350,11 @@ Item {
             PropertyChanges {
                 target: line
 
-                title: "湿密度"
+                title: qsTr("湿密度")
             }
 
             PropertyChanges {
-                name: "湿密度"
+                name: qsTr("湿密度")
                 target: testPointSeries
 
             }
