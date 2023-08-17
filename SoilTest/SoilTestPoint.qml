@@ -138,6 +138,7 @@ Rectangle {
        width: parent.width/5*4
        height: parent.height/2
        anchors.horizontalCenter: parent.horizontalCenter
+       anchors.horizontalCenterOffset: 10
 
        color:"transparent"
 

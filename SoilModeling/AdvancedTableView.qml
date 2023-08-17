@@ -199,7 +199,7 @@ Rectangle {
 
                 SwipeDelegate.onClicked: {
                     console.log("removing model from list")
-                    listView.model.removeModel(index)
+                    listView.model.removeModel(parent.index)
                 }
 
 

@@ -34,30 +34,25 @@ QVariant ModelManageModel::data(const QModelIndex &index, int role) const
     if(!(sequence.size()>index.row())){
         return QVariant();
     }
-    auto row=index.row();
-    if(sequence.constFind(row+1)==sequence.cend()){
-        qDebug()<<"model not found"<<"row:"<<row;
-        return QVariant();
-    }
-    qDebug()<<"sequence size:"<<sequence.size();
+
 
     // FIXME: Implement me!
     if(role==IndexRole){
-        return sequence[index.row()+1]->id;
+        return sequence[index.row()]->id;
     }
     if(role==NameRole){
-        return sequence[index.row()+1]->modelName;
+        return sequence[index.row()]->modelName;
     }
     if(role==TimeRole){
-        return sequence[index.row()+1]->createTime;
+        return sequence[index.row()]->createTime;
     }
     if(role==SourceRole){
         return QString{tr("手动")};
     }
     if(role==relateRole){
         return QString{"r2D:%1 r2W:%2"}.
-            arg(sequence[index.row()+1]->argR2,0,'g',2)
-                .arg(sequence[index.row()+1]->argR2Water,0,'g',2);
+            arg(sequence[index.row()]->argR2,0,'g',2)
+                .arg(sequence[index.row()]->argR2Water,0,'g',2);
     }
     return QVariant();
 }
@@ -80,22 +75,25 @@ void ModelManageModel::removeModel(int index){
 
 
 
-    auto iter=sequence.find(index);
-    if(iter!=sequence.end()){
+    if(!(index<sequence.size())){
+        return;
+    }
+
 
         LOG(INFO)<<"removing model";
-        QMetaObject::invokeMethod(&DataManager::getInstance(),"removeModel",Q_ARG(int,index));
+    QMetaObject::invokeMethod(&DataManager::getInstance(),"removeModel",Q_ARG(int,sequence[index]->id));
         beginResetModel();
-        sequence.remove(index);
+        sequence.removeAt(index);
         endResetModel();
-    }else{
-        LOG(WARNING)<<"can't find model with index:"<<index;
-    }
+
 }
 
 void ModelManageModel::addModel(int i,std::shared_ptr<ModelInfo> model){
-    beginInsertRows(QModelIndex(),i-1,i-1);
-    sequence[i]=model;
+
+
+    const int row=sequence.size();
+    beginInsertRows(QModelIndex(),row,row);
+    sequence.push_back(model);
     //sequence.insert(i,model);
     endInsertRows();
 }

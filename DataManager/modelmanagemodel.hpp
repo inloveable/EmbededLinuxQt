@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <memory>
+#include <vector>
 
 
 
@@ -36,12 +37,14 @@ public:
     // Remove data:
 
 
-    void removeModel(int index);
-    void addModel(int,std::shared_ptr<ModelInfo>);
+    Q_INVOKABLE void removeModel(int index);
+    Q_INVOKABLE void addModel(int,std::shared_ptr<ModelInfo>);
 
 
 private:
 
-    QMap<int,std::shared_ptr<ModelInfo>> sequence;
+   QList<std::shared_ptr<ModelInfo>> sequence;
+
+    std::shared_ptr<ModelInfo> findWithIndex(int index);
 };
 

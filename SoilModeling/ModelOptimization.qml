@@ -268,7 +268,7 @@ Item {
 
             }
 
-            property int buttonFontSize:16
+            property int buttonFontSize:13
 
             MyButton {
                 id: button
