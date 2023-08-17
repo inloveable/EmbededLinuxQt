@@ -147,6 +147,25 @@ Rectangle {
                       text:qsTr("结果：已完成文件传输\n      未成功导出文件,请检查WIFI连接是否异常\n      未成功导出文件,请检查文件是否存在");
                   }
 
+
+                MyButton{
+                    id:popOut
+                    width:100
+                    height:50
+                    fontColor:"#ffffff"
+                    hoverColor: "#448AE0"
+                    originColor: "#448AFF"
+                    text:qsTr("popout")
+                    anchors.right: transferButton.left
+                    anchors.rightMargin: 10
+                    anchors.top: parent.top
+
+                    onClicked:{
+                        console.log("popout usb");
+                        Service.umountUsb();
+                    }
+                }
+
                 MyButton{
                     id:transferButton
                     width:100

@@ -522,3 +522,6 @@ void ServiceProvider::requestRetranslate(QString l){
      currentLanguage=l;
 }
 
+void ServiceProvider::umountUsb(){
+    callBackend("umountUsb");
+}

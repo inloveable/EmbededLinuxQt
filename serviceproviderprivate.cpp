@@ -288,6 +288,10 @@ void ServiceProviderPrivate::selfCheck(){
     devices->serials->checkSerialPort();
 }
 
+void ServiceProviderPrivate::umountUsb(){
+    devices->unmountUsb("/mnt");
+}
+
 
 
 

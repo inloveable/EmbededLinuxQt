@@ -34,6 +34,8 @@ public:
 
     Q_INVOKABLE void exportData();
 
+    Q_INVOKABLE void umountUsb();
+
     Q_INVOKABLE void selfCheck();
 
 

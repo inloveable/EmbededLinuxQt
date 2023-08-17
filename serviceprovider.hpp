@@ -81,6 +81,9 @@ class ServiceProvider : public QObject
     Q_INVOKABLE QList<QObject*> getExportInfos();
     Q_INVOKABLE void exportData(int index,int type);
 
+    Q_INVOKABLE void umountUsb();
+
+
 
     /*------------------------------------------------------------*/
 

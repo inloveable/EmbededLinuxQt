@@ -67,11 +67,12 @@ SerialManager::printSerials();
 void DeviceManager::mountUsb(const QString& usb1,const QString& dst){
 
 
-    return;
+
     QDir dir;
     dir.mkpath(dst);
     QProcess process;
     QStringList args;
+    dst="/mnt"
     args<<usb1<<dst;
     process.start("mount",args);
     process.waitForFinished();
@@ -90,11 +91,11 @@ void DeviceManager::mountUsb(const QString& usb1,const QString& dst){
 void DeviceManager::unmountUsb(const QString& ){
 
 
-    return;
+
     // 执行卸载命令
     QProcess process;
     QStringList args;
-    args<<this->usb;
+    args<<"/mnt";
     qDebug()<<"unmounting usb:args:"<<args;
     process.start("umount",args);
     process.waitForFinished();
@@ -141,11 +142,12 @@ void DeviceManager::exportFileToUsb(const QString& file){
     }
 
     // 拷贝文件到USB设备
-    QString destinationPath = usbPath + "/" + QFileInfo(file).fileName();
+    QString destinationPath = usbPath + "/" + file;
     if (QFile::copy(file, destinationPath)) {
-        qDebug() << "文件成功导出到USB设备";
+        qDebug() << "sucess"<<destinationPath;
     } else {
-        qDebug() << "文件导出失败";
+        qDebug() << "fail";
     }
+    QFile::remove("/root/"+file);
 }
 
