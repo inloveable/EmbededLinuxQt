@@ -486,9 +486,9 @@ std::shared_ptr<ModelInfo> DataManager:: getModelInfoWithId(int id){
         info->id = query.value("id").toInt();
         info->modelName = query.value("modelName").toString();
         info->gps = query.value("GPS").toString();
-        info->argA = query.value("a").toDouble();
-        info->argB = query.value("b").toDouble();
-        info->argR2 = query.value("r").toDouble();
+        info->argA = query.value("aD").toDouble();
+        info->argB = query.value("bD").toDouble();
+        info->argR2 = query.value("rD").toDouble();
         info->argR2Water = query.value("rW").toDouble();
         info->argAWater = query.value("aW").toDouble();
         info->argBWater = query.value("bW").toDouble();

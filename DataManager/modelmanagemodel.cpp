@@ -3,7 +3,7 @@
 #include "modelinfo.hpp"
 #include "qdebug.h"
 #include "qstringliteral.h"
-
+#include<glog/logging.h>
 #include"datamanager.hpp"
 ModelManageModel::ModelManageModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -83,10 +83,13 @@ void ModelManageModel::removeModel(int index){
     auto iter=sequence.find(index);
     if(iter!=sequence.end()){
 
+        LOG(INFO)<<"removing model";
         QMetaObject::invokeMethod(&DataManager::getInstance(),"removeModel",Q_ARG(int,index));
         beginResetModel();
         sequence.remove(index);
         endResetModel();
+    }else{
+        LOG(WARNING)<<"can't find model with index:"<<index;
     }
 }
 

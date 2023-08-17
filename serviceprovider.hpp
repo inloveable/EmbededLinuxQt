@@ -8,7 +8,7 @@
 #include <QObject>
 #include <memory>
 
-
+class QTimer;
 class TestPointModel;
 class ServiceProviderPrivate;
 class ModelInfo;
@@ -163,8 +163,8 @@ private:
     bool modelSaved=false;
 
 
-    std::unique_ptr<ModelInfo> modelInfo;
-    std::unique_ptr<ProjectInfo> projectInfo;
+    std::shared_ptr<ModelInfo> modelInfo;
+    std::shared_ptr<ProjectInfo> projectInfo;
     TestPointModel* tModel;
     TestPointModel* projectTestPointModel=nullptr;
 

@@ -127,7 +127,7 @@ TestPointModel* ServiceProvider::getTestPointModel_Project(){
 void ServiceProvider::prepareProject(int index){
     isProject=true;
     if(!projectInfo){
-        projectInfo=std::make_unique<ProjectInfo>();
+        projectInfo=std::make_shared<ProjectInfo>();
     }
     if(!projectTestPointModel){
         projectTestPointModel=new TestPointModel(this);
@@ -169,8 +169,8 @@ void ServiceProvider::prepareCreateNewModel(){
     isProject=false;
     LOG(INFO)<<"preparing create new model";
     if(modelInfo==nullptr){
-        modelInfo=std::make_unique<ModelInfo>();
-        modelInfo->modelName="ABC"
+        modelInfo=std::make_shared<ModelInfo>();
+        modelInfo->modelName="ABC";
         if(tModel!=nullptr){
             tModel->deleteLater();
         }
@@ -207,13 +207,10 @@ void ServiceProvider::addNewModelTestPoint(){
 
 
 void  ServiceProvider::saveNewModel(){
-    if(modelSaved){
-        this->messageBox(tr("模型已保存,请勿重复保存"));
-        return;
-    }
+
     if(modelInfo==nullptr)return;
     LOG(INFO)<<"saving new model:"<<modelInfo->modelName.toStdString();
-    emit saveModelInfo(std::shared_ptr<ModelInfo>(std::move(modelInfo)));
+    emit saveModelInfo(modelInfo);
     modelSaved=true;
 }
 void  ServiceProvider::createNewModelExit(){

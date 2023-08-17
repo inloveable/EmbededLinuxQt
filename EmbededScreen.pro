@@ -75,7 +75,7 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 TRANSLATIONS += En_Us.ts
 TRANSLATIONS += Zh_CN.ts
-CONFIG += lrelease
+#CONFIG += lrelease
 CONFIG += embed_translations
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

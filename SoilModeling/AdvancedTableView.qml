@@ -197,7 +197,12 @@ Rectangle {
                 height: parent.height
                 anchors.right: parent.right
 
-                SwipeDelegate.onClicked: listView.model.removeModel(index)
+                SwipeDelegate.onClicked: {
+                    console.log("removing model from list")
+                    listView.model.removeModel(index)
+                }
+
+
 
                 background: Rectangle {
                     color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"

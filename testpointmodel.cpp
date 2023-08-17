@@ -189,10 +189,15 @@ QVariant TestPointModel::data(const QModelIndex &index, int role) const
         return result;
     }
         ;
-    case AmpitudeRole:
-        return ptr->ampitude;
+    case AmpitudeRole:{
+        auto t=ptr->ampitude;
+        QString result = QString::number(t, 'f', 4);
+        return result;
+        break;
+    }
     case PhaseAngleRole:
         {
+
                 auto t=ptr->phaseAngle;
                 QString result = QString::number(t, 'f', 4);
                 return result;

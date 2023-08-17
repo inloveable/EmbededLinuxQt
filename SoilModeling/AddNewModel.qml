@@ -255,6 +255,7 @@ Item {
                     border.color: "lightgreen"
 
                     TestTwoPoint{
+                        id:twopoints
                         anchors.fill: parent
                         color:"transparent"
 
@@ -340,7 +341,8 @@ Item {
                                 }
                             }
                             function onPointTestCompelete(i){
-                                testArea.resetTestStatus()
+                                twopoints.resetTestStatus()
+
                             }
                         }
 

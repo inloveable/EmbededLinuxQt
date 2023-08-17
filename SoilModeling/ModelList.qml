@@ -2,7 +2,7 @@
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.0
 
-
+import CppCore 1.0
 import "../"
 Rectangle {
     id: rectangle1

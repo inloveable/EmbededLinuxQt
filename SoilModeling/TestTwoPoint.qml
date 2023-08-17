@@ -106,6 +106,7 @@ Rectangle {
              }
 
              testA()
+             testAclicked=true;
          }
      }
 

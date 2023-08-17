@@ -135,7 +135,7 @@ Rectangle {
        anchors.top: parent.top
        anchors.topMargin: 20
 
-       width: parent.width/4*3
+       width: parent.width/5*4
        height: parent.height/2
        anchors.horizontalCenter: parent.horizontalCenter
 
