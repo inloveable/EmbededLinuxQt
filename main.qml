@@ -1,4 +1,4 @@
-import QtQuick 2.15
+﻿import QtQuick 2.15
 import QtQuick.Window 2.15
 
 import QtQuick.Controls 2.0
@@ -62,7 +62,7 @@ Window {
         onLoaded: {
               // 当项加载完成后，连接返回信号
               subDialog.item.returnSignal.connect(function() {
-                 console.log("Result: ");
+                  console.log("Result: ");
                   subDialog.active=false;
                   mainScreen.z=1;
               });

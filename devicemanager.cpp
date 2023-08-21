@@ -72,8 +72,9 @@ void DeviceManager::mountUsb(const QString& usb1,const QString& dst){
     dir.mkpath(dst);
     QProcess process;
     QStringList args;
-    dst="/mnt"
-    args<<usb1<<dst;
+    //dst="/mnt";
+    auto dst1="/mnt";
+    args<<usb1<<dst1;
     process.start("mount",args);
     process.waitForFinished();
 

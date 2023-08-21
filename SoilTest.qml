@@ -14,14 +14,9 @@ Rectangle {
 
     Loader{
         id:addProjectLoader
-      anchors.fill: parent
-
-
-
+        anchors.fill: parent
         active:false
-
         source:"qrc:/SoilTest/AddProjectDialog.qml"
-
         onLoaded: {
 
             addProjectLoader.z=1

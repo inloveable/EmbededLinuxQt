@@ -86,12 +86,12 @@ void ServiceProviderPrivate::init(){
 
 
         usbNum++;
-        devices->mountUsb(usb,QString("/mnt/usb%1/").arg(usbNum));
+        //devices->mountUsb(usb,QString("/mnt/usb%1/").arg(usbNum));
 
         emit usbLoaded();
     });
     connect(devices,&DeviceManager::usbUnPluged,this,[=](){
-        devices->unmountUsb(QString("/mnt/usb%1/").arg(usbNum));
+        //devices->unmountUsb(QString("/mnt/usb%1/").arg(usbNum));
         usbNum--;
         emit this->usbUnloaded();
     });
