@@ -33,7 +33,7 @@ QString DataExporter::exportModel(int index) {
         return "";
     }
 
-    QString fileName=QString{"model-%1-%2.txt"}.arg(model->modelName).arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh.mm.ss"));
+    QString fileName=QString{"/root/model-%1-%2.txt"}.arg(model->modelName).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -79,7 +79,7 @@ QString DataExporter::exportProject(int index){
     auto& data = DataManager::getInstance();
     auto [name,createTime,gps,dryness]=data.getProjectInfo(index);
 
-    QString fileName=QString{"./project-%1-%2.txt"}.arg(name).arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh.mm.ss"));
+    QString fileName=QString{"/root/project-%1-%2.txt"}.arg(name).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {

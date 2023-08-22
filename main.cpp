@@ -39,6 +39,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
 
+    LOG(INFO)<<"app running dir:"<<QApplication::applicationFilePath().toStdString();
+
+
 
 
 

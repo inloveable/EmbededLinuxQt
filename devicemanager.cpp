@@ -137,10 +137,6 @@ void DeviceManager::exportFileToUsb(const QString& file){
 
     // 检查USB设备是否已挂载
     QDir usbDir(usbPath);
-    if (!usbDir.exists()) {
-        qDebug() << "USB设备未挂载";
-        return;
-    }
 
     // 拷贝文件到USB设备
     QString destinationPath = usbPath + "/" + file;
@@ -149,6 +145,6 @@ void DeviceManager::exportFileToUsb(const QString& file){
     } else {
         qDebug() << "fail";
     }
-    QFile::remove("/root/"+file);
+    QFile::remove(file);
 }
 

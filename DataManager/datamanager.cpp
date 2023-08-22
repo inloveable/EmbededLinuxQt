@@ -28,11 +28,13 @@ void DataManager::initializeDatabase(){
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("mydatabase.db");
 
+
     // 打开数据库
     if (!db.open()) {
         qDebug() << "Failed to open database, error:" << db.lastError().text();
         return;
     }
+
     if(db.tables().size()>0){
         LOG(INFO)<<"database has been inited,returning";
         return;
@@ -85,10 +87,13 @@ void DataManager::initializeDatabase(){
                     ")")) {
         qDebug() << "Failed to create table, error:" << query.lastError().text();
     }
+    db.close();
 
 }
 int DataManager::getProjectId(QString name)
 {
+    QSqlDatabase db=QSqlDatabase::database();
+    db.open();
     QSqlQuery query;
     query.prepare("SELECT id FROM projectInfo WHERE projectName = :name");
     query.bindValue(":name", name);
@@ -99,11 +104,14 @@ int DataManager::getProjectId(QString name)
     if (query.first()) {
         return query.value(0).toInt();
     }
+
     return -1;
 }
 
 int DataManager::getSoilModelId(QString name)
 {
+    QSqlDatabase db=QSqlDatabase::database();
+    db.open();
     QSqlQuery query;
     query.prepare("SELECT id FROM soilModel WHERE modelName = :name");
     query.bindValue(":name", name);
@@ -114,6 +122,7 @@ int DataManager::getSoilModelId(QString name)
     if (query.first()) {
         return query.value(0).toInt();
     }
+    db.close();
     return -1;
 }
 
@@ -121,6 +130,8 @@ int DataManager::getSoilModelId(QString name)
 
 DataManager::BelongType DataManager::getBelongType(int id)
 {
+    QSqlDatabase db=QSqlDatabase::database();
+    db.open();
     QSqlQuery query;
     query.prepare("SELECT belongType FROM measurementPoint WHERE pointId = :id");
     query.bindValue(":id", id);
@@ -134,10 +145,13 @@ DataManager::BelongType DataManager::getBelongType(int id)
             return static_cast<DataManager::BelongType>(belongType);
         }
     }
+    db.close();
     return BelongType::Model; // 默认返回模型类型
 }
 
 std::vector<int> DataManager::getPoints(int belongId,BelongType belongType){
+    QSqlDatabase db=QSqlDatabase::database();
+    db.open();
     std::vector<int> rec;
 
     LOG(INFO)<<"getting point ids with:"<<belongId<<" belongType:"<<(int)belongType;
@@ -154,13 +168,15 @@ std::vector<int> DataManager::getPoints(int belongId,BelongType belongType){
     while(query.next()){
         rec.push_back(query.value("pointId").toInt());
     }
+    db.close();
 
     return rec;
 }
 
 std::shared_ptr<TestPointInfo> DataManager::getPointWithId(int id)
 {
-
+    QSqlDatabase db=QSqlDatabase::database();
+    db.open();
     QSqlQuery query;
     query.prepare("SELECT * FROM measurementPoint WHERE pointId=:id");
     query.bindValue(":id", id);
@@ -182,6 +198,7 @@ std::shared_ptr<TestPointInfo> DataManager::getPointWithId(int id)
         rec->temperature = query.value("temperature").toReal();
     }
 
+    db.close();
     return rec;
 }
 
@@ -196,6 +213,7 @@ void DataManager::Destory(){
 }
 
 QList<QObject*> DataManager::getAllProjectInfo(){
+
     QSqlDatabase db=QSqlDatabase::database();
     db.open();
 
@@ -221,6 +239,7 @@ QList<QObject*> DataManager::getAllProjectInfo(){
         objs<<obj;
     };
 
+    db.close();
     return objs;
 
 }
@@ -268,6 +287,7 @@ void DataManager::saveModelInfo(const std::shared_ptr<ModelInfo>& model)
     for(int i=0;i<model->testPointSize();++i){
         saveTestPoint(model->getTestPoint(i),BelongType::Model,index);
     }
+    database.close();
 
 }
 
@@ -306,6 +326,7 @@ void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, Bel
             LOG(WARNING)<<"sql error:"<<query.lastError().text().toStdString();
         }
 
+
         return;
 
     }
@@ -341,10 +362,12 @@ void DataManager::saveTestPoint(const std::shared_ptr<TestPointInfo>& point, Bel
     query.next();
     int index=query.value(0).toInt();
     point->pointId=index;
+    database.close();
 }
 
 
 void DataManager::addProject(QString project,QString createTime,QString gps,qreal dryness){
+    auto database=QSqlDatabase::database();
     QSqlQuery query;
 
     query.exec("SELECT MAX(id) FROM projectInfo;");
@@ -369,11 +392,14 @@ void DataManager::addProject(QString project,QString createTime,QString gps,qrea
 
     // 添加项目成功
     qDebug() << "Project added successfully";
+
+    database.close();
     // 可以进行其他操作或返回适当的成功标识
 
 }
 
 void DataManager::removeModel(int index){
+    auto database=QSqlDatabase::database();
     QSqlQuery query;
     QString deleteQuery = QString("DELETE FROM soilModel WHERE id = %1").arg(index);
 
@@ -390,9 +416,11 @@ void DataManager::removeModel(int index){
         // 未找到匹配的项目
         qDebug() << "No project found with index:" << index;
     }
+    database.close();
 }
 
 void DataManager::removeProject(int index){
+    auto db=QSqlDatabase::database();
 
     QSqlQuery query;
     QString deleteQuery = QString("DELETE FROM projectInfo WHERE id = %1").arg(index);
@@ -411,6 +439,7 @@ void DataManager::removeProject(int index){
         qDebug() << "No project found with index:" << index;
     }
 
+    db.close();
 }
 
 QList<QPair<QString,int>> DataManager::getModelInfoFromDb(){
@@ -438,6 +467,7 @@ QList<QPair<QString,int>> DataManager::getModelInfoFromDb(){
         // 连接数据库失败处理逻辑
         LOG(INFO)<<"Failed to connect to the database";
     }
+    db.close();
 
     return modelInfoList;
 }
@@ -457,6 +487,7 @@ std::tuple<QString,QString,QString,QString> DataManager::getProjectInfo(int inde
         std::get<2>(rec)=query.value("gps").toString();
         std::get<3>(rec)=query.value("dryness").toString();
     }
+    db.close();
     return rec;
 }
 
@@ -501,6 +532,7 @@ std::shared_ptr<ModelInfo> DataManager:: getModelInfoWithId(int id){
         auto ptr=this->getPointWithId(id);
         info->addTestPoint(ptr);
     }
+    database.close();
     return info;
 }
 
@@ -546,10 +578,12 @@ std::tuple<float,float,float,float,float,float> DataManager::getModelArgWithId(i
 
     if(query.next()){
         LOG(INFO)<<"return arg";
+        database.close();
         return {query.value("a").toFloat(),query.value("b").toFloat(),
                 query.value("r").toFloat(),query.value("aW").toFloat(),
                 query.value("bW").toFloat(),query.value("rW").toFloat()};
     }
+   database.close();
     return {};
 }
 
